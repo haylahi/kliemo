@@ -143,8 +143,6 @@ class File(models.Model):
         """
         if self.state == File.STATE_ERROR or self.state == File.STATE_NEW:
             try:
-                cr = self.env.cr
-                uid = self.env.user.id
                 # set all old exeptions to cancelled
                 for exce in self.exceptions:
                     if exce.state == "Waiting for fix":
@@ -245,9 +243,9 @@ class File(models.Model):
             # Name 3
             if (self.getNodeValueIfExists(dom, 'ns0:line3')):
                 customer_address_line_2 = str(self.getNodeValueIfExists(dom, 'ns0:line3'))
+
             customer_id = self.getNodeValueIfExists(dom, 'ns0:customer-id')
             customer_city = self.getNodeValueIfExists(dom, 'ns0:city')
-
             customer_postal_code = self.getNodeValueIfExists(dom, 'ns0:postal-code')
             customer_state = self.getNodeValueIfExists(dom, 'ns0:state')
             customer_country_code = self.getNodeValueIfExists(dom, 'ns0:country-code')
@@ -264,6 +262,7 @@ class File(models.Model):
             if customer_address_line_2 == postal_code_and_city:
                 customer_address_line_2 = ""
 
+            
             _logger.debug('customer parsed')
 
             #content = StringIO.StringIO(str(self.content))

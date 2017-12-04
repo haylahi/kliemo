@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="ftpsettings_springer_form_view">
+            <field name="name">ftpsettings.springer.form</field>
+            <field name="model">kliemo_orders_parser.ftpsettings</field>
+            <field name="inherit_id" ref="odoo-kliemo.ftpsettings_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='directory_in']" position="after">
+                    <field name="directory_poa" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                    <field name="directory_asn" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                    <field name="directory_stock" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                    <button class="oe_highlight" name="action_create_stockreport" type="object" string="Create and Upload Stock Report" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                </xpath>
+                <xpath expr="//field[@name='input_picking_type']" position="after">
+                    <field name="delivery_method" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                    <field name="service_provider" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                    <field name="service_type" attrs="{'invisible': [('type', '!=', 'springer')],}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

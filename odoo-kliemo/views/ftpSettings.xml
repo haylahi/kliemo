@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <tree string="FTP settings tree" colors="red:state=='Inactive';green:state=='Confirmed'">
                     <field name="name"/>
+                    <field name="type"/>
                     <field name="hostname"/>
                     <field name="username"/>
                     <field name="active"/>
@@ -31,6 +32,7 @@
                         <group string="General">
                             <group>
                                 <field name="name"/>
+                                <field name="type"/>
                                 <field name="hostname"/>
                                 <field name="username"/>
                                 <field name="password"  password="1"/>
@@ -47,16 +49,9 @@
                         <group string="Input / Output settings">
                             <group>
                                 <field name="directory_in"/>
-                                <field name="directory_poa"/>
-                                <field name="directory_asn"/>
-                                <field name="directory_stock"/>
-                                <button class="oe_highlight" name="action_create_stockreport" type="object" string="Create and Upload Stock Report" />
                             </group>
                             <group>
                                 <field name="input_picking_type"/>
-                                <field name="delivery_method"/>
-                                <field name="service_provider"/>
-                                <field name="service_type"/>
                             </group>
                         </group>
                         <hr />

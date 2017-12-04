@@ -40,20 +40,19 @@ class ftpSettings(models.Model):
     username = fields.Char(String="Username", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
     password = fields.Char(String="Password", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
     directory_in = fields.Char(String="Orders Directory", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_poa = fields.Char(String="POA Directory", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_asn = fields.Char(String="ASN Directory", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_stock = fields.Char(String="STOCK Report Directory", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
     active = fields.Boolean(String="Active", required=False)
     frequency = fields.Integer(String="Frequency (hours)", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
     job_id = fields.One2many('kliemo_orders_parser.job', 'settings_id', string="Jobs")
     input_picking_type = fields.Many2one('stock.picking.type', string="IN Picking Type", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    delivery_method = fields.Selection([('initial', 'initial'), ('subsequent', 'subsequent'), ('both', 'Initial/subsequent')], string="Delivery Method", required=True)
-    service_provider = fields.Char(string="Service Provider")
-    service_type = fields.Selection([('print', 'print'), ('warehouse', 'warehouse'), ('external', 'external')], string="Service Type", required=True)
     manager_user = fields.Many2many('res.partner', string="Managers", required=True, readonly=False)
     last_execution_date = fields.Datetime(string="Last Executed")
     state = fields.Selection([(STATE_NEW, STATE_NEW), (STATE_RUNNING, STATE_RUNNING)], default=STATE_NEW, String="State")
     passed_test = fields.Boolean(string="Test passed", default=False)
+
+    @api.model
+    def _type_selection(self):
+        return [('unknown', 'Unknown')]
+    type = fields.Selection(_type_selection, string='Type', required=True)
 
     # -----------------------------------------------------------------------
     # FTP SYSTEM METHODS
@@ -88,11 +87,7 @@ class ftpSettings(models.Model):
 
     @api.multi
     def move_file(self, ftp, original_path, destination_path):
-        try:
-            ftp.rename(original_path, destination_path)
-        except Exception, e:
-            _logger.debug("Error while moving file (%s) on FTP server, so delete it", original_path)
-            ftp.delete(original_path)
+        ftp.rename(original_path, destination_path)
 
     @api.multi
     def unzip_file(self, ftp, f):
@@ -135,10 +130,6 @@ class ftpSettings(models.Model):
     def action_reset_confirmation(self):
         self.state = ftpSettings.STATE_NEW
 
-    @api.multi
-    def action_create_stockreport(self):
-        self.create_and_upload_stock_report()
-
     # -----------------------------------------------------------------------
     # ODOO INHERIT METHODS
     @api.multi
@@ -165,93 +156,6 @@ class ftpSettings(models.Model):
         return job_id
 
     @api.multi
-    def create_and_upload_stock_report(self):
-        """
-        This method will create the stock report at the given time
-        and will save it as a File in the system then open it
-        """
-        
-        cr = self.env.cr
-        uid = self.env.user.id
-
-        _logger.debug("Create A Stock Report")
-
-        try:
-            # ---- STOCK
-            nsmap = {
-                None:'http://www.crossmediasolutions.de/GPN/springer/po-1.9',
-                "xsi":"http://www.w3.org/2001/XMLSchema-instance",
-                     }
-            stockxml = etree.Element("stock_report", nsmap=nsmap)
-            stockxml.attrib['{{{pre}}}schemaLocation'.format(pre="http://www.w3.org/2001/XMLSchema-instance")] =  "http://www.crossmediasolutions.de/GPN/springer/po-1.9 http://www.springer.com/schemas/stock-report/1.0 StockReport.xsd"
-
-            # ---- STOCK-HEADER
-            stockHeader = etree.SubElement(stockxml, "header")
-
-            node = etree.Element("datetime")
-            node.text = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S %Z")
-            stockHeader.append(node)
-            node = etree.Element("vendor")
-            node.text = 'kliemo warehouse'
-            stockHeader.append(node)
-            # ----
-
-            # ---- STOCK
-            stockItem = etree.SubElement(stockxml, "stock")
-
-            # Take all products.products that are set as 'magazine'
-            products_obj = self.pool.get('product.template')
-            products_id = products_obj.search(cr, uid, [('is_magazine', '=', True)])
-            for magazine in products_obj.browse(cr, uid, products_id):
-                # Get Issues
-                for issue in magazine.product_variant_ids:
-                    # Issue
-                    item = etree.Element('issue')
-                    # Journal ID
-                    node = etree.SubElement(item, 'journal_id')
-                    node.text = str(issue.journal_id)
-                    # Volume ID
-                    node = etree.SubElement(item, 'volume_id')
-                    node.text = str(issue.issue_volume)
-                    # Issue ID
-                    node = etree.SubElement(item, 'issue_id_start')
-                    node.text = str(issue.issue_number)
-                    # Type
-                    node = etree.SubElement(item, 'type')
-                    node.text = 'supplement' if issue.issue_type == 'special' else issue.issue_type # error between 'supplement' and 'special'
-                    # Quantity
-                    node = etree.SubElement(item, 'quantity')
-                    node.text = str(int(issue.qty_available))
-                    # Owner 
-                    node = etree.SubElement(item, 'Owner')
-                    node.text = 'Springer'
-                    stockItem.append(item)
-            # ----
-
-            # create string from XML
-            content = etree.tostring(stockxml, pretty_print=True)
-
-            timestamp = time.strftime("%Y-%m-%d_%H_%M_%S")
-
-            # filename
-            filename = "stockreport_kliemo_" + timestamp + ".xml"
-
-            # create STOCK file
-            file_id = self.pool.get('kliemo_orders_parser.file').create(cr, uid, {
-                'type': File.TYPESTOCK,
-                'job_id': None,
-                'creation_date': datetime.datetime.now(),
-                'name': filename,
-                'content': content,
-                'state': File.STATE_DONE,
-            })
-
-            self.upload_files([file_id], File.TYPESTOCK)
-
-        except Exception, e:
-            raise osv.except_osv(_("Error while creating and uploading the Stock Report!"), _("Here is what we got instead:\n %s") % tools.ustr(e))
-
-    @api.multi
     def download_files_and_save(self, job_id):
         """
         This method will connect to the FTP,
@@ -272,7 +176,6 @@ class ftpSettings(models.Model):
 
         # get file names
         filenames = self.list_file(ftp)
-        _logger.debug("Files: %s", filenames)
 
         number_of_fetched_files = 0
         # For each zip file in the ftp folder
@@ -284,38 +187,28 @@ class ftpSettings(models.Model):
             if number_of_fetched_files == limit:
                 break
 
-            tmp_filename = '/home/kliemo/springer_files/' + file
+            tmp_filename = '/tmp/' + file
             filecontent = self.read_file(ftp, file)
 
-            # download Zipfile to /home/kliemo/springer_files/
+            # download Zipfile to /tmp/
             _logger.debug('download zip to %s', tmp_filename)
             fo = open(tmp_filename, 'wb')
             fo.write(filecontent)
             fo.close()
 
             zfile = zipfile.ZipFile(tmp_filename)
-            _logger.debug("zfile.namelist(): %s", zfile.namelist())
             for name in zfile.namelist():
-                # Extract zip content to /home/kliemo/springer_files/extracted/<file>/.
+                # Extract zip content to /tmp/test/<file>/.
                 (dirname, filename) = os.path.split(name)
-                dirname = str('/home/kliemo/springer_files/extracted/' + file).replace('.zip', '')
+                dirname = '/tmp/test/' + file + '/' + dirname
                 _logger.debug("Decompressing " + filename + " on " + dirname)
                 if not os.path.exists(dirname):
-                    _logger.debug("Create directory: %s", dirname)
-                    os.mkdir(dirname)
-                    if not os.path.exists(dirname):
-                        _logger.debug("ERROR ERROR DIRECTORY NOT CREATED")
+                    os.makedirs(dirname)
                 zfile.extract(name, dirname)
-                _logger.debug("ZIP extracted")
-
-                complete_file_name = dirname + '/' + filename
 
                 # Create order file
-                _logger.debug("Open file: %s", complete_file_name)
-                xml_string = open(complete_file_name)
-                _logger.debug("File opened")
+                xml_string = open(dirname + filename)
                 data = StringIO.StringIO(xml_string.read()).getvalue()
-                _logger.debug("File transformed to XML")
 
                 file_id = self.pool.get('kliemo_orders_parser.file').create(cr, uid, {
                         'creation_date': datetime.datetime.now(),
@@ -337,71 +230,7 @@ class ftpSettings(models.Model):
 
         return po_file_ids
 
-    @api.multi
-    def upload_files(self, file_ids, file_type):
-        """
-        This function will zip given files (and encapsulate them as 'POA' or 'ASN' depending on their type) and upload them to the FTP server
-        """
-        cr = self.env.cr
-        uid = self.env.user.id
-
-        timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S%f")
-
-        zipfilename = ''
-        server_path = ''
-        tmp_zipfilename = ''
-        zipfile_folder = None
-        if file_type == File.TYPEPOA:
-            zipfilename = 'poa_mps_' + timestamp + '.zip'
-            server_path = self.directory_poa
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
-            zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
-
-        elif file_type == File.TYPEASN:
-            zipfilename = 'asn_mps_' + timestamp + '.zip'
-            server_path = self.directory_asn
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
-            zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
-
-        elif file_type == File.TYPESTOCK:
-            zipfilename = 'stockreport_' + timestamp + '.xml'
-            server_path = self.directory_stock
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
-            zipfile_folder = open(tmp_zipfilename, 'w')
-        
-        for file_id in file_ids:
-            file_to_save = self.pool.get('kliemo_orders_parser.file').browse(cr, uid, file_id)
-            if not file_to_save:
-                _logger.debug("Error, this file: %s has not been got in DB", file_id)
-                continue
-            if file_type == File.TYPEPOA or file_type == File.TYPEASN:
-                _logger.debug("will add file '%s' to zip %s", file_to_save.name, tmp_zipfilename)
-                zipfile_folder.writestr(file_to_save.name, file_to_save.content.encode('utf-8'))
-                _logger.debug("file added to zip")
-            elif file_type == File.TYPESTOCK:
-                zipfile_folder.write(file_to_save.content.encode('utf-8'))
-                _logger.debug("File written")
-
-        _logger.debug("close zipfile (or file)")
-        #poalist = len(zipfile_folder.infolist())
-        zipfile_folder.close()
-
-        # connect the ftp
-        ftp = self.connect()
-
-        _logger.debug("server_path: %s", server_path)
-        complete_path = server_path + zipfilename
-        _logger.debug("will upload zipfile to %s", complete_path)
-            
-        zipfilebin = open(tmp_zipfilename,'rb')
-        self.write_file(ftp, complete_path , zipfilebin.read())
-        _logger.debug('file uploaded')
-
-        _logger.debug("delete zipfile")
-        os.remove(tmp_zipfilename)
-
-        # sleep a bit in order to not write again on the files
-        time.sleep(0.5)
+    
 
     # -----------------------------------------------------------------------
     # CRON METHODS
@@ -430,42 +259,5 @@ class ftpSettings(models.Model):
                 self.pool.get('kliemo_orders_parser.job').browse(cr, uid, new_job_id).run_job()
             else:
                 _logger.debug("NOT THE MOMENT TO CREATE AND RUN A JOB")
-
-    def cron_get_asn_and_upload(self, cr, uid, ids=None, context=None):
-        """
-        Executed by cron
-        Upload all ASN files on FTP for the next day
-        """
-
-        _logger.debug("Send ASN files")
-        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, [('active','=',True)])
-        for ftp_id in ftps:
-            ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
-
-            asn_files = []
-            for job in ftp.job_id:
-                if job.date >= datetime.datetime.strftime(datetime.datetime.now().date()+ datetime.timedelta(days=-1),"%Y-%m-%d %H:%M:%S") and job.date <= datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"):
-                    asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [
-                        ('creation_date', '>=', datetime.datetime.strftime(datetime.datetime.now().date()+ datetime.timedelta(days=-1),"%Y-%m-%d %H:%M:%S")),
-                        ('creation_date', '<=', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
-                        ('type', '=', File.TYPEASN),
-                        ('job_id','=',job.id)])
-                    _logger.debug("File ids: %s", asn_files)
-                
-                if len(asn_files) > 0:
-                    ftp.upload_files(asn_files, File.TYPEASN)
-
-    def cron_create_stock_report_and_upload(self, cr, uid, ids=None, context=None):
-        """
-        Executed by cron
-        gets a stock XML report and uploads it to the server
-        """
-
-        _logger.debug("Get Stock XML Report")
-
-        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, [('active','=',True)])
-        for ftp_id in ftps:
-            ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
-            ftp.create_and_upload_stock_report()
         
         
