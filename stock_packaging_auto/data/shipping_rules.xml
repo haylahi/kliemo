@@ -44,21 +44,6 @@
             <field name="code">SB</field>
         </record>
 
-        <record id="shipping_rule_4" model="stock.shipping_rule">
-            <field name="service">B&#252;chersendung</field>
-            <field name="shipping_method">standard</field>
-            <field name="delivery_method">subsequent</field>
-            <field name="country" ref="base.de"/>
-            <field name="ads">no</field>
-            <field name="weight_min">0</field>
-            <field name="weight_max">1</field>
-            <field name="label_number">30</field>
-            <field name="pallet_number">001</field>
-            <field name="active">1</field>
-            <field name="priority">10</field>
-            <field name="code">BS</field>
-        </record>
-
         <record id="shipping_rule_5" model="stock.shipping_rule">
             <field name="service">Error SE1</field>
             <field name="shipping_method">standard</field>
@@ -135,7 +120,7 @@
         </record>
 
         <record id="shipping_rule_10" model="stock.shipping_rule">
-            <field name="service">B&#252;chersendung</field>
+            <field name="service">Buchersendung</field>
             <field name="shipping_method">standard</field>
             <field name="delivery_method">initial</field>
             <field name="country" ref="base.de"/>

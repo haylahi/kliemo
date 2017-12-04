@@ -192,12 +192,8 @@ class stock_picking_list(models.Model):
                     self.consolidator_rule = rule.id
                     break
 
-            # label quantity + create a box
+            # label quantity
             self.logistic_unit_quantity = 1
-            self.pool.get('stock.shipping_box').create(self.env.cr, self.env.uid, {
-                    'picking_id': self.id,
-                    'state': 'draft',
-                })
 
             if not self.consolidator_rule:
                 raise osv.except_osv(_("Error"), _("Can not get auto collector rule because customer number in any consolidator rule."))
@@ -217,21 +213,17 @@ class stock_picking_list(models.Model):
         countries_ruled = []
         country_groups_rules = []
         for rule in rules_obj.browse(self.env.cr, self.env.uid, rules):
-            if rule.country != None and rule.country != False and rule.country.id not in countries_ruled:
-                if rule.country.id != False:
-                    countries_ruled.append(rule.country.id)
-            if rule.region != None and rule.region != False and rule.region.id not in country_groups_rules:
-                if rule.region.id != False:
-                    country_groups_rules.append(rule.region.id)
+            if rule.country != None and rule.country.id not in countries_ruled:
+                countries_ruled.append(rule.country.id)
+            if rule.region != None and rule.region.id not in country_groups_rules:
+                country_groups_rules.append(rule.region.id)
         _logger.debug("Countries ruled: %s", countries_ruled)
         _logger.debug("Groups of countries ruled: %s", country_groups_rules)
 
         # check country
         if self.partner_id.country_id.id in countries_ruled:
             filter.append('|')
-            # Because we want the rules that are specified for this country
             filter.append(['country', '=', self.partner_id.country_id.id])
-            # Because we also want the rules that are specified for no specific country
             filter.append(['country', '=', False])
         # check for europe
         else:
@@ -249,7 +241,7 @@ class stock_picking_list(models.Model):
 
         _logger.debug("Filter: %s", filter)
 
-        rules = rules_obj.search(self.env.cr, self.env.uid, filter, order='country, priority asc')
+        rules = rules_obj.search(self.env.cr, self.env.uid, filter, order='priority asc')
 
         # loop on all rules to find the right one
         for rule in rules_obj.browse(self.env.cr, self.env.uid, rules):
