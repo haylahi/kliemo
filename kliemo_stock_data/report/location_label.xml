@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="picking_list" inherit_id="stock.report_location_barcode">
+            <xpath expr="//div[@class='page']" position="replace">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div class="row">
+                        <table width="100%" class="table table-condensed" style="border-bottom: 3px solid black !important; text-align: center;">
+                            <tr>
+                                <th style="text-align: center; font-size: 450%; margin-top: 50px; margin-bottom: 50px;">
+                                     <span t-if="not o.loc_barcode" t-field="o.name"/>
+                                     <span t-if="o.loc_barcode" t-field="o.loc_barcode"/>
+                                 </th>
+                             </tr>
+                             <tr>
+                                 <td>
+                                    <img t-if="not o.loc_barcode" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:500px;height:100px"/>
+                                    <img t-if="o.loc_barcode" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.loc_barcode, 600, 100)" style="width:500px;height:100px"/>
+                                 </td>
+                             </tr>
+                        </table>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</openerp>

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <report 
+            string="Stock P&amp;B + Airmail Report"
+            id="action_stock_presse_und_buch_report" 
+            model="wiz.stock.presse_und_buch.daily.report" 
+            report_type="qweb-pdf"
+            name="stock_presse_und_buch_report.stock_presse_und_buch_report_document" 
+            file="stock_presse_und_buch_report" 
+        />
+
+        <template id="stock_presse_und_buch_report_document">
+            <t t-name="stock_presse_und_buch_report.stock_presse_und_buch_report_document">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="report.external_layout">
+                            <div class="page">
+                                <h1>Presse &amp; Buch + Airmail REPORT</h1>
+                                <h2>
+                                    <span t-esc="o.ftp_setting.name" />
+                                    <br />
+                                    <span t-esc="o.report_date" />
+                                </h2>
+                                <div style="page-break-inside:avoid;">
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Produkt / Gewichtsstufe</th>
+                                                <th>Menge (Stück)</th>
+                                                <th>Netto (Kg)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Priority EU</td>
+                                                <td><span t-esc="data['form']['priority_eu_nb']" /></td>
+                                                <td><span t-esc="data['form']['priority_eu_weight']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Economy EU</td>
+                                                <td><span t-esc="data['form']['economy_eu_nb']" /></td>
+                                                <td><span t-esc="data['form']['economy_eu_weight']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Priority Non-EU</td>
+                                                <td><span t-esc="data['form']['priority_non_eu_nb']" /></td>
+                                                <td><span t-esc="data['form']['priority_non_eu_weight']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Economy Non-EU</td>
+                                                <td><span t-esc="data['form']['economy_non_eu_nb']" /></td>
+                                                <td><span t-esc="data['form']['economy_non_eu_weight']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Total</td>
+                                                <td><span t-esc="data['form']['total_nb']" /></td>
+                                                <td><span t-esc="data['form']['total_weight']" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

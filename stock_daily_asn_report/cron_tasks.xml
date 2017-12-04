@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record forcecreate="True" id="ir_cron_ftp_pickings_gettr" model="ir.cron">
+            <field name="name">ASN Report Sender</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'kliemo_orders_parser.ftpsettings'" />
+            <field name="function" eval="'_cron_create_asn_report_send_and_upload'" />
+            <field name="args" eval="'()'" />
+        </record>
+    </data>
+</openerp>

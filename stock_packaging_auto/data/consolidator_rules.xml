@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="consolidator_rule_070" model="stock.consolidator_rule">
+            <field name="bin_number">070</field>
+            <field name="customer">Buchhandlung Albert Müller GMbH</field>
+            <field name="customer_numbers">1001006021</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_071" model="stock.consolidator_rule">
+            <field name="bin_number">071</field>
+            <field name="customer">Arabella</field>
+            <field name="customer_numbers">1001017595</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_072" model="stock.consolidator_rule">
+            <field name="bin_number">072</field>
+            <field name="customer">Deuerlische Buchhandlung</field>
+            <field name="customer_numbers">1001002405</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_073" model="stock.consolidator_rule">
+            <field name="bin_number">073</field>
+            <field name="customer">Deutsche Bibliothek</field>
+            <field name="customer_numbers">1000620630, 2000061695, 2000114069, 2000148785, 2000157864, 2000328889, 2000477489, 2000142261</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+
+        <record id="consolidator_rule_074" model="stock.consolidator_rule">
+            <field name="bin_number">074</field>
+            <field name="customer">Die Deutsche Bibliothek</field>
+            <field name="customer_numbers">2000020179</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_075" model="stock.consolidator_rule">
+            <field name="bin_number">075</field>
+            <field name="customer">Dr. Rudolph Habelt GmbH</field>
+            <field name="customer_numbers">10010000601, 2001007079</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_076" model="stock.consolidator_rule">
+            <field name="bin_number">076</field>
+            <field name="customer">EBSCO Information Services GmbH</field>
+            <field name="customer_numbers">2000243910</field>
+            <field name="shipping_routine">twicy</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_077" model="stock.consolidator_rule">
+            <field name="bin_number">077</field>
+            <field name="customer">Harrassowitz-Booksellers &amp; Subscriotion Agents</field>
+            <field name="customer_numbers">2000202960, 8000175757</field>
+            <field name="shipping_routine">twicy</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_078" model="stock.consolidator_rule">
+            <field name="bin_number">078</field>
+            <field name="customer">Kamloth &amp; Schweitzer OHG</field>
+            <field name="customer_numbers">1001000745</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_079" model="stock.consolidator_rule">
+            <field name="bin_number">079</field>
+            <field name="customer">Krische-Mencke-Blaesing</field>
+            <field name="customer_numbers">1001000745</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_080" model="stock.consolidator_rule">
+            <field name="bin_number">080</field>
+            <field name="customer">Med. Buchhandlungs GmbH</field>
+            <field name="customer_numbers">1001007929</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_081" model="stock.consolidator_rule">
+            <field name="bin_number">081</field>
+            <field name="customer">Springer Verlag</field>
+            <field name="customer_numbers">1001023934, 1001008916</field>
+            <field name="shipping_routine">daily</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_082" model="stock.consolidator_rule">
+            <field name="bin_number">082</field>
+            <field name="customer">Springer Verlag (Anzeigenabteilung)</field>
+            <field name="customer_numbers">2000023695</field>
+            <field name="shipping_routine">daily</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_083" model="stock.consolidator_rule">
+            <field name="bin_number">083</field>
+            <field name="customer">Springer Dordrech</field>
+            <field name="shipping_routine">daily</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_084" model="stock.consolidator_rule">
+            <field name="bin_number">084</field>
+            <field name="customer">Swets Information Service</field>
+            <field name="customer_numbers">1001008289</field>
+            <field name="shipping_routine">twicy</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_085" model="stock.consolidator_rule">
+            <field name="bin_number">085</field>
+            <field name="customer">Witsch, Behrendt &amp; Schwetzer OHG</field>
+            <field name="customer_numbers">2000093881, 2000189667</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_086" model="stock.consolidator_rule">
+            <field name="bin_number">086</field>
+            <field name="customer">Zentral- und Landesbibliothek</field>
+            <field name="customer_numbers">2000093881, 2000189667</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_087" model="stock.consolidator_rule">
+            <field name="bin_number">087</field>
+            <field name="customer">Ziehank Univ. Buchhandlung / NL Lehmanns</field>
+            <field name="customer_numbers">1001003274</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_088" model="stock.consolidator_rule">
+            <field name="bin_number">088</field>
+            <field name="customer">JETS Ams / Springer</field>
+            <field name="customer_numbers">2001000001, 2001000002, 2001000003,2001000004</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DPD,Freight (> 60 kg)</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="consolidator_rule_089" model="stock.consolidator_rule">
+            <field name="bin_number">089</field>
+            <field name="customer">EBSCO JETS</field>
+            <field name="customer_numbers">8000864087</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_090" model="stock.consolidator_rule">
+            <field name="bin_number">090</field>
+            <field name="customer">Swets Information Service</field>
+            <field name="customer_numbers">800380531</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_091" model="stock.consolidator_rule">
+            <field name="bin_number">091</field>
+            <field name="customer">SPI Transact Inc.</field>
+            <field name="customer_numbers">8200747327</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_092" model="stock.consolidator_rule">
+            <field name="bin_number">092</field>
+            <field name="customer">Beijing Zhong KE I/E Company</field>
+            <field name="customer_numbers">1001015600, 2001007615</field>
+            <field name="shipping_routine">biweekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_093" model="stock.consolidator_rule">
+            <field name="bin_number">093</field>
+            <field name="customer">China National Publications</field>
+            <field name="customer_numbers">1001024770, 2000569123, 2001007620, 2001007631</field>
+            <field name="shipping_routine">biweekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_094" model="stock.consolidator_rule">
+            <field name="bin_number">094</field>
+            <field name="customer">China Educational Publications</field>
+            <field name="customer_numbers">1001010630, 1001017090, 2001007632, 2001007633</field>
+            <field name="shipping_routine">biweekly</field>
+            <field name="carrier">DHL, Freight (> 60 kg)</field>
+            <field name="active">1</field>
+            <field name="comment">Packing list on paper (in the carton) and electronically to Tanja.Keller</field>
+        </record>
+
+        <record id="consolidator_rule_095" model="stock.consolidator_rule">
+            <field name="bin_number">095</field>
+            <field name="customer">Springer Japan KK</field>
+            <field name="customer_numbers">1001002836</field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">Presse&amp;Buch Airmail (&lt; 25 kg), DHL (&gt; 25 kg)</field>
+            <field name="active">1</field>
+        </record>
+    </data>
+</openerp>

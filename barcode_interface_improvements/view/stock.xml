@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <template id="assets_backend_improvements" name="stock assets" inherit_id="stock.assets_backend">
+            <script src="/stock/static/src/js/widgets.js" position="replace"/>
+        </template>
+        
+        <template id="assets_backend" name="stock assets improvements" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/barcode_interface_improvements/static/src/js/toastr.min.js"></script>
+                <script type="text/javascript" src="/barcode_interface_improvements/static/src/js/widgets_improvements.js"></script>
+            </xpath>
+        </template>
+        
+        <template id="barcode_index_improvements" inherit_id="stock.barcode_index">
+            <link rel="stylesheet" href="/stock/static/src/css/barcode.css" position="after">
+                <link rel="stylesheet" href="/barcode_interface_improvements/static/src/css/toastr.min.css"/>
+                <link rel="stylesheet" href="/barcode_interface_improvements/static/src/css/product.css"/>
+            </link>
+        </template>
+
+        <record model="ir.actions.act_url" id="barcode_interface_url_action">
+                <field name="name">Barcode Interface</field>
+                <field name="type">ir.actions.act_url</field>
+                <field name="target">self</field>
+                <field name="url">/barcode/web</field>
+        </record>
+
+        <menuitem id="kliemo_orders_parser_barcode" name="Barcode Interface"
+                  parent="stock.menu_stock_warehouse_mgmt" action="barcode_interface_url_action" sequence="1"/>
+    </data>
+</openerp>

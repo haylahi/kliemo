@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Picking List Form -->
+        <record model="ir.ui.view" id="stock_packaging_auto_picking_form">
+            <field name="name">stock.picking.with.package</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="(//button[@string='Mark as Todo'])[1]" position="replace">
+                    <button name="confirm_picking_list" class="oe_highlight" string="Confirm" states="draft" type="object"/>
+                    <button name="compute_shipping" class="oe_highlight" string="Compute shipping" states="draft" type="object"/>
+                    <button name="print_labels" class="oe_highlight" string="Print Label(s)" type="object"/>
+                    <button name="print_list" class="oe_highlight" string="Print" type="object"/>
+                </xpath>
+                <xpath expr="(//page[@string='Products'])[1]" position="after">
+                    <page string="Shipping">
+                        <group>
+                            <group>
+                                <field name="shipping_rule"/>
+                                <field name="consolidator_rule" attrs="{'invisible':[('shipping_method','!=','consolidator')]}"/>
+                                <field name="product_quantity"/>
+                                <field name="logistic_unit" />
+                                <field name="logistic_unit_quantity"/>
+                                <field name="net_picking_weight" readonly="1"/>
+                                <field name="total_picking_weight" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="tracking_number"/>
+                                <field name="logistic_unit_report"/>
+                                <group>
+                                    <button name="set_smaller_package" string="- Smaller" type="object" />
+                                    <button name="set_bigger_package" string="+ Bigger" type="object" />
+                                </group>
+                            </group>
+                        </group>
+                        <field name="boxes">
+                            <tree editable="top" string="Sent boxes">
+                                <field name="transporter"/>
+                                <field name="tracking_number"/>
+                                <field name="date_sent"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

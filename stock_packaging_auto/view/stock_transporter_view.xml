@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_packaging_auto_transporter_tree_view">
+            <field name="name">product.logistic.unit.tree</field>
+            <field name="model">stock.transporter</field>
+            <field name="arch" type="xml">
+                <tree string="Packagings">
+                    <field name="partner_id"/>
+                    <field name="priority"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_packaging_auto_transporter_form_view">
+            <field name="name">stock.transporter.form</field>
+            <field name="model">stock.transporter</field>
+            <field name="arch" type="xml">
+                <form string="Transporter">
+                    <sheet>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="priority"/>
+                            <field name="packages"/>
+                        </group>
+                        <hr />
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="transporters">
+            <field name="name">Transporters</field>
+            <field name="res_model">stock.transporter</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="action_manage_transporters" name="Transporters"
+            parent="stock_packaging_auto.action_manage_shipping" action="transporters"/>
+    </data>
+</openerp>

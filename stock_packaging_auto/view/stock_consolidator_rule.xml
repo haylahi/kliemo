@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_consolidator_rule_tree_view">
+            <field name="name">stock.consolidator_rule.tree</field>
+            <field name="model">stock.consolidator_rule</field>
+            <field name="arch" type="xml">
+                <tree string="Consolidator Rules">
+                    <field name="bin_number"/>
+                    <field name="customer"/>
+                    <field name="customer_numbers"/>
+                    <field name="shipping_routine"/>
+                    <field name="carrier"/>
+                    <field name="comment"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_consolidator_rule_form_view">
+            <field name="name">stock.consolidator_rule.form</field>
+            <field name="model">stock.consolidator_rule</field>
+            <field name="arch" type="xml">
+                <form string="Consolidator Rule Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="bin_number"/>
+                            </group>
+                            <group>
+                                <field name="customer"/>
+                            </group>
+                            <group>
+                                <field name="customer_numbers"/>
+                            </group>
+                            <group>
+                                <field name="shipping_routine"/>
+                                <!--<field name="shipping_routine_day"/>-->
+                                <field name="carrier"/>
+                            </group>
+                            <field name="comment"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="stock_consolidator_rules" >
+            <field name="name">Consolidator rules</field>
+            <field name="res_model">stock.consolidator_rule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="action_manage_stock_consolidator_rules" name="Consolidator Rules"
+            parent="stock_packaging_auto.action_manage_shipping" action="stock_consolidator_rules"/>
+    </data>
+</openerp>

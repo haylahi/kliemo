@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record forcecreate="True" id="ir_cron_ftp_pickings_gettr" model="ir.cron">
+            <field name="name">FTP Picking Lists Getter</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'kliemo_orders_parser.ftpsettings'" />
+            <field name="function" eval="'cron_ftp_file_getter'" />
+            <field name="args" eval="'()'" />
+        </record>
+        <record forcecreate="True" id="ir_cron_ftp_delete_old_files" model="ir.cron">
+            <field name="name">FTP Files deleter</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'kliemo_orders_parser.file'" />
+            <field name="function" eval="'cron_delete_old_files'" />
+            <field name="args" eval="'()'" />
+        </record>
+        <record forcecreate="True" id="ir_cron_ftp_upload_asn" model="ir.cron">
+            <field name="name">ASN Files uploader</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'kliemo_orders_parser.ftpsettings'" />
+            <field name="function" eval="'cron_get_asn_and_upload'" />
+            <field name="args" eval="'()'" />
+        </record>
+        <record forcecreate="True" id="ir_cron_stock_report_uploader" model="ir.cron">
+            <field name="name">Stock Report Uploader</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False" />
+            <field name="model" eval="'kliemo_orders_parser.ftpsettings'" />
+            <field name="function" eval="'cron_create_stock_report_and_upload'" />
+            <field name="args" eval="'()'" />
+        </record>
+    </data>
+</openerp>

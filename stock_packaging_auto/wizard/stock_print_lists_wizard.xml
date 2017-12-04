@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record id="view_stock_pickings_print_lists_wizard" model="ir.ui.view">
+      <field name="name">Print Picking Lists</field>
+      <field name="model">wiz.stock.picking.print.lists</field>
+      <field name="arch" type="xml">
+        <form string="Print Picking Lists">
+          <group col="4" colspan="4">
+            <field name="state"/>
+            <field name="report_date"/>
+          </group>
+          <footer>
+            <button name="print_pickings" icon="gtk-print" string="Print Pickings" type="object" default_focus="1" class="oe_highlight"/>
+            or
+            <button string="Cancel" class="oe_link" special="cancel" />
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_stock_pickings_print_wizard" model="ir.actions.act_window">
+      <field name="name">Print Picking Lists To do</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">wiz.stock.picking.print.lists</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_stock_pickings_print_lists_wizard"/>
+      <field name="target">new</field>
+    </record>
+
+    <menuitem
+        name="Print Picking Lists"
+        parent="stock.menu_stock_warehouse_mgmt"
+        action="action_stock_pickings_print_wizard"
+        id="menu_stock_print_pickings_wizard"
+        sequence="50"
+        icon="STOCK_JUSTIFY_FILL"/>
+
+  </data>
+</openerp>

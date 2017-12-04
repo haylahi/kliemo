@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="jobs_tree_view">
+            <field name="name">job.tree</field>
+            <field name="model">kliemo_orders_parser.job</field>
+            <field name="arch" type="xml">
+                <tree string="Jobs" colors="red:state=='Error';green:state=='Ended';blue:state=='Waiting'">
+                    <field name="settings_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="job_form_view">
+            <field name="name">job.form</field>
+            <field name="model">kliemo_orders_parser.job</field>
+            <field name="arch" type="xml">
+                <form string="Job">
+                    <header>
+                        <button name="action_run_job" class="oe_highlight" type="object" string="Start" states="Waiting, Cancelled"/>
+                        <button name="action_cancel_job" class="oe_highlight" type="object" string="Cancel" states="Waiting, Running"/>
+                        <button name="action_draft_job" type="object" string="Reset to draft" states="Cancelled"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="settings_id"/>
+                            <field name="date"/>
+                            <field name="files" string="Parsed files">
+                                <tree>
+                                    <field name="creation_date"/>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="type"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="job_list">
+            <field name="name">Parser Jobs</field>
+            <field name="res_model">kliemo_orders_parser.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="job_menu" name="Jobs"
+                  parent="kliemo_orders_parser_config_menu" action="job_list"/>
+    </data>
+</openerp>

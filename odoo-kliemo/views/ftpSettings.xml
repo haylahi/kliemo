@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="ftpsettings_tree_view">
+            <field name="name">ftpsettings.tree</field>
+            <field name="model">kliemo_orders_parser.ftpsettings</field>
+            <field name="arch" type="xml">
+                <tree string="FTP settings tree" colors="red:state=='Inactive';green:state=='Confirmed'">
+                    <field name="name"/>
+                    <field name="hostname"/>
+                    <field name="username"/>
+                    <field name="active"/>
+                    <field name="state"/>
+                    <field name="frequency"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ftpsettings_form_view">
+            <field name="name">ftpsettings.form</field>
+            <field name="model">kliemo_orders_parser.ftpsettings</field>
+            <field name="arch" type="xml">
+                <form string="FTP settings form">
+                    <header>
+                        <button class="oe_highlight" name="action_test_ftp_server" type="object" string="Test Connection"/>
+                        <button name="action_confirm_ftp_server" type="object" string="Confirm" states="Inactive"/>
+                        <button name="action_reset_confirmation" type="object" string="Reset confirmation" states="Confirmed"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group string="General">
+                            <group>
+                                <field name="name"/>
+                                <field name="hostname"/>
+                                <field name="username"/>
+                                <field name="password"  password="1"/>
+                            </group>
+                            <group>
+                                <field name="passed_test"/>
+                                <field name="active"/>
+                                <field name="frequency"/>
+                                <field name="manager_user" widget="many2many_tags"/>
+                                <field name="last_execution_date" readonly="1"/>
+                            </group>
+                        </group>
+                        <hr />
+                        <group string="Input / Output settings">
+                            <group>
+                                <field name="directory_in"/>
+                                <field name="directory_poa"/>
+                                <field name="directory_asn"/>
+                                <field name="directory_stock"/>
+                                <button class="oe_highlight" name="action_create_stockreport" type="object" string="Create and Upload Stock Report" />
+                            </group>
+                            <group>
+                                <field name="input_picking_type"/>
+                                <field name="delivery_method"/>
+                                <field name="service_provider"/>
+                                <field name="service_type"/>
+                            </group>
+                        </group>
+                        <hr />
+                        <group string="Jobs">
+                            <field name="job_id" />
+                        </group>
+                        <group>
+                            <button class="oe_highlight" name="action_create_job" type="object" string="Create a job"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ftpsettings_list">
+            <field name="name">FTP Settings</field>
+            <field name="res_model">kliemo_orders_parser.ftpsettings</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="kliemo_orders_parser_config_menu" name="Kliemo External Parser"
+                  parent="stock.menu_stock_root" action="" sequence="10"/>
+
+        <menuitem id="ftpsettings_menu" name="FTP Settings"
+                  parent="kliemo_orders_parser_config_menu" action="ftpsettings_list"/>
+    </data>
+</openerp>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Specific Issue Form -->
+        <record model="ir.ui.view" id="product_magazine_issue_view">
+            <field name="name">product.magazine.issue</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <page string="Information" position="before">
+					<page string="Magazine Issue">
+                        <h2>Issue information</h2>
+                        <button class="oe_highlight" type="object" string="Print Label" name="print_label"/>
+                        <button class="oe_highlight" type="object" string="Print Label + Stock Location" name="print_label_with_stock_location"/>
+                        <group>
+                            <field name="title" string="Issue title"/>
+                        </group>
+                        <group>
+                            <field name="issue_volume"/>
+                            <field name="issue_number"/>
+                            <field name="issue_date"/>
+                            <field name="issue_type"/>
+                        </group>
+					</page>
+				</page>
+            </field>
+        </record>
+
+        <!-- Issue (product.product) tree inhreit -->
+        <record model="ir.ui.view" id="product_magazine_issue_tree_view">
+           <field name="name">product.magazine.issue.tree.improvements</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="title"/>
+                    <field name="issue_volume"/>
+                    <field name="issue_number"/>
+                    <field name="issue_date"/>
+                    <field name="issue_type"/>
+                </field>
+                <field name="attribute_value_ids" position="replace"/>
+                <field name="lst_price" position="replace"/>
+                <field name="uom_id" position="replace"/>
+            </field>
+        </record>
+    </data>
+</openerp>

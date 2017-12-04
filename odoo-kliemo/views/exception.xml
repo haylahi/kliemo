@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="exception_tree_filter" model="ir.ui.view">
+            <field name="name">exception.tree.filter</field>
+            <field name="model">kliemo_orders_parser.exception</field>
+            <field name="arch" type="xml">
+                <search string="Search Exceptions">
+                    <filter name="high" string="High Level" domain="[('level', '=', 'High')]" help="High"/>
+                    <filter name="low" string="Low Level" domain="[('level', '=', 'Low')]" help="Low"/>
+                    <filter name="fixed" string="Fixed" domain="[('state','=','Fixed')]" help="Fixed"/>
+                    <filter name="unfixed" string="Waiting for fix" domain="[('state','=','Waiting for fix')]" help="Waiting for fix"/>
+                    <filter name="cancelled" string="Cancelled" domain="[('state','=','Cancelled')]" help="Cancelled"/>
+                    <separator/>
+                    <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Level" domain="[]" context="{'group_by':'level'}"/>
+                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="File" domain="[]" context="{'group_by':'file_id'}"/>
+                        <filter string="Picking List" domain="[]" context="{'group_by': 'picking_list_id'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="exception_tree_view">
+            <field name="name">exception.tree</field>
+            <field name="model">kliemo_orders_parser.exception</field>
+            <field name="arch" type="xml">
+                <tree string="File list tree" colors="red:level=='High';blue:level=='Low'">
+                    <field name="creation_date"/>
+                    <field name="level" />
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="exception_form_view">
+            <field name="name">file.form</field>
+            <field name="model">kliemo_orders_parser.exception</field>
+            <field name="arch" type="xml">
+                <form string="Exception">
+                    <header>
+                        <button class="oe_highlight" name="set_as_fixed" type="object" string="Fixed" states="Waiting for fix"/>
+                        <button name="set_as_unfixed" type="object" string="un-Fix" states="Fixed"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h2><label string="Level:" /><field name="level"/></h2>
+                        <group>
+                            <field name="creation_date"/>
+                            <field name="file_id"/>
+                            <field name="picking_list_id"/>
+                            <field name="message" />
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                    	<field name="message_follower_ids" widget="mail_followers"/>
+                    	<field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="exception_list">
+            <field name="name">Exceptions</field>
+            <field name="res_model">kliemo_orders_parser.exception</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_unfixed': 1}</field>
+        </record>
+
+        <menuitem id="exception_menu" name="Exceptions" sequence="20"
+                  parent="kliemo_orders_parser_config_menu" action="exception_list"/>
+    </data>
+</openerp>

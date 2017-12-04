@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <report 
+            string="Stock POST Report"
+            id="action_stock_post_report" 
+            model="wiz.stock.post.daily.report" 
+            report_type="qweb-pdf"
+            name="stock_post_report.stock_post_report_document" 
+            file="stock_post_report" 
+        />
+
+        <template id="stock_post_report_document">
+            <t t-name="stock_post_report.stock_post_report_document">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="report.external_layout">
+                            <div class="page">
+                                <h1>POST REPORT</h1>
+                                <h2>
+                                    <span t-esc="o.ftp_setting.name" />
+                                    <br />
+                                    <span t-esc="o.report_date" />
+                                </h2>
+                                <div style="page-break-inside:avoid;">
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Produkt / Gewichtsstufe</th>
+                                                <th>Gesamtgewich pro Gewichtsstufe (kg)</th>
+                                                <th>Menge (Stück)</th>
+                                                <th></th>
+                                                <th>Entgelt (€) pro Stück (netto)</th>
+                                                <th></th>
+                                                <th>Sendungsentgelt (€) (netto)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Streifbandzeitung bis 50g</td>
+                                                <td><span t-esc="data['form']['_50g_weight']" /></td>
+                                                <td><span t-esc="data['form']['_50g_num']" /></td>
+                                                <td>x</td>
+                                                <td><span t-esc="data['form']['_50g_price']" /></td>
+                                                <td>=</td>
+                                                <td><span t-esc="data['form']['_50g_total']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Streifbandzeitung 51 - 100g</td>
+                                                <td><span t-esc="data['form']['51g_100g_weight']" /></td>
+                                                <td><span t-esc="data['form']['51g_100g_weight']" /></td>
+                                                <td>x</td>
+                                                <td><span t-esc="data['form']['51g_100g_price']" /></td>
+                                                <td>=</td>
+                                                <td><span t-esc="data['form']['51g_100g_total']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Streifbandzeitung 101g - 250g</td>
+                                                <td><span t-esc="data['form']['101g_250g_weight']" /></td>
+                                                <td><span t-esc="data['form']['101g_250g_num']" /></td>
+                                                <td>x</td>
+                                                <td><span t-esc="data['form']['101g_250g_price']" /></td>
+                                                <td>=</td>
+                                                <td><span t-esc="data['form']['101g_250g_total']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Streifbandzeitung 251g - 500g</td>
+                                                <td><span t-esc="data['form']['251g_500g_weight']" /></td>
+                                                <td><span t-esc="data['form']['251g_500g_num']" /></td>
+                                                <td>x</td>
+                                                <td><span t-esc="data['form']['251g_500g_price']" /></td>
+                                                <td>=</td>
+                                                <td><span t-esc="data['form']['251g_500g_total']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Streifbandzeitung 501g -  1.000g</td>
+                                                <td><span t-esc="data['form']['501g_1000g_weight']" /></td>
+                                                <td><span t-esc="data['form']['501g_1000g_num']" /></td>
+                                                <td>x</td>
+                                                <td><span t-esc="data['form']['501g_1000g_price']" /></td>
+                                                <td>=</td>
+                                                <td><span t-esc="data['form']['501g_1000g_total']" /></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><span t-esc="data['form']['total_weight']" /></td>
+                                                <td><span t-esc="data['form']['total_num']" /></td>
+                                                <td colspan="3"></td>
+                                                <td><span t-esc="data['form']['total_price']" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

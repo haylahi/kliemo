@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_shipping_rule_tree_view">
+            <field name="name">stock.shipping_rule.tree</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="arch" type="xml">
+                <tree string="Shipping Rules">
+                    <field name="shipping_method"/>
+                    <field name="delivery_method"/>
+                    <field name="country"/>
+                    <field name="region"/>
+                    <field name="po_box"/>
+                    <field name="postal_permit"/>
+                    <field name="ads"/>
+                    <field name="phone"/>
+                    <field name="weight_min"/>
+                    <field name="weight_max"/>
+                    <field name="weight_max_package"/>
+                    <field name="service"/>
+                    <field name="code"/>
+                    <field name="label_number"/>
+                    <field name="pallet_number"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_shipping_rule_form_view">
+            <field name="name">stock.shipping_rule.form</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="arch" type="xml">
+                <form string="Shipping Rule Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="shipping_method"/>
+                                <field name="delivery_method"/>
+                            </group>
+                            <group>
+                                <field name="service"/>
+                                <field name="code"/>
+                                <field name="priority"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="country"/>
+                                <field name="region"/>
+                                <field name="po_box"/>
+                                <field name="postal_permit"/>
+                                <field name="ads"/>
+                                <field name="phone"/>
+                            </group>
+                            <group>
+                                <field name="weight_min"/>
+                                <field name="weight_max"/>
+                                <field name="weight_max_package"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="label_number"/>
+                                <field name="pallet_number"/>
+                            </group>
+                            <group>
+                                <field name="label_report"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="stock_shipping_rules" >
+            <field name="name">Shipping rules</field>
+            <field name="res_model">stock.shipping_rule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="action_manage_stock_shipping_rules" name="Shipping Rules"
+            parent="stock_packaging_auto.action_manage_shipping" action="stock_shipping_rules"/>
+    </data>
+</openerp>

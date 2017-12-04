@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <report
+			id="magazine_issue_label_report"
+			string="Magazine Issue Label"
+			model="product.product"
+			report_type="qweb-pdf"
+			file="magazine_label"
+			name="product_magazine.issue_label"
+		/>
+
+        <record id="product_magazine_issue_label" model="report.paperformat">
+			<field name="name">Products Labels</field>
+			<field name="orientation">Portrait</field>
+			<field name="format">custom</field>
+			<field name="page_height">103</field>
+			<field name="page_width">150</field>
+			<field name="margin_top">2</field>
+			<field name="margin_bottom">2</field>
+			<field name="margin_right">2</field>
+			<field name="margin_left">2</field>
+			<field name="dpi">300</field>
+		</record>
+
+        <record id="product_magazine.magazine_issue_label_report" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="product_magazine_issue_label"/>
+        </record>
+
+		<template id="issue_label">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+-				<t t-set="company" t-value="o.company_id"/>
+-			</t>
+-			 <t t-if="not o or not 'company_id' in o">
+-				<t t-set="company" t-value="res_company"/>
+-			</t>
+
+		    <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <table style="width: 100%; border: 1px solid black;">
+                                <tr style="border: 1px solid black; background-color: black">
+                                    <td colspan="3" style="text-align: center; color: white; font-weight: bolder;"><b><h3>MAGAZINE ISSUE</h3></b></td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="padding: 2px;">
+                                        <h4><u>Journal title:</u> <span t-esc="o.name"/></h4>
+                                        <h4><u>Journal #:</u> <span t-esc="o.product_tmpl_id.journal_id"/></h4>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="2" style="padding: 2px;">
+                                        <h4><u>Issue title:</u> <span t-esc="o.title" /></h4>
+                                    </td>
+                                    <td>
+                                        <h4><u>Volume:</u> <span t-esc="o.issue_volume"/></h4>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="2" style="padding: 2px;">
+                                        <h4><u>Issue #:</u> <span t-esc="o.issue_number"/></h4>
+                                    </td>
+                                    <td>
+                                        <h4><u>Type:</u> <span t-esc="o.issue_type"/></h4>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: center; padding: 5px;">
+                                        <img t-att-src="'/report/barcode/Code128/%s' % (o.default_code)" style="margin-top: 5px; width:270px; height:50px"/>
+                                        <br />
+                                        <span t-esc="o.default_code"/>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: center; padding: 2px;">
+                                        <span t-esc="company.partner_id.name" /> / <span t-esc="company.partner_id.street" /> <span t-esc="company.partner_id.zip" /> <span t-esc="company.partner_id.city" /> / <span t-esc="company.partner_id.phone" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                 </t>
+		    </t>
+		</template>
+
+        <report
+			id="magazine_issue_label_report_stock"
+			string="Magazine Issue Label With Stock"
+			model="stock.quant"
+			report_type="qweb-pdf"
+			file="magazine_label_stock"
+			name="product_magazine.issue_label_stock"
+		/>
+
+        <record id="product_magazine.magazine_issue_label_report_stock" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="product_magazine_issue_label"/>
+        </record>
+
+        <template id="issue_label_stock">
+            <!-- Multicompany -->
+            <t t-if="o and 'company_id' in o">
+-				<t t-set="company" t-value="o.company_id"/>
+-			</t>
+-			 <t t-if="not o or not 'company_id' in o">
+-				<t t-set="company" t-value="res_company"/>
+-			</t>
+
+		    <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <table style="width: 100%; border: 1px solid black;">
+                                <tr style="border: 1px solid black; background-color: black">
+                                    <td colspan="3" style="text-align: center; color: white; font-weight: bolder;"><b><h3>MAGAZINE ISSUE</h3></b></td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="2" style="padding: 2px;">
+                                        <h4><u>Title:</u> <span t-esc="o.product_id.name"/></h4>
+                                        <h4><u>Journal #:</u> <span t-esc="o.product_id.product_tmpl_id.journal_id"/></h4>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <h4><span t-esc="o.location_id.name" /></h4>
+                                        <img t-att-src="'/report/barcode/Code128/%s' % (o.location_id.name)" style="margin-top: 5px; width:200px; 40px"/>
+
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="2" style="padding: 2px;">
+                                        <h4><u>Issue title:</u> <span t-esc="o.product_id.title" /></h4>
+                                    </td>
+                                    <td>
+                                        <h4><u>Volume:</u> <span t-esc="o.product_id.issue_volume"/></h4>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="2" style="padding: 2px;">
+                                        <h4><u>Issue #:</u> <span t-esc="o.product_id.issue_number"/></h4>
+                                    </td>
+                                    <td>
+                                        <h4><u>Type:</u> <span t-esc="o.product_id.issue_type"/></h4>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: center; padding: 5px;">
+                                        <img t-att-src="'/report/barcode/Code128/%s' % (o.product_id.default_code)" style="margin-top: 5px; width:270px; height:50px"/>
+                                        <br />
+                                        <span t-esc="o.product_id.default_code"/>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: center; padding: 2px;">
+                                        <span t-esc="company.partner_id.name" /> / <span t-esc="company.partner_id.street" /> <span t-esc="company.partner_id.zip" /> <span t-esc="company.partner_id.city" /> / <span t-esc="company.partner_id.phone" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                 </t>
+		    </t>
+		</template>
+	</data>
+</openerp>

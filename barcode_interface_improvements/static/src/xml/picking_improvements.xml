@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name='PickingEditorNewWidget'>
+
+        <div class="modal fade" id="js_LocationChooseModal" tabindex="-1" role="dialog" aria-labelledby="LocationChooseModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                        <h4 class="modal-title" id="myModalLabel">Choose a location</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Scan a location or select it in the list below</p>
+                        <select id="js_loc_select" class="form-control">
+                            <option class="js_loc_option" data-loc-id="false"></option>
+                            <t t-foreach="widget.get_location()" t-as="loc">
+                                <option class="js_loc_option" t-att-data-loc-id="loc.id"><t t-esc="loc.name"/></option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary js_validate_location">Change Location</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="js_LotChooseModal" tabindex="-1" role="dialog" aria-labelledby="LotChooseModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                        <h4 class="modal-title" id="myModalLabel">Create Lot</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Scan a lot or type it below (leave empty to generate one automatically)</p>
+                        <input class='col-xs-6 js_lot_scan' type='text'/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary js_validate_lot">Create Lot</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="js_PackConfModal" tabindex="-1" role="dialog" aria-labelledby="PackConfModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                        <h4 class="modal-title" id="myModalLabel">Configure package</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Package type</p>
+                        <select id="js_packconf_select" class="form-control">
+                            <option class="js_packing_option" data-ul-id="false"></option>
+                            <t t-foreach="widget.get_logisticunit()" t-as="ul">
+                                <option class="js_packing_option" t-att-data-ul-id="ul.id" t-att-value="ul.id"><t t-esc="ul.name"/></option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary js_validate_pack">Validate package</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- modified -->
+            <div>
+                <div class="col-sm-4 col-xs-4">
+                    <h2 class="oe_pick_app_header"/>
+                </div>
+                <div class="col-sm-8 col-xs⁻8 text-right">
+                    <button type="button" class='btn btn-default js_pick_print'>Print Picking List</button>
+                    <button type="button" class='btn btn-default js_pick_print_labels'>Print Labels</button>
+                    <button type="button" class='btn btn-default js_pick_print_all'>Print All</button>
+                </div>
+            </div>
+            <div>
+                <table class="table table-condensed">  
+                    <tr>
+                        <th width="30%">Customer Address</th>
+                        <t t-foreach="widget.get_header_info()" t-as="info">
+                            <th><t t-esc="info.key"/></th>
+                        </t>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 18px;font-weight: bold;">
+                            <t t-set="picking" t-value="widget.get_picking()"/>
+                            <t t-if="picking.partner.parent_id"><span t-esc="picking.partner.parent_id[1]"/>: </t><t t-esc="picking.partner.name" /> 
+                            <br/> <small><t t-esc="picking.partner.street" /> - <t t-esc="picking.partner.zip" /> <t t-esc="picking.partner.city" /></small>
+                            <br /><small><span t-esc="picking.partner.country_id"/></small>
+                        </td>
+                        <t t-foreach="widget.get_header_info()" t-as="info">
+                            <td t-att-style="info.css"><t t-esc="info.value"/></td>
+                        </t>
+                    </tr>
+                </table>
+                <table class="table table-condensed">
+                    <tr>
+                        <t t-foreach="widget.get_header_packaging_info()" t-as="info">
+                            <th><t t-esc="info.key"/></th>
+                        </t>
+                    </tr>
+                    <tr>
+                        <t t-foreach="widget.get_header_packaging_info()" t-as="info">
+                            <td t-att-style="info.css"><t t-esc="info.value"/></td>
+                        </t>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <h3><strong>
+                        <select id="js_select" class="form-control">
+                            <option value="ToDo" id="js_select_todo">Operations ToDo</option>
+                            <option value="Processed" id="js_select_processed">Operations Processed</option>
+                        </select>
+                    </strong>
+                    </h3>
+                </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <h2>
+                        <div class="input-group">
+                            <input type="text" class="form-control oe_searchbox" placeholder="Filter by location..."/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-danger js_clear_search" type="button">C</button>
+                            </span>
+                        </div>
+                    </h2>
+                </div>
+                <div class="col-md-6 col-sm-4 col-xs-12 text-right">
+                    <h3>
+                        <button type="button" class='btn btn-default js_pick_pack js_putinpack'> Put in Pack </button>
+                        <button type="button" class='btn btn-danger js_drop_down fa fa-download'> Put in Cart </button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <table class='table table-condensed js_op_table_todo'>
+                <thead>
+                    <tr>
+                        <!-- modified -->
+                        <th class="text-left" width="50%">Product</th>
+                        <th class='text-center' width="150">Scanned</th>
+                        <th class='text-center'>Todo</th>
+                        <!-- modified -->
+                        <!--
+                        <th>From</th>
+                        <th>To</th>
+                        -->
+                        <!-- modified -->
+                        <th>Availability</th>
+                        <!-- modified -->
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <t t-foreach="widget.get_rows()" t-as="row">
+                        <tr t-att-class="row.classes + 'js_pack_op_line'" t-att-data-id="row.cols.id" t-att-data-container-id="row.cols.container_id" t-att-data-package-id="row.cols.package_id" t-att-data-ulid="row.cols.ul_id">
+                            <td t-att-class="'brctbl-col1 text-left' + row.cols.head_container ? ' js_unfold' : ''">
+                                <t t-if="!row.cols.head_container &amp;&amp; row.cols.container"><span class="fa fa-level-up fa-rotate-90" style="margin-left:10px;margin-right:10px;"></span></t>
+                                <t t-esc="row.cols.product" />
+                            </td>
+                            <td class='brctbl-col2 text-center js_row_qty'>
+                                <t t-if="row.cols.processed == 'false' &amp;&amp; !row.cols.container">
+                                    <div class="input-group">
+                                        <span class="input-group-addon js_minus input-sm" t-att-data-product-id='row.cols.product_id'><a href="#"><i class="fa fa-minus"></i></a></span>
+                                        <form class="js_submit_value">
+                                            <input type="text" class="form-control text-center js_qty" t-att-value="row.cols.rem"></input>
+                                            <!-- <input type="submit" class="hidden"></input> -->
+                                        </form>
+                                        <span class="input-group-addon js_plus input-sm" t-att-data-product-id='row.cols.product_id'><a href="#"><i class="fa fa-plus"></i></a></span>
+                                    </div>
+                                </t>
+                                <t t-if="(row.cols.processed == 'true' || row.cols.container)">
+                                    <t t-esc="row.cols.rem" />
+                                </t>
+                            </td>
+                            <td class="brctbl-col3 text-center">
+                                <t t-esc="row.cols.qty"/> <t t-esc="row.cols.uom" />
+                            </td>
+                            <!-- modified -->
+                            <!--
+                            <td class="brctbl-col4 js_loc">
+                                <t t-esc="row.cols.loc" />
+                                <t t-if="row.cols.pack" ><span> : <t t-esc="row.cols.pack" /></span></t>
+                                <t t-if="row.cols.lot" ><span> : <t t-esc="row.cols.lot" /></span></t>
+                            </td>
+                            -->
+                            <!-- modified -->
+                            <!--
+                            <td class="brctbl-col5 js_loc"> <t t-esc="row.cols.dest" />
+                                <div class="pull-right btn-group">
+                                    <button type="button" class="btn btn-default dropdown-toggle fa fa-cog" data-toggle="dropdown">
+                                     <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <t t-if="row.cols.product_id">
+                                            <li><a class="js_create_lot" href="#">Create &#47; Change Lot</a></li>
+                                        </t>
+                                        <t t-if="!row.cols.head_container &amp;&amp; !row.cols.container">
+                                            <li><a class="js_change_src" href="#">Change source location</a></li>
+                                            <li><a class="js_change_dst" href="#">Change destination location</a></li>
+                                        </t>
+                                        <t t-if="row.cols.head_container">
+                                            <li><a class="js_pack_change_dst" href="#">Change destination location</a></li>
+                                            <li class="divider"></li>
+                                            <li><a class="js_pack_configure" href="#">Configure package</a></li>
+                                            <li><a class="js_delete_pack" href="#">Remove from package</a></li>
+                                            <li><a class="js_print_pack" href="#">Print package label</a></li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </td>
+                            -->
+                            <td class="brctbl-col4 js_availability">
+                                <t t-esc="row.cols.availability" />
+                            </td>
+                            <td class="brctbl-col5 js_status">
+                                <t t-esc="row.cols.state" />
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+    <t t-name="PickingSearchNewResults">
+        <div class="panel-heading">
+            <h3 class="panel-title">Search Results</h3>
+        </div>
+        <div class="panel-body">
+            <t t-if="results.length === 0">
+                <strong>No picking found.</strong>
+            </t>
+            <t t-if="results.length > 0">
+                <t t-foreach="results" t-as="picking">
+                    <div class="col-lg-3 col-md-4">
+                        <div class="panel panel-default oe_picking" t-att-data-id="picking.id">
+                            <div class="panel-body">
+                                <strong class='oe_picking_name'><t t-esc="picking.name" /> - <t t-esc="picking.external_order_number" /></strong>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="PickingMenuNewWidget">
+        <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header navbar-form navbar-left" style="width: 1170px;">
+                    <input type='text' class="oe_searchbox form-control" placeholder='Search'/>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_menu">Menu</button>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_incomings">Incomings</button>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_outgoings">Outgoings</button>
+                    <!--<button type="button" class="btn btn-primary navbar-btn js_pick_products">All Products</button>-->
+                    <button type="button" class="btn btn-danger navbar-btn js_pick_quit">Quit</button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+
+            <h1 class="js_title_label">Select your operation</h1>
+            <div class='js_picking_not_found alert alert-warning hidden'>
+                Scanned picking could not be found
+            </div>
+
+            <div class='js_picking_search_results panel panel-info hidden'>
+            </div>
+
+            <div class="row js_picking_categories">
+                <t t-foreach="widget.picking_types" t-as="type">
+                    <div class="col-lg-3 col-md-4">
+                        <div t-att-class="'oe_kanban oe_picking oe_kanban_color_' + type.color + ' ' + (widget.pickings_by_type[type.id].length === 0 ? 'oe_empty':'js_pick_last') "
+                                         t-att-data-id="type.id">
+                            <t t-if="type.code == 'incoming'" ><span class="fa fa-sign-in fa-2x"></span></t>
+                            <t t-if="type.code == 'outgoing'" ><span class="fa fa-truck fa-2x fa-flip-horizontal"></span></t>
+                            <t t-if="type.code == 'internal'" ><span class="fa fa-retweet fa-2x"></span></t>
+                            <strong><span><t t-esc="type.complete_name"/></span></strong>
+                            <div><t t-if="widget.pickings_by_type[type.id].length > 0">
+                                <span class='badge'><t t-esc="widget.pickings_by_type[type.id].length" /> picking(s) </span>
+                            </t></div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="PickingProductsWidget">
+        <div class="container">
+
+            <h1 class="js_title_label">Products</h1>
+            <div class='js_picking_not_found alert alert-warning hidden'>
+                Scanned product could not be found
+            </div>
+
+            <div class="row">
+                <table class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <th class="text-left" width="25%">Name</th>
+                            <th class="text-left" width="25%">Internal Reference</th>                            
+                        </tr>
+                    </thead>
+                    <tbody class='js_products_table_todo'>
+                        <t t-if="products.length === 0">
+                            <tr>
+                                <td id="products_result_status" colspan="4">
+                                    No product found.
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-if="products.length > 0">
+                            <t t-foreach="products" t-as="product">
+                                <tr t-att-data-id="product.id" class="oe_product">
+                                    <td t-att-class="'brctbl-col2 text-left'">
+                                        <t t-esc="product.name" />
+                                    </td>
+                                    <td t-att-class="'brctbl-col3 text-left'">
+                                        <t t-esc="product.default_code" />
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+    
+    <t t-name="PickingListWidget">
+        <div class="container">
+
+            <h1 class="js_title_label"><t t-esc="type" /> Pickings</h1>
+            <div class='js_picking_not_found alert alert-warning hidden'>
+                Scanned picking could not be found
+            </div>
+
+            <div class="row">
+                <table class='table table-striped'>
+                    <thead>
+                        <tr>	 	
+                            <!--<th class="text-left">Partner</th>-->
+                            <th class="text-left">Order #</th>
+                            <th class="text-left">Service</th>
+                            <th class="text-left">#</th>
+                            <th class="text-left">Creation Date</th>
+                            <th class="text-left">State</th>
+                        </tr>
+                    </thead>
+                    <tbody class='js_products_table_todo'>
+                        <t t-if="pickings.length === 0">
+                            <tr>
+                                <td id="products_result_status" colspan="4">
+                                    No picking found.
+                                </td>
+                            </tr>
+                        </t>                        
+                        <t t-if="pickings.length > 0">
+                            <t t-foreach="pickings" t-as="picking">
+                                <tr t-att-data-id="picking.id" class="oe_product">
+                                    <td t-att-class="'brctbl-col1 text-left'">
+                                        <t t-esc="picking.external_order_number" />
+                                    </td>
+                                    <td t-att-class="'brctbl-col1 text-left'">
+                                        <t t-esc="picking.shipping_rule" />
+                                    </td>
+                                    <td t-att-class="'brctbl-col1 text-left'">
+                                        <t t-esc="picking.name" />
+                                    </td>
+                                    <td t-att-class="'brctbl-col2 text-left'">
+                                        <t t-esc="picking.date" />
+                                    </td>
+                                    <td t-att-class="'brctbl-col4 text-left'">
+                                        <t t-esc="picking.state" />
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+    
+<t t-name="PickingMainNewWidget">
+        <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header navbar-form navbar-left">
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_menu">Menu</button>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_incomings">Incomings</button>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_outgoings">Outgoings</button>
+                </div>
+                <div class="navbar-header navbar-form navbar-right">
+                    <button type="button" class="btn btn-default navbar-btn js_pick_prev">&lt; Previous</button>
+                    <button type="button" class="btn btn-default navbar-btn js_pick_next">Next &gt;</button>
+                    <button type="button" class="btn btn-danger navbar-btn js_pick_quit">Quit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class='oe_placeholder_picking_editor'/>
+            <div class="text-right small oe_reload_op">
+                The reserved stock changed. You might want to <button class="btn btn-default js_reload_op"> Recompute </button> the operations.
+            </div>
+        </div>
+</t>
+
+<t t-name="PageWidget">
+    <div>
+         <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header navbar-form navbar-left" style="width: 1170px;">
+                    <button type="button" class="btn btn-danger navbar-btn js_clear_search">X</button>
+                    <input type='text' id="product_search_box" class="oe_searchbox form-control" placeholder='Search'/>
+                    <button type="button" class="btn btn-primary navbar-btn js_pick_menu">Menu</button>
+                    <button type="button" class="btn btn-primary navbar-btn nav_clicked_btn js_pick_incomings">Incomings</button>
+                    <button type="button" class="btn btn-primary navbar-btn nav_clicked_btn js_pick_outgoings">Outgoings</button>
+                    <button type="button" class="btn btn-danger navbar-btn js_pick_quit">Quit</button>
+                </div>
+            </div>
+        </div>      
+        <div class="content">
+            <div class="container">
+                <h1>LOADING...</h1>
+            </div>
+        </div>
+        <div class="footer">
+           
+        </div>
+    </div>
+</t>
+
+</templates>

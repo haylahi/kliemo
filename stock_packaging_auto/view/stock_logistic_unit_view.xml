@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_packaging_auto_logistic_unit_tree_view">
+            <field name="name">product.logistic.unit.tree</field>
+            <field name="model">product.ul</field>
+            <field name="arch" type="xml">
+                <tree string="Packagings">
+                    <field name="name"/>
+                    <field name="sequence"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_packaging_auto_logistic_unit_form_view">
+            <field name="name">product.logistic.unit.form</field>
+            <field name="model">product.ul</field>
+            <field name="arch" type="xml">
+                <form string="Packaging Form">
+                    <sheet>
+                        <group string="Packaging general info">
+                            <field name="name"/>
+                            <field name="transporter_id"/>
+                            <field name="sequence"/>
+                            <field name="type"/>
+                            <field name="label_report"/>
+                        </group>
+                        <hr />
+                        <group>
+                            <group string="Length">
+                                <field name="length_max" />
+                            </group>
+                            <group string="Width">
+                                <field name="width_max"/>
+                            </group>
+                            <group string="Depth">
+                                <field name="depth_max"/>
+                            </group>
+                            <group string="Weight">
+                                <field name="weight"/>
+                                <field name="weight_max"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="stock_logistic_units" >
+            <field name="name">Stock Logistic Units</field>
+            <field name="res_model">product.ul</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="action_manage_shipping" name="Auto Packaging"
+            parent="stock.menu_stock_configuration" action=""/>
+
+        <menuitem id="action_manage_stock_logistic_units" name="Logistic Units"
+            parent="stock_packaging_auto.action_manage_shipping" action="stock_logistic_units"/>
+    </data>
+</openerp>

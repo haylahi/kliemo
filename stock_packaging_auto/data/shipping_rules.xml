@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="base.row" model="res.country.group">
+            <field name="name">ROW</field>
+        </record>
+
+        <record id="shipping_rule_1" model="stock.shipping_rule">
+            <field name="service">Collector</field>
+            <field name="shipping_method">consolidator</field>
+            <field name="delivery_method">both</field>
+            <field name="weight_min">0</field>
+            <field name="label_number">01</field>
+            <field name="weight_min">0</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">AB</field>
+        </record>
+
+        <record id="shipping_rule_2" model="stock.shipping_rule">
+            <field name="service">Postvertriebsstuck</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="postal_permit">yes</field>
+            <field name="weight_min">0</field>
+            <field name="label_number">00</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_3" model="stock.shipping_rule">
+            <field name="service">Streifband</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">subsequent</field>
+            <field name="country" ref="base.de"/>
+            <field name="ads">yes</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">1</field>
+            <field name="label_number">31</field>
+            <field name="pallet_number">004</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">SB</field>
+        </record>
+
+        <record id="shipping_rule_4" model="stock.shipping_rule">
+            <field name="service">B&#252;chersendung</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">subsequent</field>
+            <field name="country" ref="base.de"/>
+            <field name="ads">no</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">1</field>
+            <field name="label_number">30</field>
+            <field name="pallet_number">001</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">BS</field>
+        </record>
+
+        <record id="shipping_rule_5" model="stock.shipping_rule">
+            <field name="service">Error SE1</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="po_box">yes</field>
+            <field name="postal_permit">no</field>
+            <field name="weight_min">140</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_6" model="stock.shipping_rule">
+            <field name="service">Freight</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="po_box">no</field>
+            <field name="postal_permit">no</field>
+            <field name="weight_min">140</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">47</field>
+            <field name="pallet_number">010</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_7" model="stock.shipping_rule">
+            <field name="service">Postpacket</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="po_box">yes</field>
+            <field name="postal_permit">no</field>
+            <field name="weight_min">1</field>
+            <field name="weight_max">140</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">53</field>
+            <field name="pallet_number">013</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_8" model="stock.shipping_rule">
+            <field name="service">DPD</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="po_box">no</field>
+            <field name="postal_permit">no</field>
+            <field name="weight_min">1</field>
+            <field name="weight_max">140</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">45</field>
+            <field name="pallet_number">005</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">DP</field>
+        </record>
+
+        <record id="shipping_rule_9" model="stock.shipping_rule">
+            <field name="service">Streifband</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="postal_permit">no</field>
+            <field name="ads">yes</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">1</field>
+            <field name="label_number">31</field>
+            <field name="pallet_number">004</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_10" model="stock.shipping_rule">
+            <field name="service">B&#252;chersendung</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">initial</field>
+            <field name="country" ref="base.de"/>
+            <field name="postal_permit">no</field>
+            <field name="ads">no</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">1</field>
+            <field name="label_number">30</field>
+            <field name="pallet_number">003</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_11" model="stock.shipping_rule">
+            <field name="service">Schweizer Post</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="country" ref="base.ch"/>
+            <field name="weight_min">0</field>
+            <field name="weight_max">10</field>
+            <field name="label_number">60</field>
+            <field name="pallet_number">009</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_12" model="stock.shipping_rule">
+            <field name="service">Error SE1</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="country" ref="base.ch"/>
+            <field name="po_box">yes</field>
+            <field name="weight_min">10</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_13" model="stock.shipping_rule">
+            <field name="service">DPD</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="country" ref="base.ch"/>
+            <field name="po_box">no</field>
+            <field name="weight_min">10</field>
+            <field name="weight_max">80</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">45</field>
+            <field name="pallet_number">005</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_14" model="stock.shipping_rule">
+            <field name="service">Freight</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="country" ref="base.ch"/>
+            <field name="po_box">no</field>
+            <field name="weight_min">80</field>
+            <field name="label_number">47</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_15" model="stock.shipping_rule">
+            <field name="service">Presse&amp;Buch International</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="weight_min">0</field>
+            <field name="weight_max">3</field>
+            <field name="label_number">10</field>
+            <field name="pallet_number">001</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_16" model="stock.shipping_rule">
+            <field name="service">Presse&amp;Buch International</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="po_box">yes</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">3</field>
+            <field name="label_number">40</field>
+            <field name="pallet_number">001</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_17" model="stock.shipping_rule">
+            <field name="service">Error SE1</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="po_box">yes</field>
+            <field name="weight_min">20</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_18" model="stock.shipping_rule">
+            <field name="service">DPD</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="po_box">no</field>
+            <field name="weight_min">3</field>
+            <field name="weight_max">80</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">45</field>
+            <field name="pallet_number">005</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_19" model="stock.shipping_rule">
+            <field name="service">Freight</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="po_box">no</field>
+            <field name="weight_min">80</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">47</field>
+            <field name="pallet_number">010</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_20" model="stock.shipping_rule">
+            <field name="service">Presse&amp;Buch Airmail</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row" />
+            <field name="weight_min">0</field>
+            <field name="weight_max">25</field>
+            <field name="weight_max_package">5</field>
+            <field name="label_number">20</field>
+            <field name="pallet_number">002</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_21" model="stock.shipping_rule">
+            <field name="service">Presse&amp;Buch Airmail</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row" />
+            <field name="weight_min">25</field>
+            <field name="weight_max">35</field>
+            <field name="weight_max_package">5</field>
+            <field name="label_number">20</field>
+            <field name="pallet_number">002</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">DL</field>
+        </record>
+
+        <record id="shipping_rule_22" model="stock.shipping_rule">
+            <field name="service">Error SE1</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row" />
+            <field name="weight_min">35</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_23" model="stock.shipping_rule">
+            <field name="service">DHL</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row" />
+            <field name="weight_min">25</field>
+            <field name="weight_max">80</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">46</field>
+            <field name="pallet_number">006</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_24" model="stock.shipping_rule">
+            <field name="service">Airfreight Dachser</field>
+            <field name="shipping_method">standard</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row" />
+            <field name="weight_min">80</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">50</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_25" model="stock.shipping_rule">
+            <field name="service">DPD Express</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="country" ref="base.de"/>
+            <field name="phone">yes</field>
+            <field name="weight_min">0</field>
+            <field name="weight_max">140</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">44</field>
+            <field name="pallet_number">006</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+            <field name="code">DX</field>
+        </record>
+
+        <record id="shipping_rule_26" model="stock.shipping_rule">
+            <field name="service">Freight Express</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="phone">yes</field>
+            <field name="weight_min">140</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">48</field>
+            <field name="pallet_number">011</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_27" model="stock.shipping_rule">
+            <field name="service">DHL Express</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row"/>
+            <field name="weight_min">0</field>
+            <field name="weight_max">80</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">41</field>
+            <field name="pallet_number">008</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_28" model="stock.shipping_rule">
+            <field name="service">DHL Express</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="weight_min">0</field>
+            <field name="weight_max">80</field>
+            <field name="weight_max_package">25</field>
+            <field name="label_number">41</field>
+            <field name="pallet_number">008</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_29" model="stock.shipping_rule">
+            <field name="service">Freight Express</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.europe"/>
+            <field name="weight_min">80</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">48</field>
+            <field name="pallet_number">011</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+
+        <record id="shipping_rule_30" model="stock.shipping_rule">
+            <field name="service">Airfreight Dachser</field>
+            <field name="shipping_method">courier</field>
+            <field name="delivery_method">both</field>
+            <field name="region" ref="base.row"/>
+            <field name="weight_min">80</field>
+            <field name="weight_max">9999</field>
+            <field name="label_number">50</field>
+            <field name="pallet_number">012</field>
+            <field name="active">1</field>
+            <field name="priority">10</field>
+        </record>
+    </data>
+</openerp>

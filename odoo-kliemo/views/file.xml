@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="multiple_file_upload_view" model="ir.ui.view">
+            <field name="name">Upload Multiple file</field>
+            <field name="model">kliemo_orders_parser.file.multiple.upload</field>
+            <field name="arch" type="xml">
+                <form string="File Multiple Upload">
+                    <separator colspan="4" string="Do you really want to upload all these files at once?" />
+                    <footer>
+                        <button name="upload_multiple_files" string="Upload" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="multiple_file_upload_action" model="ir.actions.act_window">
+            <field name="name">Upload Multiple file</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kliemo_orders_parser.file.multiple.upload</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="multiple_file_upload_view"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record model="ir.values" id="multiple_file_upload_value">
+            <field name="model_id" ref="odoo-kliemo.model_kliemo_orders_parser_file" />
+            <field name="name">Upload multiple files</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('multiple_file_upload_action'))" />
+            <field name="key">action</field>
+            <field name="model">kliemo_orders_parser.file</field>
+        </record>
+
+        <record model="ir.ui.view" id="file_tree_view">
+            <field name="name">file.tree</field>
+            <field name="model">kliemo_orders_parser.file</field>
+            <field name="arch" type="xml">
+                <tree string="File list tree">
+                    <field name="creation_date"/>
+                    <field name="name" />
+                    <field name="type"/>
+                    <field name="job_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="file_form_view">
+            <field name="name">file.form</field>
+            <field name="model">kliemo_orders_parser.file</field>
+            <field name="arch" type="xml">
+                <form string="File form">
+                    <header>
+                        <button name="action_parse" type="object" string="Parse" attrs="{'invisible':[('type','!=','IN')]}" class="oe_highlight" />
+                        <button name="action_upload" type="object" string="Re-Upload" attrs="{'invisible':[('type','=','IN')]}" class="oe_highlight" />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h1><field name="name" /></h1>
+                        <h2><field name="type"/></h2>
+                        <group>
+                            <field name="creation_date"/>
+                            <field name="job_id"/>
+                            <field name="content"/>
+                        </group>
+                        <group>
+                            <field name="exceptions_quantity"/>
+                            <field name="exceptions"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="file_list">
+            <field name="name">Parsed files</field>
+            <field name="res_model">kliemo_orders_parser.file</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="file_menu" name="Files"
+                  parent="kliemo_orders_parser_config_menu" action="file_list"/>
+    </data>
+</openerp>
