@@ -171,19 +171,19 @@ class SpringerParser(models.Model):
         if file_type == FILE_TYPEPOA:
             zipfilename = 'poa_mps_' + timestamp + '.zip'
             server_path = self.directory_poa
-            tmp_zipfilename = '/tmp/' + zipfilename
+            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
             zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
 
         elif file_type == FILE_TYPEASN:
             zipfilename = 'asn_mps_' + timestamp + '.zip'
             server_path = self.directory_asn
-            tmp_zipfilename = '/tmp/' + zipfilename
+            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
             zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
 
         elif file_type == FILE_TYPESTOCK:
             zipfilename = 'stockreport_' + timestamp + '.xml'
             server_path = self.directory_stock
-            tmp_zipfilename = '/tmp/' + zipfilename
+            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
             zipfile_folder = open(tmp_zipfilename, 'w')
 
         for file_id in file_ids:

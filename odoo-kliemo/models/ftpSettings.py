@@ -176,6 +176,7 @@ class ftpSettings(models.Model):
 
         # get file names
         filenames = self.list_file(ftp)
+        _logger.debug("Files: %s", filenames)
 
         number_of_fetched_files = 0
         # For each zip file in the ftp folder
@@ -187,28 +188,38 @@ class ftpSettings(models.Model):
             if number_of_fetched_files == limit:
                 break
 
-            tmp_filename = '/tmp/' + file
+            tmp_filename = '/home/kliemo/springer_files/' + file
             filecontent = self.read_file(ftp, file)
 
-            # download Zipfile to /tmp/
+            # download Zipfile to /home/kliemo/springer_files/
             _logger.debug('download zip to %s', tmp_filename)
             fo = open(tmp_filename, 'wb')
             fo.write(filecontent)
             fo.close()
 
             zfile = zipfile.ZipFile(tmp_filename)
+            _logger.debug("zfile.namelist(): %s", zfile.namelist())
             for name in zfile.namelist():
-                # Extract zip content to /tmp/test/<file>/.
+                # Extract zip content to /home/kliemo/springer_files/extracted/<file>/.
                 (dirname, filename) = os.path.split(name)
-                dirname = '/tmp/test/' + file + '/' + dirname
+                dirname = str('/home/kliemo/springer_files/extracted/' + file).replace('.zip', '')
                 _logger.debug("Decompressing " + filename + " on " + dirname)
                 if not os.path.exists(dirname):
-                    os.makedirs(dirname)
+                    _logger.debug("Create directory: %s", dirname)
+                    os.mkdir(dirname)
+                    if not os.path.exists(dirname):
+                        _logger.debug("ERROR ERROR DIRECTORY NOT CREATED")
                 zfile.extract(name, dirname)
+                _logger.debug("ZIP extracted")
+
+                complete_file_name = dirname + '/' + filename
 
                 # Create order file
-                xml_string = open(dirname + filename)
+                _logger.debug("Open file: %s", complete_file_name)
+                xml_string = open(complete_file_name)
+                _logger.debug("File opened")
                 data = StringIO.StringIO(xml_string.read()).getvalue()
+                _logger.debug("File transformed to XML")
 
                 file_id = self.pool.get('kliemo_orders_parser.file').create(cr, uid, {
                         'creation_date': datetime.datetime.now(),
