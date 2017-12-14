@@ -227,7 +227,9 @@ class SpringerParser(models.Model):
         """
 
         _logger.debug("Send ASN files")
-        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, [('active','=',True)])
+        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, ['&', ('active','=',True), ('type', '=', 'springer')])
+        if (len(ftps)) == 0:
+            raise osv.except_osv(_("No parser for Springer is active"), _("You have to enable a parser for type 'springer' to do that"))
         for ftp_id in ftps:
             ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
 
@@ -251,7 +253,9 @@ class SpringerParser(models.Model):
 
         _logger.debug("Get Stock XML Report")
 
-        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, [('active','=',True)])
+        ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, ['&', ('active','=',True), ('type', '=', 'springer')])
+        if (len(ftps)) == 0:
+            raise osv.except_osv(_("No parser for Springer is active"), _("You have to enable a parser for type 'springer' to do that"))
         for ftp_id in ftps:
             ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
             ftp.create_and_upload_stock_report()

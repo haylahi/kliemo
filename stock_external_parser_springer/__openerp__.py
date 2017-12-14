@@ -38,6 +38,8 @@ Tasks:
     'sequence': 1,
     'data': [
         'views/ftp_settings_view.xml',
+
+        'data/ir_cron.xml',
         # 'security/ir.model.access.csv',
         #'views/ftpSettings.xml',
         #'views/job.xml',
