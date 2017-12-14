@@ -14,9 +14,10 @@ class ftp_settings(models.Model):
 
     def _cron_create_asn_report_send_and_upload(self, cr, uid, ids=None, context=None):
         # Get all FTP settings
-        settings_obj = self.pool.get('kliemo_orders_parser.ftpsettings')
-        settings_ids = settings_obj.search(cr, uid, [('active', '=', True), ('state', '=', 'Confirmed')])
-
+        settings_ids = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, ['&', ('active','=',True), ('type', '=', 'springer')])
+        if (len(settings_ids)) == 0:
+            raise osv.except_osv(_("No parser for Springer is active"), _("You have to enable a parser for type 'springer' to do that"))
+            
         for setting_id in settings_ids:
             # Get the setting
             setting = settings_obj.browse(cr, uid, setting_id)
