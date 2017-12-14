@@ -98,7 +98,7 @@ class ftpSettings(models.Model):
         pass        
 
     # -----------------------------------------------------------------------
-    # METHOD ACTIONS TRIGERRED BY BUTTONS
+    # METHOD ACTIONS TRIGERED BY BUTTONS
     @api.multi
     def action_test_ftp_server(self):
         try:

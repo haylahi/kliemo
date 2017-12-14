@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="ftpsettings_muller_form_view">
+            <field name="name">ftpsettings.muller.form</field>
+            <field name="model">kliemo_orders_parser.ftpsettings</field>
+            <field name="inherit_id" ref="odoo-kliemo.ftpsettings_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='directory_in']" position="after">
+                    <field name="report_to_email" attrs="{'invisible': [('type', '!=', 'muller')],}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

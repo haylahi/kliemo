@@ -43,6 +43,7 @@ FILE_STATE_ERROR = "Parsing Error"
 FILE_STATE_DONE = "Parsed"
 FILE_STATE_CANCEL = "Canceleled"
 
+
 class SpringerParser(models.Model):
     # -----------------------------------------------------------------------
     # MODEL INHERIT
