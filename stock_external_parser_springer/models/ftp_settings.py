@@ -56,12 +56,12 @@ class SpringerParser(models.Model):
 
     type = fields.Selection(_type_selection, string='Type', required=True)
 
-    directory_poa = fields.Char(String="POA Directory", required=True, states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_asn = fields.Char(String="ASN Directory", required=True, states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_stock = fields.Char(String="STOCK Report Directory", required=True, states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
-    delivery_method = fields.Selection([('initial', 'initial'), ('subsequent', 'subsequent'), ('both', 'Initial/subsequent')], string="Delivery Method", required=True)
+    directory_poa = fields.Char(String="POA Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
+    directory_asn = fields.Char(String="ASN Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
+    directory_stock = fields.Char(String="STOCK Report Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
+    delivery_method = fields.Selection([('initial', 'initial'), ('subsequent', 'subsequent'), ('both', 'Initial/subsequent')], string="Delivery Method")
     service_provider = fields.Char(string="Service Provider")
-    service_type = fields.Selection([('print', 'print'), ('warehouse', 'warehouse'), ('external', 'external')], string="Service Type", required=True)
+    service_type = fields.Selection([('print', 'print'), ('warehouse', 'warehouse'), ('external', 'external')], string="Service Type")
 
     @api.multi
     def action_create_stockreport(self):
