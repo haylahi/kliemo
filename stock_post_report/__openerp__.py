@@ -4,13 +4,13 @@
 # in Belgium, 2015
 
 {
-    'name': 'Stock POST Daily Report',
+    'name': 'SPRINGER : Stock POST Daily Report',
     'version': '8.0.1.0',
     'license': 'AGPL-3',
     'author': "AbAKUS it-solutions",
     'category': 'Warehouse',
     'website': 'http://www.abakusitsolutions.eu',
-    'summary': 'ASN Report in EXCEL',
+    'summary': 'Streifband POST Reports in EXCEL',
     'sequence': 20,
     'description': """
 POST Daily Report
@@ -23,7 +23,9 @@ The system will put in the file all the pickings marked as 'done' for the select
 
 Requires: 'report_xls' module, developed by the OCA.
     """,
-    'depends': ['stock', 'odoo-kliemo'],
+    'depends': [
+        'stock_external_parser_springer'
+    ],
     'data': [
         'wizard/stock_post_report_wizard.xml',
         'report/stock_post_report.xml',
