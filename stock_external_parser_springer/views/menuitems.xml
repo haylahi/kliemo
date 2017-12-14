@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem
+            name="Springer Reports"
+            parent="stock.menu_stock_inventory_control"
+            action=""
+            id="menu_springer_reports"
+            sequence="60"
+            icon="STOCK_JUSTIFY_FILL"/>
+    </data>
+</openerp>

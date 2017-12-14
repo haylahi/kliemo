@@ -33,7 +33,7 @@
 
     <menuitem
         name="Stock Pickings ASN report"
-        parent="stock.menu_stock_inventory_control"
+        parent="stock_external_parser_springer.menu_springer_reports"
         action="action_stock_pickings_daily_report_wizard"
         id="menu_stock_asn_report_wizard"
         sequence="50"
