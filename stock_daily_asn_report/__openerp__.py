@@ -4,7 +4,7 @@
 # in Belgium, 2015
 
 {
-    'name': 'ASN Excel Daily Report',
+    'name': 'SPRINGER : ASN Excel Daily Report',
     'version': '8.0.1.0',
     'license': 'AGPL-3',
     'author': "AbAKUS it-solutions",
