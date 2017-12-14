@@ -6,6 +6,8 @@
 import logging
 from openerp import models
 import datetime
+from openerp.osv import osv
+from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
