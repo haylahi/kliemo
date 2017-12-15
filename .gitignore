@@ -1,1 +1,4 @@
+# compiled python files
 *.pyc
+#inteliJ idea
+.idea/
