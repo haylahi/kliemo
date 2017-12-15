@@ -4,9 +4,11 @@
 # in Belgium, 2015
 
 {
-    'name': "Picking list auto packaging",
+    'name': "SPRINGER : Picking list auto packaging",
     'version': '1.0',
-    'depends': ['stock', 'odoo-kliemo'],
+    'depends': [
+        'stock',
+        ],
     'author': "AbAKUS it-solutions SARL",
     'website': "http://www.abakusitsolutions.eu",
     'category': 'Warehouse',

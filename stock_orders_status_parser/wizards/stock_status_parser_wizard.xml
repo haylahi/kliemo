@@ -29,7 +29,7 @@
 
         <menuitem
                   name="Stock Orders Status Parser"
-                  parent="stock.menu_stock_inventory_control"
+                  parent="stock_external_parser_springer.menu_springer_reports"
                   action="action_stock_orders_status_parser_wizard"
                   id="menu__stock_orders_status_parser_wizard"
                   sequence="50"/>

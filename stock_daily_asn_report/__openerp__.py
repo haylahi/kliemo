@@ -4,7 +4,7 @@
 # in Belgium, 2015
 
 {
-    'name': 'ASN Excel Daily Report',
+    'name': 'SPRINGER : ASN Excel Daily Report',
     'version': '8.0.1.0',
     'license': 'AGPL-3',
     'author': "AbAKUS it-solutions",
@@ -26,7 +26,11 @@ It also creates a CRON task that should send by email and upload to the FTP serv
 
 Requires: 'report_xls' module, developed by the OCA.
     """,
-    'depends': ['stock', 'report_xls', 'odoo-kliemo'],
+    'depends': [
+        'stock',
+        'report_xls',
+        'stock_external_parser_springer'
+    ],
     'data': [
         'wizard/stock_picking_daily_report_wizard.xml',
         'cron_tasks.xml',

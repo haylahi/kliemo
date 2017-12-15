@@ -19,8 +19,6 @@
                                 <field name="issn_print"/>
                                 <field name="issn_online"/>
                                 <field name="journal_id"/>
-                                <field name="wbs_element"/>
-                                <field name="periodical_permit_number"/>
                             </group>
                             <group>
                                 <field name="period"/>

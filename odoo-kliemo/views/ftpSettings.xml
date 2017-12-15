@@ -36,6 +36,7 @@
                                 <field name="hostname"/>
                                 <field name="username"/>
                                 <field name="password"  password="1"/>
+                                <field name="local_file_path" />
                             </group>
                             <group>
                                 <field name="passed_test"/>
