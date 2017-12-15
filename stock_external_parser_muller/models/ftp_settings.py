@@ -23,4 +23,4 @@ class MullerParser(models.Model):
         return selection
 
     type = fields.Selection(_type_selection, string='Type', required=True)
-    report_to_email = fields.Char(String="Report to Email", required=True, states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
+    report_to_email = fields.Char(String="Report to Email", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
