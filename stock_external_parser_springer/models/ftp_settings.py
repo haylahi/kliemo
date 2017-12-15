@@ -23,26 +23,6 @@ import openerp.tools as tools
 
 _logger = logging.getLogger(__name__)
 
-# -----------------------------------------------------------------------
-# STATES DICTIONARY
-PARSER_STATE_NEW = "Inactive"
-PARSER_STATE_RUNNING = "Confirmed"
-
-# -----------------------------------------------------------------------
-# TYPES DICTIONARY
-FILE_TYPEIN = "IN"
-FILE_TYPEPOA = "POA"
-FILE_TYPEASN = "ASN"
-FILE_TYPESTOCK = "STOCK"
-
-# -----------------------------------------------------------------------
-# STATES DICTIONARY
-FILE_STATE_NEW = "New"
-FILE_STATE_RUNNING = "Running"
-FILE_STATE_ERROR = "Parsing Error"
-FILE_STATE_DONE = "Parsed"
-FILE_STATE_CANCEL = "Canceleled"
-
 class SpringerParser(models.Model):
     # -----------------------------------------------------------------------
     # MODEL INHERIT
@@ -56,9 +36,9 @@ class SpringerParser(models.Model):
 
     type = fields.Selection(_type_selection, string='Type', required=True)
 
-    directory_poa = fields.Char(String="POA Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_asn = fields.Char(String="ASN Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_stock = fields.Char(String="STOCK Report Directory", states={PARSER_STATE_NEW: [('readonly', False)],}, readonly=True)
+    directory_poa = fields.Char(String="POA Directory", states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_asn = fields.Char(String="ASN Directory", states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_stock = fields.Char(String="STOCK Report Directory", states={'Inactive': [('readonly', False)],}, readonly=True)
     delivery_method = fields.Selection([('initial', 'initial'), ('subsequent', 'subsequent'), ('both', 'Initial/subsequent')], string="Delivery Method")
     service_provider = fields.Char(string="Service Provider")
     service_type = fields.Selection([('print', 'print'), ('warehouse', 'warehouse'), ('external', 'external')], string="Service Type")
@@ -141,15 +121,15 @@ class SpringerParser(models.Model):
 
             # create STOCK file
             file_id = self.pool.get('kliemo_orders_parser.file').create(cr, uid, {
-                'type': FILE_TYPESTOCK,
+                'type': 'STOCK',
                 'job_id': None,
                 'creation_date': datetime.datetime.now(),
                 'name': filename,
                 'content': content,
-                'state': FILE_STATE_DONE,
+                'state': 'Parsed',
             })
 
-            self.upload_files([file_id], FILE_TYPESTOCK)
+            self.upload_files([file_id], 'STOCK')
 
         except Exception, e:
             raise osv.except_osv(_("Error while creating and uploading the Stock Report!"), _("Here is what we got instead:\n %s") % tools.ustr(e))
@@ -168,22 +148,22 @@ class SpringerParser(models.Model):
         server_path = ''
         tmp_zipfilename = ''
         zipfile_folder = None
-        if file_type == FILE_TYPEPOA:
+        if file_type == 'POA':
             zipfilename = 'poa_mps_' + timestamp + '.zip'
             server_path = self.directory_poa
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
+            tmp_zipfilename = self.local_file_path + zipfilename
             zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
 
-        elif file_type == FILE_TYPEASN:
+        elif file_type == 'ASN':
             zipfilename = 'asn_mps_' + timestamp + '.zip'
             server_path = self.directory_asn
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
+            tmp_zipfilename = self.local_file_path + zipfilename
             zipfile_folder = zipfile.ZipFile(tmp_zipfilename, 'w')
 
-        elif file_type == FILE_TYPESTOCK:
+        elif file_type == 'STOCK':
             zipfilename = 'stockreport_' + timestamp + '.xml'
             server_path = self.directory_stock
-            tmp_zipfilename = '/home/kliemo/springer_files/' + zipfilename
+            tmp_zipfilename = self.local_file_path + zipfilename
             zipfile_folder = open(tmp_zipfilename, 'w')
 
         for file_id in file_ids:
@@ -191,15 +171,15 @@ class SpringerParser(models.Model):
             if not file_to_save:
                 _logger.debug("Error, this file: %s has not been got in DB", file_id)
                 continue
-            if file_type == FILE_TYPEPOA or file_type == FILE_TYPEASN:
+            if file_type == 'POA' or file_type == 'ASN':
                 _logger.debug("will add file '%s' to zip %s", file_to_save.name, tmp_zipfilename)
                 zipfile_folder.writestr(file_to_save.name, file_to_save.content.encode('utf-8'))
                 _logger.debug("file added to zip")
-            elif file_type == FILE_TYPESTOCK:
+            elif file_type == 'STOCK':
                 zipfile_folder.write(file_to_save.content.encode('utf-8'))
                 _logger.debug("File written")
 
-        _logger.debug("close zipfile (or file)")
+        _logger.debug("close zipfile (or file) : %s", zipfile_folder)
         #poalist = len(zipfile_folder.infolist())
         zipfile_folder.close()
 
@@ -238,12 +218,12 @@ class SpringerParser(models.Model):
                 asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [
                     ('creation_date', '>=', datetime.datetime.strftime(datetime.datetime.now().date()+ datetime.timedelta(days=-1),"%Y-%m-%d %H:%M:%S")),
                     ('creation_date', '<=', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
-                    ('type', '=', FILE_TYPEASN),
+                    ('type', '=', 'ASN'),
                     ('job_id','=',job.id)])
                 _logger.debug("File ids: %s", asn_files)
 
                 if len(asn_files) > 0:
-                    ftp.upload_files(asn_files, FILE_TYPEASN)
+                    ftp.upload_files(asn_files, 'ASN')
 
     def cron_create_stock_report_and_upload(self, cr, uid, ids=None, context=None):
         """

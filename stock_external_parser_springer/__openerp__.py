@@ -31,14 +31,14 @@ Tasks:
     'category': 'warehouse',
     'version': '1.0',
     'depends': [
-        'stock',
-        'sale',
-        'odoo-kliemo'
+        'odoo-kliemo',
+        'stock_packaging_auto',
     ],
     'sequence': 1,
     'data': [
         'views/ftp_settings_view.xml',
         'views/menuitems.xml',
+        'views/product_magazine_view.xml',
 
         'data/ir_cron.xml',
         # 'security/ir.model.access.csv',

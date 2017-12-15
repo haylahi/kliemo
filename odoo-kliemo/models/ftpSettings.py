@@ -9,7 +9,6 @@ from ftplib import FTP
 import logging, os
 import StringIO
 import datetime
-import job
 from file import File
 from lxml import etree
 from xml.dom import minidom
@@ -29,25 +28,21 @@ class ftpSettings(models.Model):
     _name = 'kliemo_orders_parser.ftpsettings'
 
     # -----------------------------------------------------------------------
-    # STATES DICTIONARY
-    STATE_NEW = "Inactive"
-    STATE_RUNNING = "Confirmed"
-
-    # -----------------------------------------------------------------------
     # MODEL FIELDS
-    name = fields.Char(String="Name", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    hostname = fields.Char(String="Hostname", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    username = fields.Char(String="Username", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    password = fields.Char(String="Password", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
-    directory_in = fields.Char(String="Orders Directory", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
+    name = fields.Char(String="Name", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    hostname = fields.Char(String="Hostname", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    username = fields.Char(String="Username", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    password = fields.Char(String="Password", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_in = fields.Char(String="Orders Directory", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     active = fields.Boolean(String="Active", required=False)
-    frequency = fields.Integer(String="Frequency (hours)", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
+    frequency = fields.Integer(String="Frequency (hours)", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     job_id = fields.One2many('kliemo_orders_parser.job', 'settings_id', string="Jobs")
-    input_picking_type = fields.Many2one('stock.picking.type', string="IN Picking Type", required=True, states={STATE_NEW: [('readonly', False)],}, readonly=True)
+    input_picking_type = fields.Many2one('stock.picking.type', string="IN Picking Type", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     manager_user = fields.Many2many('res.partner', string="Managers", required=True, readonly=False)
     last_execution_date = fields.Datetime(string="Last Executed")
-    state = fields.Selection([(STATE_NEW, STATE_NEW), (STATE_RUNNING, STATE_RUNNING)], default=STATE_NEW, String="State")
+    state = fields.Selection([('Inactive', 'Inactive'), ('Confirmed', 'Confirmed')], default='Inactive', String="State")
     passed_test = fields.Boolean(string="Test passed", default=False)
+    local_file_path = fields.Char(String="Local folder to store files", required=True)
 
     @api.model
     def _type_selection(self):
@@ -121,14 +116,14 @@ class ftpSettings(models.Model):
     @api.multi
     def action_confirm_ftp_server(self):
         if self.passed_test:
-            self.state = ftpSettings.STATE_RUNNING
+            self.state = 'Confirmed'
         else:
-            self.state = ftpSettings.STATE_NEW
+            self.state = 'Inactive'
             raise osv.except_osv(_("Connection not tested."), _("Please test it before!"))
 
     @api.multi
     def action_reset_confirmation(self):
-        self.state = ftpSettings.STATE_NEW
+        self.state = 'Inactive'
 
     # -----------------------------------------------------------------------
     # ODOO INHERIT METHODS
@@ -151,7 +146,7 @@ class ftpSettings(models.Model):
         job_id = self.pool.get('kliemo_orders_parser.job').create(cr, uid, {
             'date': datetime.datetime.now(),
             'settings_id': self.id,
-            'status': job.job.STATUS_WAITING
+            'status': 'Waiting'
                 })
         return job_id
 
@@ -188,7 +183,7 @@ class ftpSettings(models.Model):
             if number_of_fetched_files == limit:
                 break
 
-            tmp_filename = '/home/kliemo/springer_files/' + file
+            tmp_filename = self.local_file_path + file
             filecontent = self.read_file(ftp, file)
 
             # download Zipfile to /home/kliemo/springer_files/
@@ -202,7 +197,7 @@ class ftpSettings(models.Model):
             for name in zfile.namelist():
                 # Extract zip content to /home/kliemo/springer_files/extracted/<file>/.
                 (dirname, filename) = os.path.split(name)
-                dirname = str('/home/kliemo/springer_files/extracted/' + file).replace('.zip', '')
+                dirname = str(self.local_file_path + file).replace('.zip', '')
                 _logger.debug("Decompressing " + filename + " on " + dirname)
                 if not os.path.exists(dirname):
                     _logger.debug("Create directory: %s", dirname)
@@ -226,8 +221,8 @@ class ftpSettings(models.Model):
                         'job_id': job_id,
                         'name': name,
                         'content': data,
-                        'type': File.TYPEIN,
-                        'state': File.STATE_NEW,
+                        'type': 'IN',
+                        'state': 'New',
                 })
 
                 po_file_ids.append(file_id)
@@ -253,7 +248,7 @@ class ftpSettings(models.Model):
         _logger.debug("RUN CRON")
         # Get all FTP settings
         settings_obj = self.pool.get('kliemo_orders_parser.ftpsettings')
-        settings_ids = settings_obj.search(cr, uid, [('active', '=', True), ('state', '=', ftpSettings.STATE_RUNNING)])
+        settings_ids = settings_obj.search(cr, uid, [('active', '=', True), ('state', '=', 'Confirmed')])
         for setting_id in settings_ids:
             # Get the setting
             setting = settings_obj.browse(cr, uid, setting_id)

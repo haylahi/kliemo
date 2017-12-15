@@ -24,18 +24,10 @@ class job(models.Model):
     _name = 'kliemo_orders_parser.job'
 
     # -----------------------------------------------------------------------
-    # STATES DICTIONARY
-    STATUS_WAITING = "Waiting"
-    STATUS_RUNNING = "Running"
-    STATUS_ENDED = "Ended"
-    STATUS_CANCELLED = "Cancelled"
-    STATUS_ERROR = "Error"
-
-    # -----------------------------------------------------------------------
     # MODEL FIELDS
     date = fields.Datetime(String="Date", required=True)
     settings_id = fields.Many2one('kliemo_orders_parser.ftpsettings', ondelete='cascade', string="Settings", required=True)
-    state = fields.Selection([(STATUS_WAITING, STATUS_WAITING), (STATUS_RUNNING, STATUS_RUNNING), (STATUS_ENDED, STATUS_ENDED), (STATUS_CANCELLED, STATUS_CANCELLED), (STATUS_ERROR, STATUS_ERROR)], default=STATUS_WAITING)
+    state = fields.Selection([('Waiting', 'Waiting'), ('Running', 'Running'), ('Ended', 'Ended'), ('Cancelled', 'Cancelled'), ('Error', 'Error')], default='Waiting')
     files = fields.One2many('kliemo_orders_parser.file', 'job_id', string="Files")
 
     # -----------------------------------------------------------------------
@@ -73,35 +65,35 @@ class job(models.Model):
     # MODEL METHODS
     @api.multi
     def setAsError(self):
-        self.state = job.STATUS_ERROR
+        self.state = 'Error'
 
     @api.multi
     def setAsErrorFixed(self):
         all_ok = True
         for file in self.files:
             if file.state == 'Parsing Error':
-                self.state = job.STATUS_ERROR
+                self.state = 'Error'
                 return
             if file.state == 'Running':
                 all_ok = False
         if not all_ok:
-            self.state = job.STATUS_RUNNING
+            self.state = 'Running'
         else:
-            self.state = job.STATUS_ENDED
+            self.state = 'Ended'
 
     @api.multi
     def cancel_job(self):
-        self.state = job.STATUS_CANCELLED
+        self.state = 'Cancelled'
 
     @api.multi
     def draft_job(self):
-        self.state = job.STATUS_WAITING
+        self.state = 'Waiting'
 
     @api.multi
     def run_job(self):
         # first, try to download and create files
         try:
-            self.state = job.STATUS_RUNNING
+            self.state = 'Running'
 
             cr = self.env.cr
             uid = self.env.user.id
@@ -112,7 +104,7 @@ class job(models.Model):
             in_file_ids = self.settings_id.download_files_and_save(self.id)
 
         except Exception, e:
-            self.state = job.STATUS_CANCELLED
+            self.state = 'Cancelled'
             raise osv.except_osv(_("(job.runjob) Job failed (download) for %s") % self.settings_id.hostname, _("Here is the error:\n %s") % tools.ustr(e))
 
         # then for each file, try to parse
@@ -124,7 +116,7 @@ class job(models.Model):
                 poa_file_ids.append(filepoaid)
 
         except Exception, e:
-            self.state = job.STATUS_CANCELLED
+            self.state = 'Cancelled'
             raise osv.except_osv(_("(job.runjob) Job failed (parsing) for %s") % self.settings_id.hostname, _("Here is the error:\n %s") % tools.ustr(e))
 
         # finally upload POAs   
@@ -134,13 +126,13 @@ class job(models.Model):
                 self.settings_id.upload_files(poa_file_ids, File.TYPEPOA)
 
         except Exception, e:
-            self.state = job.STATUS_CANCELLED
+            self.state = 'Cancelled'
             raise osv.except_osv(_("(job.runjob) Job failed (uploading POAs) for %s") % self.settings_id.hostname, _("Here is the error:\n %s") % tools.ustr(e))   
         
         # Check state of each file
         for file in self.files:
             if file.state == "Parsing Error":
-                self.state = job.STATUS_ERROR
+                self.state = 'Error'
                 return
             # Remove the removal because of problems
             #else:
@@ -148,4 +140,4 @@ class job(models.Model):
 
         self.settings_id.last_execution_date = datetime.datetime.now()
         # Every file is OK
-        self.state = job.STATUS_ENDED
+        self.state = 'Ended'
