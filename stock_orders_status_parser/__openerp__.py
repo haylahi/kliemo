@@ -4,7 +4,7 @@
 # in Belgium, 2015
 
 {
-    'name': 'Stock Orders Status Parser',
+    'name': 'SPRINGER : Stock Orders Status Parser',
     'version': '8.0.1.0.1',
     'license': 'AGPL-3',
     'author': "AbAKUS it-solutions",
@@ -15,8 +15,7 @@
     'description': """
     """,
     'depends': [
-        'stock',
-         'odoo-kliemo'
+        'stock_external_parser_springer',
     ]
     ,
     'data': [

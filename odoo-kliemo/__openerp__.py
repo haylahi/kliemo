@@ -31,7 +31,11 @@ Tasks:
     'website': "http://www.abakusitsolutions.eu",
     'category': 'warehouse',
     'version': '1.0',
-    'depends': ['stock', 'sale'],
+    'depends': [
+        'stock',
+        'sale',
+        'product_magazine',
+    ],
     'sequence': 1,
     'data': [
         # 'security/ir.model.access.csv',

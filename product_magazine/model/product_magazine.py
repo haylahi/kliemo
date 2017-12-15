@@ -19,8 +19,6 @@ class product_magazine(models.Model):
     periodicity = fields.Selection([('day', 'Day'), ('week', 'Week'), ('month', 'Month'), ('semester', 'Semester'), ('year', 'Year')], string="Periodicity")
     period = fields.Integer(string="Period")
     journal_id = fields.Char(string="Journal ID")
-    wbs_element = fields.Char(string="WBS-element")
-    periodical_permit_number = fields.Char(string="Periodical Permit Number")
     dimension_width = fields.Integer(string="Width", default="210")
     dimension_height = fields.Integer(string="Height", default="279")
     issn_print = fields.Char(string="ISSN (Print)")
