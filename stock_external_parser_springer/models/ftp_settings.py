@@ -214,7 +214,7 @@ class SpringerParser(models.Model):
         Upload all ASN files on FTP for the next day
         """
 
-        _logger.debug("Send ASN files")
+        #_logger.debug("Send ASN files")
         ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, ['&', ('active','=',True), ('type', '=', 'springer')])
         if (len(ftps)) == 0:
             raise osv.except_osv(_("No parser for Springer is active"), _("You have to enable a parser for type 'springer' to do that"))
@@ -227,14 +227,6 @@ class SpringerParser(models.Model):
             _logger.debug("File ids: %s", asn_files)
             if len(asn_files) > 0:
                 ftp.upload_files(asn_files, 'ASN')
-            
-            """for job in ftp.job_id:
-                asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [('uploaded', '=', False),
-                    ('type', '=', 'ASN'),
-                    ('job_id','=', job.id)])"""
-                
-
-                
 
     def cron_create_stock_report_and_upload(self, cr, uid, ids=None, context=None):
         """
