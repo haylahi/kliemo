@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="file_springer_form" model="ir.ui.view">
+            <field name="name">file_springer_form</field>
+            <field name="model">kliemo_orders_parser.file</field>
+            <field name="inherit_id" ref="odoo-kliemo.file_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='job_id']" position="after">
+                    <field name="uploaded" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="file_springer_tree" model="ir.ui.view">
+            <field name="name">file_springer_tree</field>
+            <field name="model">kliemo_orders_parser.file</field>
+            <field name="inherit_id" ref="odoo-kliemo.file_tree_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="uploaded" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

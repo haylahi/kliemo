@@ -76,6 +76,7 @@ class File(models.Model):
     state = fields.Selection([('New', 'New'), ('Running', 'Running'), ('Parsing Error', 'Parsing Error'), ('Parsed', 'Parsed'), ('cancel', 'Cancelled')], default='New', String="State")
     content = fields.Text(String='Content')
     job_id = fields.Many2one('kliemo_orders_parser.job', ondelete='cascade', string="Job")
+    settings_id = fields.Many2one(related='job_id.settings_id', string="Setting")
     exceptions = fields.One2many('kliemo_orders_parser.exception', 'file_id', string="Exceptions")
     exceptions_quantity = fields.Integer(string="Number of exceptions", store=False, compute="_compute_number_of_exceptions")
 

@@ -224,9 +224,9 @@ class SpringerParser(models.Model):
             asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [('uploaded', '=', False),
                     ('type', '=', 'ASN'),
                     ('settings_id','=', ftp.id)])
-            #_logger.debug("File ids: %s", asn_files)
+            _logger.debug("File ids: %s", asn_files)
             if len(asn_files) > 0:
-                ftp.upload_files(asn_files, 'ASN')            
+                ftp.upload_files(asn_files, 'ASN')
 
     def cron_create_stock_report_and_upload(self, cr, uid, ids=None, context=None):
         """
