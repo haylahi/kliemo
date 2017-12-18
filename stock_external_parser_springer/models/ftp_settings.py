@@ -134,6 +134,9 @@ class SpringerParser(models.Model):
         except Exception, e:
             raise osv.except_osv(_("Error while creating and uploading the Stock Report!"), _("Here is what we got instead:\n %s") % tools.ustr(e))
 
+        # Set the file as uploaded
+        file_id.uploaded = True
+
     @api.multi
     def upload_files(self, file_ids, file_type):
         """
@@ -194,6 +197,11 @@ class SpringerParser(models.Model):
         self.write_file(ftp, complete_path , zipfilebin.read())
         _logger.debug('file uploaded')
 
+        # Set files as uploaded
+        for file_id in file_ids:
+            file_to_save = self.pool.get('kliemo_orders_parser.file').browse(cr, uid, file_id)
+            file_to_save.uploaded = True
+
         _logger.debug("delete zipfile")
         os.remove(tmp_zipfilename)
 
@@ -206,24 +214,19 @@ class SpringerParser(models.Model):
         Upload all ASN files on FTP for the next day
         """
 
-        _logger.debug("Send ASN files")
+        #_logger.debug("Send ASN files")
         ftps = self.pool.get('kliemo_orders_parser.ftpsettings').search(cr, uid, ['&', ('active','=',True), ('type', '=', 'springer')])
         if (len(ftps)) == 0:
             raise osv.except_osv(_("No parser for Springer is active"), _("You have to enable a parser for type 'springer' to do that"))
         for ftp_id in ftps:
             ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
 
-            asn_file_ids = []
-            for job in ftp.job_id:
-                asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [
-                    ('creation_date', '>=', datetime.datetime.strftime(datetime.datetime.now().date()+ datetime.timedelta(days=-1),"%Y-%m-%d %H:%M:%S")),
-                    ('creation_date', '<=', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+            asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [('uploaded', '=', False),
                     ('type', '=', 'ASN'),
-                    ('job_id','=',job.id)])
-                _logger.debug("File ids: %s", asn_files)
-
-                if len(asn_files) > 0:
-                    ftp.upload_files(asn_files, 'ASN')
+                    ('settings_id','=', ftp.id)])
+            #_logger.debug("File ids: %s", asn_files)
+            if len(asn_files) > 0:
+                ftp.upload_files(asn_files, 'ASN')            
 
     def cron_create_stock_report_and_upload(self, cr, uid, ids=None, context=None):
         """
