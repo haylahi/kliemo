@@ -33,5 +33,3 @@ class MullerFile(models.Model):
         """
         if self.job_id.settings_id.type != 'muller':
             return super(MullerFile, self).parse_again()
-
-    return False

@@ -33,6 +33,7 @@ class SpringerFileFile(models.Model):
         selection.append(('STOCK', 'Stock'))
         return selection
     type = fields.Selection(_type_selection, string='Type', required=True)
+    uploaded = fields.Boolean(string="Correctly uploaded", default=False)
 
     @api.multi
     def parse_again(self):
