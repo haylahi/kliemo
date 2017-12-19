@@ -3,20 +3,15 @@
 # by AbAKUS it-solutions PGmbH
 # in Belgium, 2017
 
-from openerp.addons.document.document import nodefd_static
-from thread import _local
-from openerp import models, fields, api
-from lxml import etree
+from openerp import models, api
 from xml.dom import minidom
 import openerp.tools as tools
-from openerp.osv import osv
 from openerp.tools.translate import _
-import datetime
-from zipfile import ZipFile
-import os
-import time
 import logging
 from openerp.osv import osv
+import re
+
+
 _logger = logging.getLogger(__name__)
 
 
@@ -36,15 +31,13 @@ class MullerFile(models.Model):
 
         if self.state == 'Parsing Error' or self.state == 'New':
             try:
-                # set all old exeptions to cancelled
+                # set all old exceptions to cancelled
                 for ex in self.exceptions:
                     if ex.state == "Waiting for fix":
                         ex.state = "Cancelled"
 
                 # Then re-parse the file
-                poa_file_ids = []
-                filepoaid = self.createPickingList()
-                poa_file_ids.append(filepoaid)
+                self.createPickingList()
 
             except Exception, e:
                 self.state = 'Parsing Error'
@@ -61,6 +54,12 @@ class MullerFile(models.Model):
 
         Raise an exception in case of error created
         """
+        # TODO: set these in Module SALES/LOCALISATION/COUNTRIES
+        country_mapping = {
+            'D': 'DE',
+            'I': 'IT',
+            'F': 'FR'
+        }
         try:
             self.state = 'Parsing Error'
             cr = self.env.cr
@@ -68,145 +67,120 @@ class MullerFile(models.Model):
 
             dom = minidom.parseString(self.content.encode('utf-8'))
 
-            _logger.debug('parsing DOM')
-            # ------ CHECK PURCHASE ORDER CORRECTNESS
-            # Delivery method should be the same as set in FTP settings
-            delivery_method = self.getNodeValueIfExists(dom, 'ns0:delivery-method')
-            # TODO check if it works as expected
-            if delivery_method != self.job_id.settings_id.delivery_method and self.job_id.settings_id.delivery_method != 'both':
-                self.createAnException("Delivery method not correct. Expected: '{}'. Received:'{}'".format(
-                    self.job_id.settings_id.delivery_method, delivery_method), 'High', None)
-                return None
-            _logger.debug('delivery method parsed')
+            _logger.debug('parsing MULLER DOM')
+            # 1. Issue number and reference
+            # orders = self.getNodeValueIfExists(dom, 'Beleglesezeile')
+            _logger.info("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
+            orders = dom.getElementsByTagName('Datensatz')
+            pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
+            pz = re.compile("(\d+) (.*)")
+            for order in orders:
+                bel = self.getNodeValueIfExists(order, 'Beleglesezeile')
+                _logger.info("== ORDER [{}]:".format(bel))
+                str_menge = self.getNodeValueIfExists(order, 'Menge')
+                # Country
+                str_country = self.getNodeValueIfExists(order, 'LKZ')
+                customer_po_box = self.getNodeValueIfExists(order, 'PLZ')
+                _logger.info("== PO_BOX [{}]:".format(customer_po_box))
+                if country_mapping[str_country] is None:
+                    self.createAnException("Unsupported country code ({})".format(str_country), 'High', None)
+                    return None
 
-            # Service provider should be the same as set in FTP settings
-            service_provider = self.getNodeValueIfExists(dom, 'ns0:provider')
-            if service_provider != self.job_id.settings_id.service_provider:
-                self.createAnException("Service provider method not correct. Expected: '{}'. Received:'{}'".format(
-                    self.job_id.settings_id.service_provider, service_provider), 'High', None)
-                return None
-            _logger.debug('service provider parsed')
-
-            # Service type shoud be the same as set in FT settings
-            service_type = self.getNodeValueIfExists(dom, 'ns0:type')
-            if service_type != self.job_id.settings_id.service_type:
-                self.createAnException("Service type method not correct. Expected: '{}'. Received:'{}'".format(
-                    self.job_id.settings_id.service_type, service_type), 'High', None)
-                return None
-            _logger.debug('service type  parsed')
-
-            # ------ PARTNER
-            endorsement_line_1 = str(self.getNodeValueIfExists(dom, 'ns0:endorsement-line1'))
-            endorsement_line_2 = str(self.getNodeValueIfExists(dom, 'ns0:endorsement-line2'))
-            # Name 1
-            partner_name = str(self.getNodeValueIfExists(dom, 'ns0:name1'))
-            if partner_name == "":
-                partner_name = str(self.getNodeValueIfExists(dom, 'ns0:line1'))
-            customer_address_line_1 = ''
-            customer_address_line_2 = ''
-            customer_address_line_3 = ''
-            # Name 2
-            if (self.getNodeValueIfExists(dom, 'ns0:name2')):
-                customer_address_line_1 = str(self.getNodeValueIfExists(dom, 'ns0:name2'))
-            # Name 2 second
-            elif (self.getNodeValueIfExists(dom, 'ns0:line2')):
-                customer_address_line_1 = str(self.getNodeValueIfExists(dom, 'ns0:line2'))
-            # Name 3
-            if (self.getNodeValueIfExists(dom, 'ns0:line3')):
-                customer_address_line_2 = str(self.getNodeValueIfExists(dom, 'ns0:line3'))
-
-            customer_id = self.getNodeValueIfExists(dom, 'ns0:customer-id')
-            customer_city = self.getNodeValueIfExists(dom, 'ns0:city')
-            customer_postal_code = self.getNodeValueIfExists(dom, 'ns0:postal-code')
-            customer_state = self.getNodeValueIfExists(dom, 'ns0:state')
-            customer_country_code = self.getNodeValueIfExists(dom, 'ns0:country-code')
-            customer_address_line_3 = "{} {}".format(self.getNodeValueIfExists(dom, 'ns0:street'),
-                                                     self.getNodeValueIfExists(dom, 'ns0:street-number1'))
-            customer_po_box = "{}".format(self.getNodeValueIfExists(dom, 'ns0:po-box'))
-            customer_phone = self.getNodeValueIfExists(dom, 'ns0:phone')
-
-            # Test if address line 2 is "street + number"
-            if customer_address_line_1.replace(" ", "") == customer_address_line_3.replace(" ", ""):
-                customer_address_line_3 = ""
-
-                # Test if address line 2 is "postal + city"
-            postal_code_and_city = customer_postal_code + " " + customer_city
-            if customer_address_line_2 == postal_code_and_city:
-                customer_address_line_2 = ""
-
-            _logger.debug('customer parsed')
-
-            # content = StringIO.StringIO(str(self.content))
-            # tree = etree.parse(content)
-            # ns = {'ns0': 'http://devel.springer.de/fulfillment/mps/schema/'}
-            # partner_name = tree.find('/ns0:purchase-order-header/ns0:delivery-address/ns0:name1', ns).text
-
-            # Country
-            country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', customer_country_code)])
-            if country_id:
-                country_id = country_id[0]
-            else:
-                # CREATE EXCEPTION
-                self.createAnException("Country does not exists", 'High', None)
-                return None
-            _logger.debug('country parsed')
-
-            # State
-            if customer_state != "":
-                state_id = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country_id),
-                                                                               ('code', '=', customer_state)])
-                if state_id:
-                    state_id = state_id[0]
+                country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', country_mapping[str_country])])
+                if country_id:
+                    country_id = country_id[0]
                 else:
-                    # CREATE AN EXCEPTION
-                    self.createAnException("State does not exists", 'Low', None)
-            _logger.debug('state parsed')
+                    self.createAnException("Country with code {} does not exists".format(str_country), 'High', None)
+                    return None
+                _logger.info("== COUNTRY [{}]:".format(country_id))
+                # Address
+                str_addresses = []
+                for idx in range(1, 7):
+                    str_address = self.getNodeValueIfExists(order, 'ADRESSE{}'.format(idx))
+                    if str_address:
+                        str_addresses.append(str_address)
+                _logger.info("== ADDRESS [{}]:".format(str_addresses))
+                str_abonummer = self.getNodeValueIfExists(order, 'Abonummer')
+                parts_bel = pb.match(bel)
+                if(parts_bel is None or len(parts_bel.groups())!=5):
+                    self.createAnException("Unable to parse [{}] into groups [{}]".format(bel, parts_bel.groups()), 'High', None)
+                    return None
+                str_identity = parts_bel.group(1)
+                _logger.info("== IDENTITY [{}]:".format(str_identity))
+                customer_id = parts_bel.group(2)
+                _logger.info("== CUSTOMER_ID [{}]:".format(customer_id))
+                str_short_name = parts_bel.group(3)
+                _logger.info("== SHORT_NAME [{}]:".format(str_short_name))
+                str_issue_num = parts_bel.group(4)
+                _logger.info("== ISSUE_NUM [{}]:".format(str_issue_num))
+                str_quantity = parts_bel.group(5)
+                _logger.info("== QUANTITY [{}]:".format(str_quantity))
+                # TODO: Local so far (no country in adress line - Do a check based on the foreign/local order
+                parts_z = pz.match(str_addresses[-1])
+                _logger.info("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1])))
+                 if(parts_z is None or len(parts_z.groups())!=2):
+                        self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
+                    return None
+                customer_city = parts_z.group(2)
+                _logger.info("== CITY [{}]:".format(customer_city))
+                partner_name = str_addresses[0]
+                _logger.info("== PARTNER NAME [{}]:".format(partner_name))
+                customer_address_line_1 = '' + str_addresses[-4]
+                _logger.info("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
+                customer_address_line_2 = '' + str_addresses[-3]
+                _logger.info("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
+                customer_address_line_3 = '' + str_addresses[-2]
+                _logger.info("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+                # state (region)
+                state_id = None
+                # endorsement
+                endorsement_line_1 = self.getNodeValueIfExists(order, 'Briefanrede')
+                endorsement_line_2 = self.getNodeValueIfExists(order, 'BLoginAPP')
+                # build partner
+                partner_obj = self.pool.get('res.partner')
+                partner_id = partner_obj.search(cr, uid, [('customer_number', '=', customer_id)])
+                if not partner_id:
+                    message = 'Partner does not exist: ' + customer_id
+                    self.createAnException(message, 'Low', None)
+                    # Create a partner (name, notify_email(none), customer)
+                    customer_postal_code = self.getNodeValueIfExists(order, 'PLZ')
+                    partner_id = self.pool.get('res.partner').create(cr, uid, {
+                        'name': partner_name,
+                        'notify_email': 'none',
+                        'active': True,
+                        'contact_address': None,
+                        'country_id': country_id,
+                        'state_id': state_id,
+                        'zip': customer_postal_code,
+                        'city': customer_city,
+                        'street': customer_address_line_1,
+                        'street2': customer_address_line_2,
+                        'street3': customer_address_line_3,
+                        'phone': None,
+                        'customer': True,
+                        'customer_number': customer_id,
+                        'endorsement_line_1': endorsement_line_1,
+                        'endorsement_line_2': endorsement_line_2,
+                    })
+                else:
+                    partner_id = partner_id[0]
+                    partner = partner_obj.browse(cr, uid, partner_id)
+                    # SET INFO TO PARTNER
+                    partner.city = customer_city
+                    partner.country_id = country_id
+                    partner.state_id = state_id
+                    partner.zip = customer_postal_code
+                    partner.street = customer_address_line_1
+                    partner.street2 = customer_address_line_2
+                    partner.street3 = customer_address_line_3
+                    partner.endorsement_line_1 = endorsement_line_1
+                    partner.endorsement_line_2 = endorsement_line_2
+                _logger.info("== PARTNER [{}]:".format(partner))
+                _logger.info("== PARTNER_ID [{}]:".format(partner_id))
 
-            _logger.debug('test if partner exists')
-            # Test if partner exists
-            partner_obj = self.pool.get('res.partner')
-            partner_id = partner_obj.search(cr, uid, [('customer_number', '=', customer_id)])
-            # Partner DOES NOT exist
-            if not partner_id:
-                message = 'Partner does not exist: ' + customer_id
-                self.createAnException(message, 'Low', None)
-                # Create a partner (name, notify_email(none), customer)
-                partner_id = self.pool.get('res.partner').create(cr, uid, {
-                    'name': partner_name,
-                    'notify_email': 'none',
-                    'active': True,
-                    'contact_address': None,
-                    'country_id': country_id,
-                    'state_id': state_id,
-                    'zip': customer_postal_code,
-                    'city': customer_city,
-                    'street': customer_address_line_1,
-                    'street2': customer_address_line_2,
-                    'street3': customer_address_line_3,
-                    'phone': customer_phone,
-                    'customer': True,
-                    'customer_number': customer_id,
-                    'endorsement_line_1': endorsement_line_1,
-                    'endorsement_line_2': endorsement_line_2,
-                })
-            # Partner EXISTS, set info
-            else:
-                partner_id = partner_id[0]
-                partner = partner_obj.browse(cr, uid, partner_id)
-                # SET INFO TO PARTNER
-                partner.city = customer_city
-                partner.country_id = country_id
-                partner.state_id = state_id
-                partner.zip = customer_postal_code
-                partner.street = customer_address_line_1
-                partner.street2 = customer_address_line_2
-                partner.street3 = customer_address_line_3
-                partner.endorsement_line_1 = endorsement_line_1
-                partner.endorsement_line_2 = endorsement_line_2
-                partner.phone = customer_phone
-
-            _logger.debug('order')
+            return
             # ------ ORDER
+            _logger.debug('order')
             order_number = self.getNodeValueIfExists(dom, 'ns0:purchase-order-number')
             customer_order_number = self.getNodeValueIfExists(dom, 'ns0:end-customer-order-number')
             customer_order_number = self.removeGermanSpecialChars(str(customer_order_number))
@@ -337,14 +311,6 @@ class MullerFile(models.Model):
                 if not move_id:
                     self.createAnException("Error while creating the stock move", "High", picking_id)
                     return None
-
-            # Write back the POA file
-            _logger.debug("Create POA file")
-            poa_file_id = self.writePOAFile(picking_id)
-
-            if not poa_file_id:
-                self.createAnException("Error while creating the POA", "High", picking_id)
-                return None
 
             # Everything went fine
             self.state = 'Parsed'

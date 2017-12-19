@@ -193,7 +193,8 @@ class File(models.Model):
         element = dom.getElementsByTagName(nodeName)
         return len(element)
 
-    def getNodeValueIfExists(self, dom, nodeName):
+    @staticmethod
+    def getNodeValueIfExists(dom, nodeName):
         """
         This method gets the dom XML value for nodeName if it exists
         """

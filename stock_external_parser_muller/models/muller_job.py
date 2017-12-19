@@ -1,5 +1,6 @@
 from openerp import models, api
 import openerp.tools as tools
+from openerp.tools.translate import _
 from openerp.osv import osv
 import logging
 import datetime
