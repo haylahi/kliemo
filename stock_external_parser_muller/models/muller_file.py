@@ -37,7 +37,7 @@ class MullerFile(models.Model):
                         ex.state = "Cancelled"
 
                 # Then re-parse the file
-                self.createPickingList()
+                self.createPickingListForMuller()
 
             except Exception, e:
                 self.state = 'Parsing Error'
@@ -47,7 +47,7 @@ class MullerFile(models.Model):
             if self.state != 'Parsing Error':
                 self.setAsErrorFixed()
 
-    def createPickingList(self):
+    def createPickingListForMuller(self):
         """
         Create a Picking list based on an order file
         Generate customer if customer doesn't exist yet
@@ -70,18 +70,18 @@ class MullerFile(models.Model):
             _logger.debug('parsing MULLER DOM')
             # 1. Issue number and reference
             # orders = self.getNodeValueIfExists(dom, 'Beleglesezeile')
-            _logger.info("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
+            _logger.debug("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
             orders = dom.getElementsByTagName('Datensatz')
             pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
             pz = re.compile("(\d+) (.*)")
             for order in orders:
                 bel = self.getNodeValueIfExists(order, 'Beleglesezeile')
-                _logger.info("== ORDER [{}]:".format(bel))
+                _logger.debug("== ORDER [{}]:".format(bel))
                 str_menge = self.getNodeValueIfExists(order, 'Menge')
                 # Country
                 str_country = self.getNodeValueIfExists(order, 'LKZ')
                 customer_po_box = self.getNodeValueIfExists(order, 'PLZ')
-                _logger.info("== PO_BOX [{}]:".format(customer_po_box))
+                _logger.debug("== PO_BOX [{}]:".format(customer_po_box))
                 if country_mapping[str_country] is None:
                     self.createAnException("Unsupported country code ({})".format(str_country), 'High', None)
                     return None
@@ -92,45 +92,45 @@ class MullerFile(models.Model):
                 else:
                     self.createAnException("Country with code {} does not exists".format(str_country), 'High', None)
                     return None
-                _logger.info("== COUNTRY [{}]:".format(country_id))
+                _logger.debug("== COUNTRY [{}]:".format(country_id))
                 # Address
                 str_addresses = []
                 for idx in range(1, 7):
                     str_address = self.getNodeValueIfExists(order, 'ADRESSE{}'.format(idx))
                     if str_address:
                         str_addresses.append(str_address)
-                _logger.info("== ADDRESS [{}]:".format(str_addresses))
+                _logger.debug("== ADDRESS [{}]:".format(str_addresses))
                 str_abonummer = self.getNodeValueIfExists(order, 'Abonummer')
                 parts_bel = pb.match(bel)
                 if(parts_bel is None or len(parts_bel.groups()) != 5):
                     self.createAnException("Unable to parse [{}] into groups [{}]".format(bel, parts_bel.groups()), 'High', None)
                     return None
                 str_identity = parts_bel.group(1)
-                _logger.info("== IDENTITY [{}]:".format(str_identity))
+                _logger.debug("== IDENTITY [{}]:".format(str_identity))
                 customer_id = parts_bel.group(2)
-                _logger.info("== CUSTOMER_ID [{}]:".format(customer_id))
+                _logger.debug("== CUSTOMER_ID [{}]:".format(customer_id))
                 str_short_name = parts_bel.group(3)
-                _logger.info("== SHORT_NAME [{}]:".format(str_short_name))
+                _logger.debug("== SHORT_NAME [{}]:".format(str_short_name))
                 str_issue_num = parts_bel.group(4)
-                _logger.info("== ISSUE_NUM [{}]:".format(str_issue_num))
+                _logger.debug("== ISSUE_NUM [{}]:".format(str_issue_num))
                 str_quantity = parts_bel.group(5)
-                _logger.info("== QUANTITY [{}]:".format(str_quantity))
+                _logger.debug("== QUANTITY [{}]:".format(str_quantity))
                 # TODO: Local so far (no country in adress line - Do a check based on the foreign/local order
                 parts_z = pz.match(str_addresses[-1])
-                _logger.info("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
+                _logger.debug("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
                 if(parts_z is None or len(parts_z.groups()) != 2):
                     self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
                     return None
                 customer_city = parts_z.group(2)
-                _logger.info("== CITY [{}]:".format(customer_city))
+                _logger.debug("== CITY [{}]:".format(customer_city))
                 partner_name = str_addresses[0]
-                _logger.info("== PARTNER NAME [{}]:".format(partner_name))
+                _logger.debug("== PARTNER NAME [{}]:".format(partner_name))
                 customer_address_line_1 = '' + str_addresses[-4]
-                _logger.info("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
+                _logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
                 customer_address_line_2 = '' + str_addresses[-3]
-                _logger.info("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
+                _logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
                 customer_address_line_3 = '' + str_addresses[-2]
-                _logger.info("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+                _logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
                 # state (region)
                 state_id = None
                 # endorsement
@@ -325,5 +325,5 @@ class MullerFile(models.Model):
         except Exception, e:
             self.state = 'cancel'
             raise osv.except_osv(
-                _("(file.createPickingList) Error creating picking list for file {}".format(self.name)),
+                _("(file.createPickingListMuller) Error creating picking list for file {}".format(self.name)),
                 _("Here is the error:\n %s") % tools.ustr(e))

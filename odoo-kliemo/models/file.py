@@ -131,6 +131,11 @@ class File(models.Model):
     def parse_again(self):
         return True
 
+    # Used as an Interface
+    @api.multi
+    def parse_again(self):
+        return True
+
     @api.multi
     def upload(self):
         # We never upload back IN files
