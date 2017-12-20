@@ -126,7 +126,9 @@ class File(models.Model):
         self.job_id.setAsErrorFixed()
 
     # Used as an Interface
-   
+    @api.multi
+    def parse_again(self):
+        return True
 
     @api.multi
     def upload(self):
@@ -193,7 +195,8 @@ class File(models.Model):
         element = dom.getElementsByTagName(nodeName)
         return len(element)
 
-    def getNodeValueIfExists(self, dom, nodeName):
+    @staticmethod
+    def getNodeValueIfExists(dom, nodeName):
         """
         This method gets the dom XML value for nodeName if it exists
         """

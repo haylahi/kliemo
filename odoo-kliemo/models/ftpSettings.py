@@ -29,20 +29,21 @@ class ftpSettings(models.Model):
 
     # -----------------------------------------------------------------------
     # MODEL FIELDS
-    name = fields.Char(String="Name", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    hostname = fields.Char(String="Hostname", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    username = fields.Char(String="Username", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    password = fields.Char(String="Password", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    directory_in = fields.Char(String="Orders Directory", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    active = fields.Boolean(String="Active", required=False)
-    frequency = fields.Integer(String="Frequency (hours)", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    name = fields.Char(string="Name", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    hostname = fields.Char(string="Hostname", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    username = fields.Char(string="Username", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    password = fields.Char(string="Password", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_in = fields.Char(string="Orders Directory", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_in_done = fields.Char(string="Done Orders Directory", states={'Inactive': [('readonly', False)],}, readonly=True, required=True)
+    active = fields.Boolean(string="Active", required=False)
+    frequency = fields.Integer(string="Frequency (hours)", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     job_id = fields.One2many('kliemo_orders_parser.job', 'settings_id', string="Jobs")
     input_picking_type = fields.Many2one('stock.picking.type', string="IN Picking Type", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     manager_user = fields.Many2many('res.partner', string="Managers", required=True, readonly=False)
     last_execution_date = fields.Datetime(string="Last Executed")
-    state = fields.Selection([('Inactive', 'Inactive'), ('Confirmed', 'Confirmed')], default='Inactive', String="State")
+    state = fields.Selection([('Inactive', 'Inactive'), ('Confirmed', 'Confirmed')], string="State", default='Inactive', String="State")
     passed_test = fields.Boolean(string="Test passed", default=False)
-    local_file_path = fields.Char(String="Local folder to store files", required=True)
+    local_file_path = fields.Char(string="Local folder to store files", required=True)
 
     @api.model
     def _type_selection(self):
@@ -170,45 +171,45 @@ class ftpSettings(models.Model):
         ftp = self.connect()
 
         # get file names
-        filenames = self.list_file(ftp)
-        _logger.debug("Files: %s", filenames)
+        file_names = self.list_file(ftp)
+        _logger.debug("Files: %s", file_names)
+        # Files: ['foo.zip']
 
         number_of_fetched_files = 0
         # For each zip file in the ftp folder
-        for file in filenames:
+        for my_file in file_names:
             # Test if it is the 'done' or 'test' folder
-            if file == "done" or file == "test":
+            if my_file == "done" or my_file == "test":
                 continue
             # Limit tested here
             if number_of_fetched_files == limit:
                 break
 
-            tmp_filename = self.local_file_path + file
-            filecontent = self.read_file(ftp, file)
+            tmp_filename = self.local_file_path + my_file
+            file_content = self.read_file(ftp, my_file)
 
-            # download Zipfile to /home/kliemo/springer_files/
             _logger.debug('download zip to %s', tmp_filename)
+
             fo = open(tmp_filename, 'wb')
-            fo.write(filecontent)
+            fo.write(file_content)
             fo.close()
 
             zfile = zipfile.ZipFile(tmp_filename)
-            _logger.debug("zfile.namelist(): %s", zfile.namelist())
+            _logger.debug("zip_file.namelist(): {}".format(zfile.namelist()))
+            # zip_file.namelist(): ['ZBH_2018001_Teil 2 INland Pakte***.xml']
+            dir_name = tmp_filename.replace('.zip', '')
+            # dir_name = str(self.local_file_path + file).replace('.zip', '')
+            if not os.path.exists(dir_name):
+                _logger.debug("Create directory: %s", dir_name)
+                os.mkdir(dir_name)
+                if not os.path.exists(dir_name):
+                    _logger.debug("ERROR ERROR DIRECTORY NOT CREATED")
             for name in zfile.namelist():
-                # Extract zip content to /home/kliemo/springer_files/extracted/<file>/.
-                (dirname, filename) = os.path.split(name)
-                dirname = str(self.local_file_path + file).replace('.zip', '')
-                _logger.debug("Decompressing " + filename + " on " + dirname)
-                if not os.path.exists(dirname):
-                    _logger.debug("Create directory: %s", dirname)
-                    os.mkdir(dirname)
-                    if not os.path.exists(dirname):
-                        _logger.debug("ERROR ERROR DIRECTORY NOT CREATED")
-                zfile.extract(name, dirname)
+                # Extract zip content dir_name
+                _logger.debug("Decompressing " + name + " on " + dir_name)
+                zfile.extract(name, dir_name)
                 _logger.debug("ZIP extracted")
-
-                complete_file_name = dirname + '/' + filename
-
+                complete_file_name = os.path.join(dir_name, name)
                 # Create order file
                 _logger.debug("Open file: %s", complete_file_name)
                 xml_string = open(complete_file_name)
@@ -224,15 +225,20 @@ class ftpSettings(models.Model):
                         'type': 'IN',
                         'state': 'New',
                 })
+                _logger.debug("Create entry with file_id: [{}]".format(file_id))
 
                 po_file_ids.append(file_id)
+                number_of_fetched_files = number_of_fetched_files + 1
 
                 # Delete the PO file on server and tmp
-                shutil.rmtree(dirname)
+                # os.remove(complete_file_name)
+                #_logger.debug("Clean up up work dir")
                 # removing the TMP file is done in the job code because it allows for keeping in case of problem
                 # Move file in 'done' folder
-                self.move_file(ftp, file, 'done/' + file)
-                number_of_fetched_files = number_of_fetched_files + 1
+            _logger.debug("Clean up up work dir")
+            self.move_file(ftp, my_file, self.directory_in_done + my_file)
+            
+        #shutil.rmtree(dir_name)
 
         return po_file_ids
 

@@ -53,7 +53,7 @@ class SpringerFileFile(models.Model):
 
                 # Then re-parse the file
                 poa_file_ids = []
-                filepoaid = self.createPickingList()
+                file_poaid = self.createPickingList()
                 poa_file_ids.append(filepoaid)
 
                 # for each POA, upload them

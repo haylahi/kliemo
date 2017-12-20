@@ -14,12 +14,12 @@ MULLER Parser
     'category': 'warehouse',
     'version': '1.0',
     'depends': [
-        'stock',
-        'sale',
         'odoo-kliemo'
     ],
     'sequence': 1,
     'data': [
         'views/ftp_settings_view.xml',
+        'views/res_country_view.xml', 
+        'data/res_countries.xml', 
     ],
 }

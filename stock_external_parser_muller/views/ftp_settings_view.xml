@@ -6,7 +6,7 @@
             <field name="model">kliemo_orders_parser.ftpsettings</field>
             <field name="inherit_id" ref="odoo-kliemo.ftpsettings_form_view" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='directory_in']" position="after">
+                <xpath expr="//field[@name='manager_user']" position="after">
                     <field name="report_to_email" attrs="{'invisible': [('type', '!=', 'muller')], 'required': [('type', '=', 'muller')],}"/>
                 </xpath>
             </field>

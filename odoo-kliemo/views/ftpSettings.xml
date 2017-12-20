@@ -30,15 +30,14 @@
                     </header>
                     <sheet>
                         <group string="General">
-                            <group>
+                            <group name="ftp_settings">
                                 <field name="name"/>
                                 <field name="type"/>
                                 <field name="hostname"/>
                                 <field name="username"/>
                                 <field name="password"  password="1"/>
-                                <field name="local_file_path" />
                             </group>
-                            <group>
+                            <group name="general_settings">
                                 <field name="passed_test"/>
                                 <field name="active"/>
                                 <field name="frequency"/>
@@ -48,10 +47,12 @@
                         </group>
                         <hr />
                         <group string="Input / Output settings">
-                            <group>
+                            <group name="in_settings">
+                                <field name="local_file_path" />
                                 <field name="directory_in"/>
+                                <field name="directory_in_done" />
                             </group>
-                            <group>
+                            <group name="picking_settings">
                                 <field name="input_picking_type"/>
                             </group>
                         </group>
