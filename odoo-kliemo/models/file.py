@@ -63,6 +63,7 @@ class File(models.Model):
     # -----------------------------------------------------------------------
     # MODEL NAME
     _name = 'kliemo_orders_parser.file'
+    _order = 'creation_date desc'
 
     # -----------------------------------------------------------------------
     # MODEL FIELDS

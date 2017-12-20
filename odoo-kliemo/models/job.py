@@ -13,6 +13,7 @@ class job(models.Model):
     # -----------------------------------------------------------------------
     # MODEL NAME
     _name = 'kliemo_orders_parser.job'
+    _order = 'date desc'
 
     # -----------------------------------------------------------------------
     # MODEL FIELDS

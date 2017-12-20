@@ -15,6 +15,7 @@ class picking(models.Model):
     # -----------------------------------------------------------------------
     # MODEL INHERIT
     _inherit = ['stock.picking']
+    _order = 'date desc'
 
     # -----------------------------------------------------------------------
     # MODEL FIELDS
