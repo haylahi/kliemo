@@ -102,7 +102,7 @@ class MullerFile(models.Model):
                 _logger.info("== ADDRESS [{}]:".format(str_addresses))
                 str_abonummer = self.getNodeValueIfExists(order, 'Abonummer')
                 parts_bel = pb.match(bel)
-                if(parts_bel is None or len(parts_bel.groups())!=5):
+                if(parts_bel is None or len(parts_bel.groups()) != 5):
                     self.createAnException("Unable to parse [{}] into groups [{}]".format(bel, parts_bel.groups()), 'High', None)
                     return None
                 str_identity = parts_bel.group(1)
@@ -117,9 +117,9 @@ class MullerFile(models.Model):
                 _logger.info("== QUANTITY [{}]:".format(str_quantity))
                 # TODO: Local so far (no country in adress line - Do a check based on the foreign/local order
                 parts_z = pz.match(str_addresses[-1])
-                _logger.info("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1])))
-                 if(parts_z is None or len(parts_z.groups())!=2):
-                        self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
+                _logger.info("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
+                if(parts_z is None or len(parts_z.groups()) != 2):
+                    self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
                     return None
                 customer_city = parts_z.group(2)
                 _logger.info("== CITY [{}]:".format(customer_city))
