@@ -13,6 +13,9 @@ class MullerJob(models.Model):
 
     @api.multi
     def run_job(self):
+        if self.settings_id.type != 'muller':
+            return super(MullerJob, self).run_job()
+
         # first, try to download and create files
         try:
             self.state = 'Running'

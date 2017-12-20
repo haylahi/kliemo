@@ -80,4 +80,8 @@ class job(models.Model):
     def draft_job(self):
         self.state = 'Waiting'
 
+    @api.multi
+    def run_job(self):
+        return True
+
 

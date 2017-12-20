@@ -29,20 +29,21 @@ class ftpSettings(models.Model):
 
     # -----------------------------------------------------------------------
     # MODEL FIELDS
-    name = fields.Char(String="Name", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    hostname = fields.Char(String="Hostname", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    username = fields.Char(String="Username", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    password = fields.Char(String="Password", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    directory_in = fields.Char(String="Orders Directory", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
-    active = fields.Boolean(String="Active", required=False)
-    frequency = fields.Integer(String="Frequency (hours)", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    name = fields.Char(string="Name", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    hostname = fields.Char(string="Hostname", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    username = fields.Char(string="Username", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    password = fields.Char(string="Password", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_in = fields.Char(string="Orders Directory", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
+    directory_in_done = fields.Char(string="Done Orders Directory", states={'Inactive': [('readonly', False)],}, readonly=True, required=True)
+    active = fields.Boolean(string="Active", required=False)
+    frequency = fields.Integer(string="Frequency (hours)", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     job_id = fields.One2many('kliemo_orders_parser.job', 'settings_id', string="Jobs")
     input_picking_type = fields.Many2one('stock.picking.type', string="IN Picking Type", required=True, states={'Inactive': [('readonly', False)],}, readonly=True)
     manager_user = fields.Many2many('res.partner', string="Managers", required=True, readonly=False)
     last_execution_date = fields.Datetime(string="Last Executed")
-    state = fields.Selection([('Inactive', 'Inactive'), ('Confirmed', 'Confirmed')], default='Inactive', String="State")
+    state = fields.Selection([('Inactive', 'Inactive'), ('Confirmed', 'Confirmed')], string="State", default='Inactive', String="State")
     passed_test = fields.Boolean(string="Test passed", default=False)
-    local_file_path = fields.Char(String="Local folder to store files", required=True)
+    local_file_path = fields.Char(string="Local folder to store files", required=True)
 
     @api.model
     def _type_selection(self):
@@ -188,7 +189,6 @@ class ftpSettings(models.Model):
             file_content = self.read_file(ftp, my_file)
 
             _logger.debug('download zip to %s', tmp_filename)
-            # download zip to  C:\Windows\Temp\foo.zip
 
             fo = open(tmp_filename, 'wb')
             fo.write(file_content)
@@ -228,15 +228,16 @@ class ftpSettings(models.Model):
                 _logger.debug("Create entry with file_id: [{}]".format(file_id))
 
                 po_file_ids.append(file_id)
+                number_of_fetched_files = number_of_fetched_files + 1
 
                 # Delete the PO file on server and tmp
                 # os.remove(complete_file_name)
-                _logger.debug("Clean up up work dir")
+                #_logger.debug("Clean up up work dir")
                 # removing the TMP file is done in the job code because it allows for keeping in case of problem
                 # Move file in 'done' folder
-                self.move_file(ftp, my_file, '/done/' + my_file)
-                _logger.debug("Clean up up work dir")
-                number_of_fetched_files = number_of_fetched_files + 1
+            _logger.debug("Clean up up work dir")
+            self.move_file(ftp, my_file, self.directory_in_done + my_file)
+            
         #shutil.rmtree(dir_name)
 
         return po_file_ids

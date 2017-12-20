@@ -126,7 +126,9 @@ class File(models.Model):
         self.job_id.setAsErrorFixed()
 
     # Used as an Interface
-   
+    @api.multi
+    def parse_again(self):
+        return True
 
     @api.multi
     def upload(self):

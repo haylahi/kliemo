@@ -12,6 +12,9 @@ class SpringerJob(models.Model):
 
     @api.multi
     def run_job(self):
+        if self.settings_id.type != 'springer':
+            return super(SpringerJob, self).run_job()
+
         # first, try to download and create files
         try:
             self.state = 'Running'
