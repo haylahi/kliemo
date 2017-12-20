@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="base.be" model="res.country">
+            <field name="muller_country_code">B</field>
+        </record>
+         <record id="base.de" model="res.country">
+            <field name="muller_country_code">D</field>
+        </record>
+         <record id="base.it" model="res.country">
+            <field name="muller_country_code">I</field>
+        </record>
+         <record id="base.fr" model="res.country">
+            <field name="muller_country_code">F</field>
+        </record>
+        <record id="base.at" model="res.country">
+            <field name="muller_country_code">A</field>
+        </record>
+    </data>
+</openerp>
