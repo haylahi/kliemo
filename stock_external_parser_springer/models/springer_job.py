@@ -3,7 +3,6 @@ import openerp.tools as tools
 from openerp.osv import osv
 import logging
 import datetime
-from file import File
 
 _logger = logging.getLogger(__name__)
 
