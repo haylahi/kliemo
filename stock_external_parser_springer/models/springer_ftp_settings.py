@@ -221,9 +221,14 @@ class SpringerParser(models.Model):
         for ftp_id in ftps:
             ftp = self.pool.get('kliemo_orders_parser.ftpsettings').browse(cr, uid, ftp_id)
 
-            asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [('uploaded', '=', False),
-                    ('type', '=', 'ASN'),
-                    ('settings_id','=', ftp.id)])
+            asn_files = self.pool.get('kliemo_orders_parser.file').search(cr, uid, [
+                ('uploaded', '=', False),
+                ('type', '=', 'ASN'),
+                ('settings_id','=', ftp.id),
+                
+            ], limit=1000)
+            # ('creation_date', '>=', datetime.datetime.strftime(datetime.datetime.now().date()+ datetime.timedelta(days=-10),"%Y-%m-%d %H:%M:%S")),
+            # ('creation_date', '<=', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
             _logger.debug("File ids: %s", asn_files)
             if len(asn_files) > 0:
                 ftp.upload_files(asn_files, 'ASN')
