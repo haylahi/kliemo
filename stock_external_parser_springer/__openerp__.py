@@ -40,6 +40,7 @@ Tasks:
         'views/menuitems.xml',
         'views/product_magazine_view.xml',
         'views/file_view.xml',
+        'views/res_partner_view.xml',
 
         'data/ir_cron.xml',
         # 'security/ir.model.access.csv',
