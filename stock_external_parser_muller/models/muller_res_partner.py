@@ -11,4 +11,7 @@ class MullerResPartner(models.Model):
     _inherit = ['res.partner']
 
     muller_customer_number = fields.Char(string="Customer Number (Muller)")
+    letter_header = fields.Char(string="Letter header")
+    login_app = fields.Char(string="Login APP")
     subscription_ids = fields.One2many('muller.subscription', 'partner_id', string="Subscriptions")
+    

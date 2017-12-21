@@ -10,6 +10,8 @@
                     <page string="Muller Verlag Settings">
                         <group>
                             <field name="muller_customer_number"/>
+                            <field name="letter_header" />
+                            <field name="login_app" />
                             <field name="subscription_ids">
                                 <tree editable="bottom">
                                     <field name="number" />

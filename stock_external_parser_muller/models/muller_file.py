@@ -54,12 +54,6 @@ class MullerFile(models.Model):
 
         Raise an exception in case of error created
         """
-        # TODO: set these in Module SALES/LOCALISATION/COUNTRIES
-        country_mapping = {
-            'D': 'DE',
-            'I': 'IT',
-            'F': 'FR'
-        }
         try:
             self.state = 'Parsing Error'
             cr = self.env.cr
@@ -70,29 +64,31 @@ class MullerFile(models.Model):
             _logger.debug('parsing MULLER DOM')
             # 1. Issue number and reference
             # orders = self.getNodeValueIfExists(dom, 'Beleglesezeile')
-            _logger.debug("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
+            #_logger.debug("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
             orders = dom.getElementsByTagName('Datensatz')
-            pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
+            #pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
             pz = re.compile("(\d+) (.*)")
             for order in orders:
-                bel = self.getNodeValueIfExists(order, 'Beleglesezeile')
-                _logger.debug("== ORDER [{}]:".format(bel))
-                str_menge = self.getNodeValueIfExists(order, 'Menge')
+                # Product / Customer Number
+                document_scanning_line = self.getNodeValueIfExists(order, 'Beleglesezeile')
+                _logger.debug("== ORDER [{}]:".format(document_scanning_line))
+
+                # Quantity
+                quantity = int(self.getNodeValueIfExists(order, 'Menge'))
+
+                # Postal code
+                postal_code = self.getNodeValueIfExists(order, 'PLZ')
+
                 # Country
                 str_country = self.getNodeValueIfExists(order, 'LKZ')
-                customer_po_box = self.getNodeValueIfExists(order, 'PLZ')
-                _logger.debug("== PO_BOX [{}]:".format(customer_po_box))
-                if country_mapping[str_country] is None:
-                    self.createAnException("Unsupported country code ({})".format(str_country), 'High', None)
+                country_id = False
+                country_ids = self.pool.get('res.country').search(cr, uid, [('muller_country_code', '=', str_country)])
+                if (len(country_ids) == 0):
+                    self.createAnException("Country with code {} does not exists in the database, please configure it and try again".format(str_country), 'High', None)
                     return None
+                elif (len(country_ids) > 0):
+                    country_id = country_ids[0]
 
-                country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', country_mapping[str_country])])
-                if country_id:
-                    country_id = country_id[0]
-                else:
-                    self.createAnException("Country with code {} does not exists".format(str_country), 'High', None)
-                    return None
-                _logger.debug("== COUNTRY [{}]:".format(country_id))
                 # Address
                 str_addresses = []
                 for idx in range(1, 7):
@@ -100,47 +96,71 @@ class MullerFile(models.Model):
                     if str_address:
                         str_addresses.append(str_address)
                 _logger.debug("== ADDRESS [{}]:".format(str_addresses))
-                str_abonummer = self.getNodeValueIfExists(order, 'Abonummer')
-                parts_bel = pb.match(bel)
-                if(parts_bel is None or len(parts_bel.groups()) != 5):
-                    self.createAnException("Unable to parse [{}] into groups [{}]".format(bel, parts_bel.groups()), 'High', None)
-                    return None
-                str_identity = parts_bel.group(1)
-                _logger.debug("== IDENTITY [{}]:".format(str_identity))
-                customer_id = parts_bel.group(2)
-                _logger.debug("== CUSTOMER_ID [{}]:".format(customer_id))
-                str_short_name = parts_bel.group(3)
-                _logger.debug("== SHORT_NAME [{}]:".format(str_short_name))
-                str_issue_num = parts_bel.group(4)
-                _logger.debug("== ISSUE_NUM [{}]:".format(str_issue_num))
-                str_quantity = parts_bel.group(5)
-                _logger.debug("== QUANTITY [{}]:".format(str_quantity))
-                # TODO: Local so far (no country in adress line - Do a check based on the foreign/local order
-                parts_z = pz.match(str_addresses[-1])
-                _logger.debug("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
-                if(parts_z is None or len(parts_z.groups()) != 2):
-                    self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
-                    return None
-                customer_city = parts_z.group(2)
-                _logger.debug("== CITY [{}]:".format(customer_city))
+
+                # Subscription number
+                subscription_number = self.getNodeValueIfExists(order, 'Abonummer')
+
+                #_logger.debug("PB : %s", pb)
+                #parts_dsl = pb.match(document_scanning_line)
+                #_logger.debug("PARTS : %s", parts_dsl)
+                #if(parts_dsl == None or len(parts_dsl.group()) != 5):
+                #    self.createAnException("Unable to parse [{}] into groups [{}]".format(document_scanning_line, parts_dsl.group()), 'High', None)
+                #    return None
+
+                # Magazine number
+                magazine_number = int(document_scanning_line[document_scanning_line.find("*") + 1:document_scanning_line.find("#")])
+
+                # Customer number
+                customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
+
+                # Issue number
+                issue_number = int(document_scanning_line[document_scanning_line.rfind("#") + 1:document_scanning_line.rfind("*")])
+
+                # Customer name
                 partner_name = str_addresses[0]
                 _logger.debug("== PARTNER NAME [{}]:".format(partner_name))
-                customer_address_line_1 = '' + str_addresses[-4]
-                _logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
-                customer_address_line_2 = '' + str_addresses[-3]
-                _logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
-                customer_address_line_3 = '' + str_addresses[-2]
-                _logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
-                # state (region)
-                state_id = None
-                # endorsement
-                endorsement_line_1 = self.getNodeValueIfExists(order, 'Briefanrede')
-                endorsement_line_2 = self.getNodeValueIfExists(order, 'BLoginAPP')
-                # build partner
-                partner_obj = self.pool.get('res.partner')
-                partner_id = partner_obj.search(cr, uid, [('customer_number', '=', customer_id)])
+
+                # Addess
+                customer_address_line_1 = ''
+                customer_address_line_2 = ''
+                customer_address_line_3 = ''
+                if (self.name.index("Inland") >= 0): # Inland
+                    parts_z = pz.match(str_addresses[-1])
+                    _logger.debug("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
+                    if(parts_z is None or len(parts_z.groups()) != 2):
+                        self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
+                        return None
+
+                    customer_postal_code = parts_z.group(1)
+                    _logger.debug("== POSTCODE [{}]:".format(customer_postal_code))
+                    customer_city = parts_z.group(2)
+                    _logger.debug("== CITY [{}]:".format(customer_city))
+
+                if (len(str_addresses) > 2):
+                    if (str_addresses[1] != str_addresses[-1]):
+                        customer_address_line_1 = str_addresses[1]
+                        _logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
+                if (len(str_addresses) > 3):
+                    if (str_addresses[2] != str_addresses[-1]):
+                        customer_address_line_2 = str_addresses[2]
+                        _logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
+                if (len(str_addresses) > 4):
+                    if (str_addresses[3] != str_addresses[-1]):
+                        customer_address_line_3 = str_addresses[3]
+                        _logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+
+                state_id = False
+                
+                # Letter Header
+                letter_header = self.getNodeValueIfExists(order, 'Briefanrede')
+
+                # Login APP
+                login_app = self.getNodeValueIfExists(order, 'BLoginAPP')
+
+                # Test if partner exists
+                partner_id = self.pool.get('res.partner').search(cr, uid, [('muller_customer_number', '=', customer_number)])
                 if not partner_id:
-                    message = 'Partner does not exist: ' + customer_id
+                    message = 'Partner does not exist: ' + customer_number
                     self.createAnException(message, 'Low', None)
                     # Create a partner (name, notify_email(none), customer)
                     customer_postal_code = self.getNodeValueIfExists(order, 'PLZ')
@@ -158,9 +178,13 @@ class MullerFile(models.Model):
                         'street3': customer_address_line_3,
                         'phone': None,
                         'customer': True,
-                        'customer_number': customer_id,
-                        'endorsement_line_1': endorsement_line_1,
-                        'endorsement_line_2': endorsement_line_2,
+                        'muller_customer_number': customer_number,
+                        'login_app': login_app,
+                        'letter_header': letter_header,
+                    })
+                    subscription_id = self.pool.get('muller.subscription').create(cr, uid, {
+                        'partner_id': partner_id,
+                        'number': subscription_number,
                     })
                 else:
                     partner_id = partner_id[0]
@@ -173,10 +197,20 @@ class MullerFile(models.Model):
                     partner.street = customer_address_line_1
                     partner.street2 = customer_address_line_2
                     partner.street3 = customer_address_line_3
-                    partner.endorsement_line_1 = endorsement_line_1
-                    partner.endorsement_line_2 = endorsement_line_2
-                _logger.info("== PARTNER [{}]:".format(partner))
-                _logger.info("== PARTNER_ID [{}]:".format(partner_id))
+                    partner.muller_customer_number = customer_number
+                    partner.login_app = login_app
+                    partner.letter_header = letter_header
+                    check = False
+                    for sub in partner.subscription_ids:
+                        if sub.number == subscription_number:
+                            check = True
+                            break
+                    if check:
+                        subscription_id = self.pool.get('muller.subscription').create(cr, uid, {
+                            'partner_id': partner_id,
+                            'number': subscription_number,
+                        })
+
 
             return
             # ------ ORDER
