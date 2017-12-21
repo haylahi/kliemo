@@ -8,7 +8,6 @@ import logging
 from openerp.osv import osv
 
 class MullerResCountry(models.Model):
-    # parent generic parser
     _inherit = ['res.country']
 
     muller_country_code = fields.Char(string="Muller Country Code")
