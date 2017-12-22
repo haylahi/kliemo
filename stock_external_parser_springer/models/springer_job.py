@@ -50,7 +50,7 @@ class SpringerJob(models.Model):
         try:
             # for each POA, upload them
             if len(poa_file_ids) > 0:
-                self.settings_id.upload_files(poa_file_ids, File.TYPEPOA)
+                self.settings_id.upload_files(poa_file_ids, 'POA')
 
         except Exception, e:
             self.state = 'Cancelled'
