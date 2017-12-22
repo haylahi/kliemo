@@ -21,6 +21,7 @@ MULLER Parser
         'views/ftp_settings_view.xml',
         'views/res_country_view.xml', 
         'views/res_partner_view.xml',
+        'views/stock_picking_view.xml',
         'data/res_countries.xml',
     ],
 }
