@@ -48,16 +48,6 @@
         </record>
 
         <!-- Picking List Tree -->
-        <record model="ir.ui.view" id="stock_packaging_auto_picking_tree">
-            <field name="name">stock_picking_auto_packaging_tree</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="odoo-kliemo.picking_list_tree_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="(//field[@name='picking_type_id'])" position="after">
-                    <field name="shipping_rule" />
-                    <field name="printed" />
-                </xpath>
-            </field>
-        </record>
+        
     </data>
 </openerp>

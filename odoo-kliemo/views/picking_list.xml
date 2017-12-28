@@ -1,69 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="pickings_list_tree_filter">
-            <field name="name">picking_list_out.search</field>
+        <record model="ir.ui.view" id="picking_list_generic_tree_filter">
+            <field name="name">picking.list.generic.tree.filter</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_internal_search" />
             <field name="arch" type="xml">
-                <field name="name" position="before">
-                    <field name="external_order_number" string="Order number" filter_domain="['|',('external_order_number','ilike', self),('origin','ilike',self)]"/>
-                </field>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="settings_id" string="External Parser" filter_domain="[('settings_id','ilike', self)]"/>
+                </xpath>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="picking_list_tree_view">
-            <field name="name">picking_list_out.tree</field>
+        <record model="ir.ui.view" id="picking_list_generic_tree">
+            <field name="name">picking.list.generic.tree</field>
             <field name="model">stock.picking</field>
             <field name="arch" type="xml">
                 <tree string="OUT Picking Lists" colors="red:state=='draft';blue:state=='assigned';green:state=='done'">
                     <field name="name"/>
-                    <field name="external_order_number"/>
+                    <field name="external_order_number" />
                     <field name="partner_id"/>
                     <field name="date"/>
-                    <field name="picking_type_id"/>
                     <field name="state"/>
+                    <field name="settings_type"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="picking_list_form_view">
-            <field name="name">picking_list_with_xml_info</field>
+        <record model="ir.ui.view" id="picking_list_generic_form">
+            <field name="name">picking.list.generic.form</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <!-- Add external_order_number field after name -->
-                <field name="name" position="after">
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="external_order_number"/>
-                </field>
+                </xpath>
 
                 <!-- Add specific FTP/XML API settings -->
-                <page string="Products" position="after">
-                    <page string="XML Info">
+                <xpath expr="//notebook" position="inside">
+                    <page string="XML">
                         <group>
                             <group>
-                                <field name="customer_order_number"/>
-                                <field name="customer_order_text"/>
-                                <field name="tat"/>
-                                <field name="shipping_method"/>
-                                <field name="file_id" />
-                            </group>
-                            <group>
-                                <field name="po_box"/>
-                                <field name="postal_permit_number"/>
-                                <field name="ads"/>
+                                <field name="settings_id" readlony="1"/>
+                                <field name="settings_type" readony="1" />
+                                <field name="file_id" readonly="1"/>
                             </group>
                         </group>
-
                     </page>
-                </page>
-                <field name="min_date" position="replace">
-                    <field name="asn_date"/>
-                    <field name="asn_file_id"/>
-                </field>
-                <field name="partner_id" position="replace">
+                </xpath>
+
+                <!-- Hide Min date -->
+                <xpath expr="//field[@name='min_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- Changed partner adress representation -->
+                <xpath expr="//field[@name='partner_id']" position="replace">
                     <field name="partner_id" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}" />
-                </field>
+                </xpath>
             </field>
         </record>
 

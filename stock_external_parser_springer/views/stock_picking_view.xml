@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="picking_list_springer_tree_filter">
+            <field name="name">picking.list.springer.tree.filter</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="odoo-kliemo.picking_list_generic_tree_filter" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="external_order_number" string="Order number" filter_domain="['|',('external_order_number','ilike', self),('origin','ilike',self)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="picking_list_springer_tree">
+            <field name="name">picking.list.springer.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="odoo-kliemo.picking_list_generic_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="picking_type_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="picking_list_springer_form">
+            <field name="name">picking.list.springer.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <!-- Add specific Springer fields -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Springer" attrs="{'invisible': [('settings_type', '!=', 'springer')],}">
+                        <group>
+                            <group>
+                                <field name="customer_order_number"/>
+                                <field name="customer_order_text"/>
+                                <field name="tat"/>
+                                <field name="shipping_method"/>
+                            </group>
+                            <group>
+                                <field name="po_box"/>
+                                <field name="postal_permit_number"/>
+                                <field name="ads"/>
+                            </group>
+                            <group>
+                                <field name="asn_date"/>
+                                <field name="asn_file_id"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
