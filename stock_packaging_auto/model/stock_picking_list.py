@@ -80,23 +80,29 @@ class stock_picking_list(models.Model):
 
     @api.multi
     def confirm_picking_list(self):
-        auto_set_ok = False
-        # auto set rule
-        if(self.file_id):
-            try:
-                self.compute_packaging()
-                # auto set package
-                self.compute_shipping()
-                auto_set_ok = True
-            except Exception, e:
-                _logger.debug("ERROR OF COMPUTING PACKAGING OR PICKING AUTO")
-                self.file_id.setAsError()
+        if self.settings_type == 'springer':
+            auto_set_ok = False
+            # auto set rule
+            if(self.file_id):
+                try:
+                    self.compute_packaging()
+                    # auto set package
+                    self.compute_shipping()
+                    auto_set_ok = True
+                except Exception, e:
+                    _logger.debug("ERROR OF COMPUTING PACKAGING OR PICKING AUTO")
+                    self.file_id.setAsError()
 
-        # confirm the PL
-        if auto_set_ok:
+            # confirm the PL
+            if auto_set_ok:
+                self.action_confirm()
+                self.action_assign()
+                return self.print_list() # print the PL
+        else:
             self.action_confirm()
             self.action_assign()
             return self.print_list() # print the PL
+            
 
     @api.multi
     def set_smaller_package(self):
