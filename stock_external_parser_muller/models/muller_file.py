@@ -73,7 +73,6 @@ class MullerFile(models.Model):
                 document_scanning_line = self.getNodeValueIfExists(order, 'Beleglesezeile')
                 #_logger.debug("== ORDER [{}]:".format(document_scanning_line))
 
-
                 # Postal code
                 postal_code = self.getNodeValueIfExists(order, 'PLZ')
 
@@ -119,10 +118,11 @@ class MullerFile(models.Model):
                 customer_address_line_3 = ''
                 # Inland or Ausland
                 delivery_type = 'row'
-                if (self.name.index("Inland") >= 0): # Inland
+                if ('Inland' in self.name):
+                    # Inland
                     delivery_type = 'germany'
                     parts_z = pz.match(str_addresses[-1])
-                    #_logger.debug("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
+                    #_logger.debug("== STR_ADRESS_1 [{}]:".format(str_addresses[-1]))
                     if(parts_z is None or len(parts_z.groups()) != 2):
                         self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
                         return False
@@ -132,18 +132,57 @@ class MullerFile(models.Model):
                     customer_city = parts_z.group(2)
                     #_logger.debug("== CITY [{}]:".format(customer_city))
 
-                if (len(str_addresses) > 2):
-                    if (str_addresses[1] != str_addresses[-1]):
-                        customer_address_line_1 = str_addresses[1]
-                        #_logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
-                if (len(str_addresses) > 3):
-                    if (str_addresses[2] != str_addresses[-1]):
-                        customer_address_line_2 = str_addresses[2]
-                        #_logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
-                if (len(str_addresses) > 4):
-                    if (str_addresses[3] != str_addresses[-1]):
+                    if (len(str_addresses) > 2):
+                        if (str_addresses[1] != str_addresses[-1]):
+                            customer_address_line_1 = str_addresses[1]
+                            _logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
+                    if (len(str_addresses) > 3):
+                        if (str_addresses[2] != str_addresses[-1]):
+                            customer_address_line_2 = str_addresses[2]
+                            _logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
+                    if (len(str_addresses) > 4):
+                        if (str_addresses[3] != str_addresses[-1]):
+                            customer_address_line_3 = str_addresses[3]
+                            _logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+
+                else:
+                    # AUSLAND
+                    _logger.debug("Len = %s", len(str_addresses))
+                    if (len(str_addresses) == 6):
+                        _logger.debug("== 6 ADDRESS [{}]:".format(str_addresses))
+                        # str_addresses[5] not used because it is the country
+                        parts_z = pz.match(str_addresses[4])
+                        customer_postal_code = parts_z.group(1)
+                        customer_city = parts_z.group(2)
                         customer_address_line_3 = str_addresses[3]
-                        #_logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+                        customer_address_line_2 = str_addresses[2]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 5):
+                        _logger.debug("== 5 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = pz.match(str_addresses[3])
+                        customer_postal_code = parts_z.group(1)
+                        customer_city = parts_z.group(2)
+                        customer_address_line_2 = str_addresses[2]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 4):
+                        _logger.debug("== 4 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = pz.match(str_addresses[2])
+                        customer_postal_code = parts_z.group(1)
+                        customer_city = parts_z.group(2)
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 3):
+                        _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = pz.match(str_addresses[2])
+                        customer_postal_code = parts_z.group(1)
+                        customer_city = parts_z.group(2)
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
 
                 state_id = False
                 
@@ -151,7 +190,7 @@ class MullerFile(models.Model):
                 letter_header = self.getNodeValueIfExists(order, 'Briefanrede')
 
                 # Login APP
-                login_app = self.getNodeValueIfExists(order, 'BLoginAPP')
+                login_app = self.getNodeValueIfExists(order, 'LoginAPP')
 
                 # Test if partner exists
                 partner_id = self.pool.get('res.partner').search(cr, uid, [('muller_customer_number', '=', customer_number)])
