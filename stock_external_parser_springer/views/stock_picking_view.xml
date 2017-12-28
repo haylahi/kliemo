@@ -18,7 +18,7 @@
             <field name="inherit_id" ref="odoo-kliemo.picking_list_generic_tree" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date']" position="after">
-                    <field name="picking_type_id"/>
+                    <field name="shipping_rule"/>
                 </xpath>
             </field>
         </record>
