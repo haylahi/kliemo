@@ -13,7 +13,7 @@
                     <button name="print_labels" class="oe_highlight" string="Print Label(s)" type="object"/>
                     <button name="print_list" class="oe_highlight" string="Print" type="object"/>
                 </xpath>
-                <xpath expr="(//page[@string='Products'])[1]" position="after">
+                <xpath expr="(//notebook)" position="inside">
                     <page string="Shipping">
                         <group>
                             <group>
