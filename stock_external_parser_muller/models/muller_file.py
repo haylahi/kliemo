@@ -232,7 +232,7 @@ class MullerFile(models.Model):
                     if picking.state != 'draft':  # Check the state of the picking
                         _logger.debug('picking exists and is not in draft anymore')
                         self.state = 'Parsed'
-                        self.createAnException("Picking list already exists: {}".format(order_number), "Low", picking_id)
+                        self.createAnException("Picking list already exists: {}".format(document_scanning_line), "Low", picking_id)
                         return False
                     # Picking DOES EXISTS, simply update it
                     else:
