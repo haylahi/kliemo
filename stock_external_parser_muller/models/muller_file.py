@@ -150,7 +150,7 @@ class MullerFile(models.Model):
                     _logger.debug("Len = %s", len(str_addresses))
                     if (len(str_addresses) == 6):
                         _logger.debug("== 6 ADDRESS [{}]:".format(str_addresses))
-                        # str_addresses[5] not used because it is the country
+                        # No usage of str_addresses[5] because it is the country in Ausland
                         parts_z = str_addresses[4].split(" ")
                         customer_postal_code = parts_z[0]
                         customer_city = parts_z[1]
@@ -161,7 +161,8 @@ class MullerFile(models.Model):
 
                     if (len(str_addresses) == 5):
                         _logger.debug("== 5 ADDRESS [{}]:".format(str_addresses))
-                        parts_z = str_addresses[4].split(" ")
+                        # No usage of str_addresses[4] because it is the country in Ausland
+                        parts_z = str_addresses[3].split(" ")
                         customer_postal_code = parts_z[0]
                         customer_city = parts_z[1]
                         customer_address_line_2 = str_addresses[2]
@@ -170,7 +171,8 @@ class MullerFile(models.Model):
 
                     if (len(str_addresses) == 4):
                         _logger.debug("== 4 ADDRESS [{}]:".format(str_addresses))
-                        parts_z = str_addresses[3].split(" ")
+                        # No usage of str_addresses[3] because it is the country in Ausland
+                        parts_z = str_addresses[2].split(" ")
                         customer_postal_code = parts_z[0]
                         customer_city = parts_z[1]
                         customer_address_line_1 = str_addresses[1]
@@ -178,10 +180,11 @@ class MullerFile(models.Model):
 
                     if (len(str_addresses) == 3):
                         _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
-                        parts_z = str_addresses[2].split(" ")
+                        # No usage of str_addresses[2] because it is the country in Ausland
+                        parts_z = str_addresses[1].split(" ")
                         customer_postal_code = parts_z[0]
                         customer_city = parts_z[1]
-                        customer_address_line_1 = str_addresses[1]
+                        customer_address_line_1 = str_addresses[0]
                         partner_name = str_addresses[0]
 
                 state_id = False
