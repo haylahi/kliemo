@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <!-- REPORT DEFINITION -->
+		<report
+			id="stock_picking_muller_report_labels"
+			string="Muller Labels"
+			model="stock.picking"
+			report_type="qweb-pdf"
+			file="stock_picking_muller_labels"
+			name="stock_external_parser_muller.muller_label_report"
+		/>
+
+        <record id="stock_external_parser_muller.stock_picking_muller_report_labels" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="picking_list_label_paperformat_muller"/>
+        </record>
+
+        <template id="muller_label_report">
+            <t t-name="stock_external_parser_muller.muller_label">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page" t-foreach="len(o.move_lines)" t-as="move_line">
+                            <style type="text/css">
+                            </style>
+                            <div class="oe_structure" />
+                            <div class="row">
+                                Hello World
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
