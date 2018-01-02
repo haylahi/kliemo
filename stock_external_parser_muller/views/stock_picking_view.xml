@@ -12,9 +12,22 @@
                         <group>
                             <group>
                                 <field name="delivery_type"/>
+                                <field name="country_id" readonly="1"/>
                             </group>
                         </group>
                     </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="picking_list_muller_tree_filter">
+            <field name="name">picking.list.muller.tree.filter</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <filter string="Inland / Ausland" domain="[('settings_id', 'ilike', 'muller')]" context="{'group_by':'delivery_type'}"/>
+                    <filter string="Coutnry" domain="[('settings_id', 'ilike', 'muller')]" context="{'group_by':'country_id'}"/>
                 </xpath>
             </field>
         </record>
