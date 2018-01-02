@@ -19,12 +19,61 @@
             <t t-name="stock_external_parser_muller.muller_label">
                 <t t-call="report.html_container">
                     <t t-foreach="docs" t-as="o">
-                        <div class="page" t-foreach="len(o.move_lines)" t-as="move_line">
+                        <div class="page">
                             <style type="text/css">
+                                h2 {
+                                    font-size: 9pt;
+                                    font-weight: bold;
+                                }
+                                h3 {
+                                    font-size: 7pt;
+                                    margin-top: 0;
+                                }
+                                .address {
+                                    font-size: 8pt;
+                                    
+                                }
+                                .address_box {
+                                    border: 1px solid black;
+                                    margin: 5px 10px; 5px; 10px;
+                                    padding: 5px;
+                                    width: 90%;
+                                }
+                                .info_box {
+                                    border: 1px solid black;
+                                    margin: 5px 10px; 5px; 10px;
+                                    padding: 5px;
+                                    width: 90%;
+                                }
                             </style>
                             <div class="oe_structure" />
                             <div class="row">
-                                Hello World
+                                <!-- Address -->
+                                <div class="address_box">
+                                    <h2><span t-field="o.partner_id.name" /></h2>
+                                    <p class="address">
+                                        <t t-if="o.partner_id.street">
+                                            <span t-field="o.partner_id.street" /><br />
+                                        </t>
+                                        <t t-if="o.partner_id.street2">
+                                            <span t-field="o.partner_id.street2" /><br />
+                                        </t>
+                                        <t t-if="o.partner_id.street3">
+                                            <span t-field="o.partner_id.street3" /><br />
+                                        </t>
+                                        <t t-if="o.partner_id.zip and o.partner_id.city">
+                                            <span t-field="o.partner_id.zip" /> <span t-field="o.partner_id.city" /><br />
+                                        </t>
+                                        <t t-if="o.partner_id.country_id.name">
+                                            <span t-field="o.partner_id.country_id.name" /><br />
+                                        </t>
+                                    </p>
+                                </div>
+                                <div class="info_box">
+                                    <h3><span t-field="o.external_order_number" /></h3>
+                                    <h3><span t-field="o.name" /> (<span t-field="o.delivery_type" />)</h3>
+                                    <h3><span t-field="o.file_id.name" /></h3>
+                                </div>
                             </div>
                         </div>
                     </t>
