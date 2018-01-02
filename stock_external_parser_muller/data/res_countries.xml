@@ -16,5 +16,35 @@
         <record id="base.at" model="res.country">
             <field name="muller_country_code">A</field>
         </record>
+        <record id="base.ch" model="res.country">
+            <field name="muller_country_code">CH</field>
+        </record>
+        <record id="base.pl" model="res.country">
+            <field name="muller_country_code">PL</field>
+        </record>
+        <record id="base.dk" model="res.country">
+            <field name="muller_country_code">DK</field>
+        </record>
+        <record id="base.cz" model="res.country">
+            <field name="muller_country_code">CZ</field>
+        </record>
+        <record id="base.lu" model="res.country">
+            <field name="muller_country_code">L</field>
+        </record>
+        <record id="base.nl" model="res.country">
+            <field name="muller_country_code">NL</field>
+        </record>
+        <record id="base.sk" model="res.country">
+            <field name="muller_country_code">SK</field>
+        </record>
+        <record id="base.au" model="res.country">
+            <field name="muller_country_code">AUS</field>
+        </record>
+        <record id="base.ca" model="res.country">
+            <field name="muller_country_code">CDN</field>
+        </record>
+        <record id="base.ee" model="res.country">
+            <field name="muller_country_code">EW</field>
+        </record>
     </data>
 </openerp>
