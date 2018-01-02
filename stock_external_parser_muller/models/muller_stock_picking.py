@@ -7,7 +7,8 @@ from openerp import models, fields, api
 import logging
 from openerp.osv import osv
 
-class MullerResCountry(models.Model):
-    _inherit = ['res.country']
+class MullerStockPicking(models.Model):
+    _inherit = ['stock.picking']
 
-    muller_country_code = fields.Char(string="Muller Country Code")
+    delivery_type = fields.Selection([('germany', 'Inland'), ('row', 'Ausland')], string="Delivery Type")
+    

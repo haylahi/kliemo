@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <record model="ir.ui.view" id="partners_form_view">
-            <field name="name">partner_with_xml_info</field>
+        <record model="ir.ui.view" id="partners_stree3_form_view">
+            <field name="name">partners.stree3.form.view</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='street2']" position="after">
                     <field name="street3" />
                 </xpath>
-                <notebook position="before">
-                    <hr />
-                    <group string="Special info for partners">
-                        <field name="customer_number"/>
-                        <field name="endorsement_line_1"/>
-                        <field name="endorsement_line_2"/>
-                    </group>
-                    <hr />
-                </notebook>
             </field>
         </record>
     </data>

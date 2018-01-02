@@ -12,7 +12,4 @@ class Partner(models.Model):
     _inherit = ['res.partner']
 
     street3 = fields.Char(string="Street3")
-    customer_number = fields.Char(string="Customer Number")
-    endorsement_line_1 = fields.Char(string="Endorsement line 1")
-    endorsement_line_2 = fields.Char(string="Endorsement line 2")
     

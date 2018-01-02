@@ -29,7 +29,7 @@ class MullerFile(models.Model):
         if self.job_id.settings_id.type != 'muller':
             return super(MullerFile, self).parse_again()
 
-        if self.state == 'Parsing Error' or self.state == 'New':
+        if self.type == 'IN':
             try:
                 # set all old exceptions to cancelled
                 for ex in self.exceptions:
@@ -37,7 +37,7 @@ class MullerFile(models.Model):
                         ex.state = "Cancelled"
 
                 # Then re-parse the file
-                self.createPickingList()
+                self.createPickingListForMuller()
 
             except Exception, e:
                 self.state = 'Parsing Error'
@@ -47,19 +47,13 @@ class MullerFile(models.Model):
             if self.state != 'Parsing Error':
                 self.setAsErrorFixed()
 
-    def createPickingList(self):
+    def createPickingListForMuller(self):
         """
         Create a Picking list based on an order file
         Generate customer if customer doesn't exist yet
 
         Raise an exception in case of error created
         """
-        # TODO: set these in Module SALES/LOCALISATION/COUNTRIES
-        country_mapping = {
-            'D': 'DE',
-            'I': 'IT',
-            'F': 'FR'
-        }
         try:
             self.state = 'Parsing Error'
             cr = self.env.cr
@@ -70,77 +64,138 @@ class MullerFile(models.Model):
             _logger.debug('parsing MULLER DOM')
             # 1. Issue number and reference
             # orders = self.getNodeValueIfExists(dom, 'Beleglesezeile')
-            _logger.info("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
+            #_logger.debug("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
             orders = dom.getElementsByTagName('Datensatz')
-            pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
+            #pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
             pz = re.compile("(\d+) (.*)")
             for order in orders:
-                bel = self.getNodeValueIfExists(order, 'Beleglesezeile')
-                _logger.info("== ORDER [{}]:".format(bel))
-                str_menge = self.getNodeValueIfExists(order, 'Menge')
+                # Product / Customer Number
+                document_scanning_line = self.getNodeValueIfExists(order, 'Beleglesezeile')
+                #_logger.debug("== ORDER [{}]:".format(document_scanning_line))
+
+                # Postal code
+                postal_code = self.getNodeValueIfExists(order, 'PLZ')
+
                 # Country
                 str_country = self.getNodeValueIfExists(order, 'LKZ')
-                customer_po_box = self.getNodeValueIfExists(order, 'PLZ')
-                _logger.info("== PO_BOX [{}]:".format(customer_po_box))
-                if country_mapping[str_country] is None:
-                    self.createAnException("Unsupported country code ({})".format(str_country), 'High', None)
-                    return None
+                country_id = False
+                country_ids = self.pool.get('res.country').search(cr, uid, [('muller_country_code', '=', str_country)])
+                if (len(country_ids) == 0):
+                    self.createAnException("Country with code {} does not exists in the database, please configure it and try again".format(str_country), 'High', None)
+                    return False
+                elif (len(country_ids) > 0):
+                    country_id = country_ids[0]
 
-                country_id = self.pool.get('res.country').search(cr, uid, [('code', '=', country_mapping[str_country])])
-                if country_id:
-                    country_id = country_id[0]
-                else:
-                    self.createAnException("Country with code {} does not exists".format(str_country), 'High', None)
-                    return None
-                _logger.info("== COUNTRY [{}]:".format(country_id))
                 # Address
                 str_addresses = []
                 for idx in range(1, 7):
                     str_address = self.getNodeValueIfExists(order, 'ADRESSE{}'.format(idx))
                     if str_address:
                         str_addresses.append(str_address)
-                _logger.info("== ADDRESS [{}]:".format(str_addresses))
-                str_abonummer = self.getNodeValueIfExists(order, 'Abonummer')
-                parts_bel = pb.match(bel)
-                if(parts_bel is None or len(parts_bel.groups()) != 5):
-                    self.createAnException("Unable to parse [{}] into groups [{}]".format(bel, parts_bel.groups()), 'High', None)
-                    return None
-                str_identity = parts_bel.group(1)
-                _logger.info("== IDENTITY [{}]:".format(str_identity))
-                customer_id = parts_bel.group(2)
-                _logger.info("== CUSTOMER_ID [{}]:".format(customer_id))
-                str_short_name = parts_bel.group(3)
-                _logger.info("== SHORT_NAME [{}]:".format(str_short_name))
-                str_issue_num = parts_bel.group(4)
-                _logger.info("== ISSUE_NUM [{}]:".format(str_issue_num))
-                str_quantity = parts_bel.group(5)
-                _logger.info("== QUANTITY [{}]:".format(str_quantity))
-                # TODO: Local so far (no country in adress line - Do a check based on the foreign/local order
-                parts_z = pz.match(str_addresses[-1])
-                _logger.info("== STR_ADRESSE_1 [{}]:".format(str_addresses[-1]))
-                if(parts_z is None or len(parts_z.groups()) != 2):
-                    self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
-                    return None
-                customer_city = parts_z.group(2)
-                _logger.info("== CITY [{}]:".format(customer_city))
+                #_logger.debug("== ADDRESS [{}]:".format(str_addresses))
+
+                # Subscription number
+                subscription_number = self.getNodeValueIfExists(order, 'Abonummer')
+
+                #_logger.debug("PB : %s", pb)
+                #parts_dsl = pb.match(document_scanning_line)
+                #_logger.debug("PARTS : %s", parts_dsl)
+                #if(parts_dsl == None or len(parts_dsl.group()) != 5):
+                #    self.createAnException("Unable to parse [{}] into groups [{}]".format(document_scanning_line, parts_dsl.group()), 'High', None)
+                #    return False
+
+                # Customer number
+                customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
+                customer_number = customer_number[:customer_number.rfind("-")]
+
+                # Customer name
                 partner_name = str_addresses[0]
-                _logger.info("== PARTNER NAME [{}]:".format(partner_name))
-                customer_address_line_1 = '' + str_addresses[-4]
-                _logger.info("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
-                customer_address_line_2 = '' + str_addresses[-3]
-                _logger.info("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
-                customer_address_line_3 = '' + str_addresses[-2]
-                _logger.info("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
-                # state (region)
-                state_id = None
-                # endorsement
-                endorsement_line_1 = self.getNodeValueIfExists(order, 'Briefanrede')
-                endorsement_line_2 = self.getNodeValueIfExists(order, 'BLoginAPP')
-                # build partner
-                partner_obj = self.pool.get('res.partner')
-                partner_id = partner_obj.search(cr, uid, [('customer_number', '=', customer_id)])
+                #_logger.debug("== PARTNER NAME [{}]:".format(partner_name))
+
+                # Addess
+                customer_address_line_1 = ''
+                customer_address_line_2 = ''
+                customer_address_line_3 = ''
+                # Inland or Ausland
+                delivery_type = 'row'
+                if ('Inland' in self.name):
+                    # Inland
+                    delivery_type = 'germany'
+                    parts_z = pz.match(str_addresses[-1])
+                    #_logger.debug("== STR_ADRESS_1 [{}]:".format(str_addresses[-1]))
+                    if(parts_z is None or len(parts_z.groups()) != 2):
+                        self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
+                        return False
+
+                    customer_postal_code = parts_z.group(1)
+                    #_logger.debug("== POSTCODE [{}]:".format(customer_postal_code))
+                    customer_city = parts_z.group(2)
+                    #_logger.debug("== CITY [{}]:".format(customer_city))
+
+                    if (len(str_addresses) > 2):
+                        if (str_addresses[1] != str_addresses[-1]):
+                            customer_address_line_1 = str_addresses[1]
+                            _logger.debug("== CUSTOMER ADDRESS 1 [{}]:".format(customer_address_line_1))
+                    if (len(str_addresses) > 3):
+                        if (str_addresses[2] != str_addresses[-1]):
+                            customer_address_line_2 = str_addresses[2]
+                            _logger.debug("== CUSTOMER ADDRESS 2 [{}]:".format(customer_address_line_2))
+                    if (len(str_addresses) > 4):
+                        if (str_addresses[3] != str_addresses[-1]):
+                            customer_address_line_3 = str_addresses[3]
+                            _logger.debug("== CUSTOMER ADDRESS 3 [{}]:".format(customer_address_line_3))
+
+                else:
+                    # AUSLAND
+                    _logger.debug("Len = %s", len(str_addresses))
+                    if (len(str_addresses) == 6):
+                        _logger.debug("== 6 ADDRESS [{}]:".format(str_addresses))
+                        # str_addresses[5] not used because it is the country
+                        parts_z = str_addresses[4].split(" ")
+                        customer_postal_code = parts_z[0]
+                        customer_city = parts_z[1]
+                        customer_address_line_3 = str_addresses[3]
+                        customer_address_line_2 = str_addresses[2]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 5):
+                        _logger.debug("== 5 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = str_addresses[4].split(" ")
+                        customer_postal_code = parts_z[0]
+                        customer_city = parts_z[1]
+                        customer_address_line_2 = str_addresses[2]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 4):
+                        _logger.debug("== 4 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = str_addresses[3].split(" ")
+                        customer_postal_code = parts_z[0]
+                        customer_city = parts_z[1]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                    if (len(str_addresses) == 3):
+                        _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
+                        parts_z = str_addresses[2].split(" ")
+                        customer_postal_code = parts_z[0]
+                        customer_city = parts_z[1]
+                        customer_address_line_1 = str_addresses[1]
+                        partner_name = str_addresses[0]
+
+                state_id = False
+                
+                # Letter Header
+                letter_header = self.getNodeValueIfExists(order, 'Briefanrede')
+
+                # Login APP
+                login_app = self.getNodeValueIfExists(order, 'LoginAPP')
+
+                # Test if partner exists
+                partner_id = self.pool.get('res.partner').search(cr, uid, [('muller_customer_number', '=', customer_number)])
                 if not partner_id:
-                    message = 'Partner does not exist: ' + customer_id
+                    message = 'Partner does not exist: ' + customer_number
                     self.createAnException(message, 'Low', None)
                     # Create a partner (name, notify_email(none), customer)
                     customer_postal_code = self.getNodeValueIfExists(order, 'PLZ')
@@ -158,142 +213,115 @@ class MullerFile(models.Model):
                         'street3': customer_address_line_3,
                         'phone': None,
                         'customer': True,
-                        'customer_number': customer_id,
-                        'endorsement_line_1': endorsement_line_1,
-                        'endorsement_line_2': endorsement_line_2,
+                        'muller_customer_number': customer_number,
+                        'login_app': login_app,
+                        'letter_header': letter_header,
+                    })
+                    subscription_id = self.pool.get('muller.subscription').create(cr, uid, {
+                        'partner_id': partner_id,
+                        'number': subscription_number,
                     })
                 else:
                     partner_id = partner_id[0]
-                    partner = partner_obj.browse(cr, uid, partner_id)
+                    partner = self.pool.get('res.partner').browse(cr, uid, partner_id)
                     # SET INFO TO PARTNER
-                    partner.city = customer_city
+                    partner.name = partner_name
                     partner.country_id = country_id
                     partner.state_id = state_id
                     partner.zip = customer_postal_code
+                    partner.city = customer_city
                     partner.street = customer_address_line_1
                     partner.street2 = customer_address_line_2
                     partner.street3 = customer_address_line_3
-                    partner.endorsement_line_1 = endorsement_line_1
-                    partner.endorsement_line_2 = endorsement_line_2
-                _logger.info("== PARTNER [{}]:".format(partner))
-                _logger.info("== PARTNER_ID [{}]:".format(partner_id))
-
-            return
+                    partner.muller_customer_number = customer_number
+                    partner.login_app = login_app
+                    partner.letter_header = letter_header
+                    check = False
+                    for sub in partner.subscription_ids:
+                        if sub.number == subscription_number:
+                            check = True
+                            break
+                    if check:
+                        subscription_id = self.pool.get('muller.subscription').create(cr, uid, {
+                            'partner_id': partner_id,
+                            'number': subscription_number,
+                        })
+                
             # ------ ORDER
-            _logger.debug('order')
-            order_number = self.getNodeValueIfExists(dom, 'ns0:purchase-order-number')
-            customer_order_number = self.getNodeValueIfExists(dom, 'ns0:end-customer-order-number')
-            customer_order_number = self.removeGermanSpecialChars(str(customer_order_number))
-            customer_order_text = self.getNodeValueIfExists(dom, 'ns0:end-customer-order-text')
-            customer_order_text = self.removeGermanSpecialChars(str(customer_order_text))
-            shipping_method = self.getNodeValueIfExists(dom, 'ns0:method')
-            # because the selector on pickings is 'consolidator' and not 'collector', easier to correct it from here
-            if shipping_method == 'collector':
-                shipping_method = 'consolidator'
+                _logger.debug('order')
+            
+                # Test if order exists
+                picking_ids = self.pool.get('stock.picking').search(cr, uid, [('external_order_number', '=', document_scanning_line)])
 
-            # Test if order exists
-            picking_obj = self.pool.get('stock.picking')
-            picking_ids = picking_obj.search(cr, uid, [('external_order_number', '=', order_number)])
+                # Picking DOES NOT EXIST, create a new one
+                if not picking_ids:
+                    _logger.debug('picking does not exist')
+                    picking_id = self.pool.get('stock.picking').create(cr, uid, {
+                        'partner_id': partner_id,
+                        'picking_type_id': self.job_id.settings_id.input_picking_type.id,
+                        'external_order_number': document_scanning_line,
+                        'file_id': int(self.id),
+                        'delivery_type': delivery_type,
+                    })
 
-            # Picking DOES NOT EXIST, create a new one
-            if not picking_ids:
-                _logger.debug('picking does not exist')
-                picking_id = self.pool.get('stock.picking').create(cr, uid, {
-                    'partner_id': partner_id,
-                    'picking_type_id': self.job_id.settings_id.input_picking_type.id,
-                    'external_order_number': order_number,
-                    'customer_order_number': customer_order_number,
-                    'customer_order_text': customer_order_text,
-                    'shipping_method': shipping_method,
-                    'file_id': int(self.id),
-                    'po_box': customer_po_box,
-                })
-
-            # Picking DOES EXISTS
-            else:
-                picking_id = picking_ids[0]
-                picking = picking_obj.browse(cr, uid, picking_id)  # get the first one
-                if picking.state != 'draft':  # Check the state of the picking
-                    _logger.debug('picking exists and is not in draft anymore')
-                    self.state = 'Parsed'
-                    self.createAnException("Picking list already exists: {}".format(order_number), "Low", picking_id)
-                    return None
-                # Picking DOES EXISTS, simply update it
+                # Picking DOES EXISTS
                 else:
-                    _logger.debug("picking exists and is in draft, we will update it")
+                    picking_id = picking_ids[0]
+                    picking = self.pool.get('stock.picking').browse(cr, uid, picking_id)  # get the first one
+                    if picking.state != 'draft':  # Check the state of the picking
+                        _logger.debug('picking exists and is not in draft anymore')
+                        self.state = 'Parsed'
+                        self.createAnException("Picking list already exists: {}".format(document_scanning_line), "Low", picking_id)
+                        return False
+                    # Picking DOES EXISTS, simply update it
+                    else:
+                        _logger.debug("picking exists and is in draft, we will update it")
 
-            _logger.debug('product')
-            # ------ PRODUCTS
-            number_of_products = self.getNumberOfItems(dom, 'ns0:purchase-order-item')
-            for orderItem in dom.getElementsByTagName('ns0:purchase-order-item'):
-                _logger.debug(orderItem)
-                item_number = self.getNodeValueIfExists(orderItem, 'ns0:item-number')
-                product_quantity = float(self.getNodeValueIfExists(orderItem, 'ns0:quantity'))
-                issue_id = self.getNodeValueIfExists(orderItem, 'ns0:issue-id-start')
-                volume_id = self.getNodeValueIfExists(orderItem, 'ns0:volume-id-start')
-                wbs_element = self.getNodeValueIfExists(orderItem, 'ns0:wbs-element')
-                periodical_permit_number = self.getNodeValueIfExists(orderItem, 'ns0:periodical-permit-number')
-                journal_id = self.getNodeValueIfExists(orderItem, 'ns0:journal-id')
-                issue_type = self.getNodeValueIfExists(orderItem, 'ns0:issue-type')
-                issue_title = self.getNodeValueIfExists(orderItem, 'ns0:title')
-                weight = self.getNodeValueIfExists(orderItem, 'ns0:net-weight-kg')
+                _logger.debug('product')
+                # ------ PRODUCTS
+                # Quantity
+                product_quantity = float(self.getNodeValueIfExists(order, 'Menge'))
+
+                # Issue number
+                issue_number = document_scanning_line[document_scanning_line.rfind("#") + 1:document_scanning_line.rfind("*")]
+
+                # German Post number
+                german_post_id_number = int(document_scanning_line[document_scanning_line.find("*") + 1:document_scanning_line.find("#")])
+
+                # Magazine short name
+                customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
+                magazine_short_name = customer_number[customer_number.rfind("-") + 1:]
+
+                _logger.debug("Issue : %s | GPN : %s | MSN : %s", issue_number, german_post_id_number, magazine_short_name)
+
 
                 # Test if magazine exists
                 _logger.debug('test if magazine exists')
-                magazine_id = self.pool.get('product.template').search(cr, uid, [('journal_id', '=', journal_id)])
+                magazine_id = self.pool.get('product.template').search(cr, uid, [('journal_id', '=', magazine_short_name)])
 
                 # Magazine DOES NOT exist
                 if not magazine_id:
                     _logger.debug('magazie does not exists')
-                    self.createAnException("Magazine does not exist. Journal ID: {}".format(journal_id), "High",
-                                           picking_id)
-                    return None
+                    self.createAnException("Magazine does not exist. SN: {}".format(magazine_short_name), "High", picking_id)
+                    return False
                 magazine_id = magazine_id[0]
                 magazine = self.pool.get('product.template').browse(cr, uid, magazine_id)
 
                 _logger.debug('magazine does exist')
                 # Magazine DOES exist
-                issue_type = 'special' if issue_type == 'supplement' else issue_type  # error between 'supplement' and 'special'
-                issue_id2 = self.pool.get('product.product').search(cr, uid, [('product_tmpl_id', '=', magazine_id),
-                                                                              ('issue_number', '=', issue_id),
-                                                                              ('issue_volume', '=', volume_id),
-                                                                              ('issue_type', '=', issue_type)])
-                if not issue_id2:
+                issue_id = self.pool.get('product.product').search(cr, uid, [('product_tmpl_id', '=', magazine_id),
+                                                                                  ('issue_number', '=', issue_number),
+                                                                                  ('issue_volume', '=', german_post_id_number)])
+                if not issue_id:
                     self.createAnException(
-                        "Issue does not exist. Issue ID in XML: {}. Volume ID in XML: {}".format(issue_id, volume_id),
-                        "High", picking_id)
-                    return None
-                issue_id = issue_id2[0]
+                        "Issue does not exist. Issue Number in XML: {}. German Post Id in XML: {}".format(issue_number, german_post_id_number),
+                            "High", picking_id)
+                    return False
+                issue_id = issue_id[0]
 
                 _logger.debug('check issue info')
                 # Check issue info
                 issue = self.pool.get('product.product').browse(cr, uid, issue_id)
-
-                _logger.debug('volume check')
-                # Volume check
-                if issue.issue_volume != volume_id:
-                    self.createAnException(
-                        "Issue volume is different in XML and in Odoo. XML: {} . Odoo: {}".format(volume_id,
-                                                                                                  issue.issue_volume),
-                        "High", picking_id)
-                    return None
-
-                # Type check
-                _logger.debug('type check')
-                if issue.issue_type != issue_type:
-                    self.createAnException(
-                        "Issue type is different in XML and in Odoo. XML: {} . Odoo: {}".format(issue_type,
-                                                                                                issue.issue_type),
-                        "Low", picking_id)
-                    # return None
-
-                # Checks OK
-                _logger.debug('checks are ok')
-                # Set weight
-
-                issue.weight_net = float(weight) / product_quantity
-                # Set the WBS element as the title
-                magazine.title = str(wbs_element)
 
                 # Create move line
                 move_id = self.pool.get('stock.move').create(cr, uid, {
@@ -304,26 +332,25 @@ class MullerFile(models.Model):
                     'location_id': self.job_id.settings_id.input_picking_type.default_location_src_id.id,
                     'location_dest_id': self.job_id.settings_id.input_picking_type.default_location_dest_id.id,
                     'name': issue.name,
-                    'item_number': item_number,
                 })
 
                 # Error
                 if not move_id:
                     self.createAnException("Error while creating the stock move", "High", picking_id)
-                    return None
+                    return False
 
+                # Do the PL job: set as confirmed, check availability
+                picking_obj = self.pool.get('stock.picking')
+                picking = picking_obj.browse(cr, uid, [picking_id])
+                picking.confirm_picking_list()
+                
             # Everything went fine
             self.state = 'Parsed'
 
-            # Do the PL job: set as confirmed, check availability, print
-            picking_obj = self.pool.get('stock.picking')
-            picking = picking_obj.browse(cr, uid, [picking_id])
-            picking.confirm_picking_list()
-
-            return poa_file_id
+            return True
 
         except Exception, e:
             self.state = 'cancel'
             raise osv.except_osv(
-                _("(file.createPickingList) Error creating picking list for file {}".format(self.name)),
+                _("(file.createPickingListMuller) Error creating picking list for file {}".format(self.name)),
                 _("Here is the error:\n %s") % tools.ustr(e))

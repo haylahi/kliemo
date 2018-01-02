@@ -37,7 +37,7 @@ class MullerJob(models.Model):
             for file_id in in_file_ids:
                 # TODO: make sure we are getting the parser from the  proper provider
                 file_order = self.pool.get('kliemo_orders_parser.file').browse(cr, uid, file_id)
-                file_order.createPickingList()
+                file_order.createPickingListForMuller()
 
         except Exception, e:
             self.state = 'Cancelled'

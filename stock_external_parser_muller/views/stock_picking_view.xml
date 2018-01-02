@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="stock_picking_muller_form">
+            <field name="name">stock.picking.muller.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <!-- Add specific Springer fields -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Muller" attrs="{'invisible': [('settings_type', '!=', 'muller')],}">
+                        <group>
+                            <group>
+                                <field name="delivery_type"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
