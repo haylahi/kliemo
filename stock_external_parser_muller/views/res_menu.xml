@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem
+            name="Muller Reports"
+            parent="stock.menu_stock_inventory_control"
+            action=""
+            id="menu_muller_reports"
+            sequence="70"
+            icon="STOCK_JUSTIFY_FILL"/>
+
+        
+
+        <record id="action_stock_muller_daily_report_wizard" model="ir.actions.act_window">
+          <field name="name">Daily Orders Report</field>
+          <field name="type">ir.actions.act_window</field>
+          <field name="res_model">wiz.stock.muller.daily.report</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="view_id" ref="view_stock_muller_daily_report_wizard"/>
+          <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Daily Orders Report"
+            parent="stock_external_parser_muller.menu_muller_reports"
+            action="stock_external_parser_muller.action_stock_muller_daily_report_wizard"
+            id="menu_muller_daily_orders_report"
+            sequence="10"
+            icon="STOCK_JUSTIFY_FILL"/>
+
+    </data>
+</openerp>

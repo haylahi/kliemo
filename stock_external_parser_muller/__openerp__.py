@@ -18,10 +18,12 @@ MULLER Parser
     ],
     'sequence': 1,
     'data': [
+        'wizards/stock_muller_daily_orders_report.xml',
         'views/ftp_settings_view.xml',
         'views/res_country_view.xml', 
         'views/res_partner_view.xml',
         'views/stock_picking_view.xml',
+        'views/res_menu.xml',
 
         'reports/paperformat.xml',
         'reports/picking_label_report.xml',
