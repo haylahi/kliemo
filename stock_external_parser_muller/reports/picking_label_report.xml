@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+        <!-- REPORT DEFINITION -->
+		<report
+			id="stock_picking_muller_report_labels"
+			string="Muller Labels"
+			model="stock.picking"
+			report_type="qweb-pdf"
+			file="stock_picking_muller_labels"
+			name="stock_external_parser_muller.muller_label_report"
+		/>
+
+        <record id="stock_external_parser_muller.stock_picking_muller_report_labels" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="picking_list_label_paperformat_muller"/>
+        </record>
+
+        <template id="muller_label_report">
+            <t t-name="stock_external_parser_muller.muller_label">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page">
+                            <style type="text/css">
+                                /* Springer Address Panel - Upper Left */
+                                #mullerInfoPanel {
+                                    width: 150px;
+                                    margin: 5px 5px 5px 10px;
+                                    position: absolute;
+                                    top; 0px;
+                                }
+                                #mullerInfoPanel img {
+                                    width: 80%;
+                                }
+                                #mullerInfoPanel p {
+                                    font-size: 6pt;
+                                }
+                                #schweizerPostVerticalPanel p {
+                                    transform: rotate(90deg);
+                                    font-size: 6pt;
+                                }
+                                #schweizerPostVerticalPanel img {
+                                    width: 35px;
+                                    height: 35px;
+                                }
+                                #schweizerPostBitte {
+                                    border-top: 1px double black;
+                                    border-bottom: 1px double black;
+                                    font-size: 12pt;
+                                    transform: rotate(-30deg);
+                                }
+
+                                /* Shipping Info Pannel - Upper Right */
+                                #shippingInfoPanel {
+                                    position: relative;
+                                    width: 100%;
+                                    height: 120px;
+                                }
+
+                                #shippingInfoPanel img {
+                                    position: absolute;
+                                    right: 0px;
+                                }
+
+                                #shippingInfoPanel h1 {
+                                    padding: 5px;
+                                    position: absolute;
+                                    right: 0px;
+                                    text-align: right;
+                                    font-size: 12pt;
+                                    width: 100%;
+                                }
+
+                                #shippingInfoPanel p {
+                                    padding: 5px;
+                                    position: absolute;
+                                    right: 0px;
+                                    bottom: 0px;
+                                    text-align: right;
+                                }
+
+                                #schweizerPostRightPanel #upperTable {
+                                    font-size: 8pt;
+                                    text-align: center;
+                                    border: 1px solid black;
+                                }
+
+                                #schweizerPostRightPanel p {
+                                    font-size: 4pt;
+                                    text-align: center;
+                                }
+
+                                #schweizerPostRightPanel #lowerTable {
+                                    font-size: 4pt;
+                                    text-align: center;
+                                    border: 1px solid black;
+                                }
+
+                                /* Package Info Panel - Lower Left */
+                                #packageInfoPanel {
+                                    margin-top: 30px;
+                                    font-size: 8pt;
+                                    padding: 5px;
+                                }
+                                #packageInfoPanel img {
+                                    width: 50px;
+                                    height: 50px;
+                                    text-align: center;
+                                }
+
+                                /* Address Info Panel - Lower Right */
+                                #returnInfoPanel h1 {
+                                    font-size: 8pt;
+                                    font-weight: bold;
+                                    text-align: center;
+                                    margin-bottom: 0px;
+                                }
+
+                                #returnInfoPanel p {
+                                     text-align: center;
+                                     font-weight: bold;
+                                     font-size: 6pt;
+                                     border-bottom: 2px solid black;
+                                }
+
+                                #destAddressPanel {
+                                }
+                                #orderInfo {
+                                    width: 75%;
+                                     display: inline-block;
+                                    font-size: 8pt;
+                                    padding: 2px;
+                                 }
+                                #contentInfo {
+                                    width: 25%;
+                                    display: inline-block;
+                                    text-align: right;
+                                    font-size: 8pt;
+                                    padding: 2px;
+                                 }
+                                 #destAddress {
+                                    margin-top: 6px;
+                                    font-size: 9pt;
+                                    padding: 2px;
+                                 }
+                            </style>
+                            <div class="oe_structure" />
+                            <div class="row">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td width="30%" height="50%" style="vertical-align: top;">
+                                            <div id="mullerInfoPanel">
+                                                <p>
+                                                </p>
+                                            </div>
+                                        </td>
+                                        <td style="height: 10em;">
+                                             <!-- LABEL -->
+                                             <t t-if="o.shipping_rule.label_number==1">
+                                                 <!-- Nothing to add -->
+                                             </t>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td width="35%" height="50%">
+                                             
+                                         </td>
+                                         <td>
+                                             <div id="returnInfoPanel">
+                                                <t t-if="o.shipping_rule.label_number==10 or o.shipping_rule.label_number==20">
+                                                     <h1>"Presse und Buch International"</h1>
+                                                </t>
+                                                 <p>
+                                                     En cas de non-remise, renvoyer à l'expéditeur!
+                                                     <br/>
+                                                     Wenn nicht zustellbar, zuruck an den Absender! If undeliverable return to sender!
+                                                 </p>
+                                            </div>
+
+                                             <div id="destAddressPanel">
+                                                 <div id="orderInfo">
+                                                     <t t-if="o.shipping_rule.label_number==31">
+                                                         <t t-if="o.partner_id.endorsement_line_1">
+                                                             <span t-field="o.partner_id.endorsement_line_1"/><br/>
+                                                         </t>
+                                                         <t t-if="o.partner_id.endorsement_line_2">
+                                                             <span t-field="o.partner_id.endorsement_line_2"/><br/>
+                                                         </t>
+                                                     </t>
+                                                     <span t-field="o.external_order_number"/>
+                                                    <br/>
+                                                 </div>
+                                                <div id="contentInfo">
+                                                      <span t-field="o.product_quantity"/>
+                                                  </div>
+                                                  <div id="destAddress">
+                                                     <span t-field="o.partner_id.name"/><br/>
+                                                     <t t-if="o.partner_id.street">
+                                                         <span t-field="o.partner_id.street"/><br/>
+                                                     </t>
+                                                     <t t-if="o.partner_id.street2">
+                                                         <span t-field="o.partner_id.street2"/><br/>
+                                                     </t>
+                                                     <t t-if="o.partner_id.street3">
+                                                        <span t-field="o.partner_id.street3"/><br/>
+                                                     </t>
+                                                     <span t-field="o.partner_id.zip"/>
+                                                     <span t-field="o.partner_id.city"/>
+                                                     <t t-if="o.partner_id.country_id.code == 'US' or o.partner_id.country_id.code == 'AU' or o.partner_id.country_id.code == 'CA'">
+                                                         <span t-field="o.partner_id.state_id.name"/>
+                                                     </t>
+                                                     <br/>
+                                                     <span t-field="o.partner_id.country_id.name"/>
+                                                 </div>
+                                             </div>
+                                         </td>
+                                     </tr>
+                                 </table>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
