@@ -5,6 +5,8 @@
 from openerp import models, fields, api
 from openerp.osv import osv
 from openerp.tools.translate import _
+from lxml import etree
+import datetime
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -30,11 +32,10 @@ class SpringerPicking(models.Model):
     # ODOO INHERIT METHODS
     @api.one
     def do_transfer(self):
-        cr = self.env.cr
-        uid = self.env.user.id
         picking_ids = (self.ids,)
-        self.createASNFile()
-        super(picking, self).do_transfer()
+        if self.settings_type == 'springer':
+            self.createASNFile()
+        super(SpringerPicking, self).do_transfer()
         _logger.debug('Picking list print report on transfer')
         return self.print_labels()
         #return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.base_label_report', context=self.env.context) # print the labels
