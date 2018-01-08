@@ -70,7 +70,7 @@ class WizardStockMullerDailyReport(orm.TransientModel):
 
         report = {
             'type': 'ir.actions.report.xml',
-            'report_name': 'stock.picking.muller.daily.xls',
+            'report_name': 'stock.muller.daily.xls',
             'datas': {
                 'model': 'stock.picking',
                 'report_date': report_date,
