@@ -4,3 +4,4 @@ from . import springer_file
 from . import springer_job
 from . import springer_product
 from . import springer_stock_picking
+from . import springer_stock_shipping_rule

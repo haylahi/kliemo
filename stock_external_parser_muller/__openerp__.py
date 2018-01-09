@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 # This code (c) 2017 - AbAKUS it-solutions
 #
-
 {
     'name': "Müller Parser",
 
@@ -14,7 +13,8 @@ MULLER Parser
     'category': 'warehouse',
     'version': '1.0',
     'depends': [
-        'odoo-kliemo'
+        'odoo-kliemo',
+        'stock_packaging_auto',
     ],
     'sequence': 1,
     'data': [
@@ -24,9 +24,9 @@ MULLER Parser
         'views/res_partner_view.xml',
         'views/stock_picking_view.xml',
         'views/res_menu.xml',
+        'views/stock_shipping_rule.xml',
 
-        'reports/paperformat.xml',
-        'reports/picking_label_report.xml',
         'data/res_countries.xml',
+        'data/shipping_rules.xml',
     ],
 }

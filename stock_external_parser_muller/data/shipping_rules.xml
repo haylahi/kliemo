@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="shipping_rule_muller_imx_eu" model="stock.shipping_rule">
+            <field name="name">IMX Europe</field>
+            <field name="active">1</field>
+            <field name="priority">20</field>
+            <field name="code">IMXEU</field>
+            <field name="used_for_muller">1</field>
+            <field name="max_issues_per_shipping">9999</field>
+            <field name="region" ref="base.europe" />
+            <field name="weight_min">0</field>
+        </record>
+
+        <record id="shipping_rule_muller_imx_row" model="stock.shipping_rule">
+            <field name="name">IMX ROW</field>
+            <field name="active">1</field>
+            <field name="priority">25</field>
+            <field name="code">IMXROW</field>
+            <field name="used_for_muller">1</field>
+            <field name="max_issues_per_shipping">9999</field>
+            <field name="weight_min">0</field>
+        </record>
+    </data>
+</openerp>

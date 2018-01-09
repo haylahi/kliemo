@@ -47,7 +47,20 @@
             </field>
         </record>
 
-        <!-- Picking List Tree -->
-        
+        <record id="action_stock_picking_compute_shipping_auto" model="ir.actions.server">
+            <field name="name">Compute shipping</field>
+            <field name="model_id" ref="model_stock_picking"/>
+            <field name="state">code</field>
+            <field name="condition">True</field>
+            <field name="code">if object: self.browse(cr,uid,context.get('active_ids', [])).compute_shipping()</field>
+        </record>
+
+        <record id="ir_value_stock_picking_compute_shipping" model="ir.values">
+            <field name="name">ir.value.stock.picking.compute.shipping</field>
+            <field name="model">stock.picking</field>
+            <field name="key" >action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%d'%action_stock_picking_compute_shipping_auto"/>
+        </record>        
     </data>
 </openerp>

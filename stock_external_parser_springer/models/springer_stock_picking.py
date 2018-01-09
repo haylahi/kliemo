@@ -227,6 +227,179 @@ class SpringerPicking(models.Model):
             self.asn_file_id = asn_id
             self.asn_date = self.asn_file_id.creation_date
 
+    # This method will fetch the correct shipping rule for the current picking list
+    @api.multi
+    def compute_shipping(self):
+        for picking in self:
+            # If not Springer, pass to the upper level
+            if picking.settings_id.type != 'springer':
+                super(SpringerPicking, picking).compute_shipping()
+                continue
+
+            # init
+            picking._compute_gross_weight()
+            picking.compute_packaging()
+            picking.logistic_unit_quantity = 0
+            picking.shipping_rule = None
+            picking.logistic_unit_report = None
+
+            if not picking.file_id:
+                raise osv.except_osv(_("Error"), _("Can not get auto shipping because this picking list is not linked to a  file."))
+
+            # Shipping rule is 'consolidator'
+            if picking.shipping_method == 'consolidator':
+                # Assign shipping rule
+                rules_obj = self.pool.get('stock.shipping_rule')
+                rules_id = rules_obj.search(self.env.cr, self.env.uid, [])
+                for rule in rules_obj.browse(self.env.cr, self.env.uid, rules_id):
+                    if rule.shipping_method == 'consolidator':
+                        picking.shipping_rule = rule.id
+                        break
+
+                if not picking.shipping_rule:
+                    raise osv.except_osv(_("Error"), _("Can not get auto shipping rule because no shipping rule for collector is defined."))
+
+                # Get consolidator rule
+                # check customer number
+                if not picking.partner_id.customer_number:
+                    raise osv.except_osv(_("Error"), _("Can not get auto collector rule because no customer number on this partner."))
+
+                rules_obj = self.pool.get('stock.consolidator_rule')
+                rules_id = rules_obj.search(self.env.cr, self.env.uid, [])
+                for rule in rules_obj.browse(self.env.cr, self.env.uid, rules_id):
+                    if rule.customer_numbers and    picking.partner_id.customer_number in rule.customer_numbers:
+                        picking.consolidator_rule = rule.id
+                        break
+
+                # label quantity
+                picking.logistic_unit_quantity = 1
+
+                if not picking.consolidator_rule:
+                    raise osv.except_osv(_("Error"), _("Can not get auto collector rule because customer number in any consolidator rule."))
+                return
+
+            # get shipping rules
+            rules_obj = self.pool.get('stock.shipping_rule')
+            rules = rules_obj.search(self.env.cr, self.env.uid, [], order='priority asc')
+
+            # error, no rules
+            if len(rules) < 1:
+                raise osv.except_osv(_("Error"), _("There is no shipping rules defined!"))
+
+            filter = []
+
+            # loop on rules to get the ruled countries and country groups
+            countries_ruled = []
+            country_groups_rules = []
+            for rule in rules_obj.browse(self.env.cr, self.env.uid, rules):
+                if rule.country != None and rule.country.id not in countries_ruled:
+                    countries_ruled.append(rule.country.id)
+                if rule.region != None and rule.region.id not in country_groups_rules:
+                    country_groups_rules.append(rule.region.id)
+            _logger.debug("Countries ruled: %s", countries_ruled)
+            _logger.debug("Groups of countries ruled: %s", country_groups_rules)
+
+            # check country
+            if picking.partner_id.country_id.id in countries_ruled:
+                filter.append('|')
+                filter.append(['country', '=', picking.partner_id.country_id.id])
+                filter.append(['country', '=', False])
+            # check for europe
+            else:
+                if len(countries_ruled) > 0:
+                    regions_obj = self.pool.get('res.country.group')
+                    regions_id = regions_obj.search(self.env.cr, self.env.uid, [])
+                    region_match = False
+                    for region in regions_obj.browse(self.env.cr, self.env.uid, regions_id):
+                        if picking.partner_id.country_id in region.country_ids:
+                            region_match = True
+                            filter.append(['region', '=', region.id])
+                    # Measns that the country is in ROW
+                    if not region_match:
+                        filter.append(['region', '=', 'ROW'])
+
+            # Only the rules used for Springer
+            filter.append(['used_for_springer', '=', True])
+
+            _logger.debug("Filter: %s", filter)
+
+            rules = rules_obj.search(self.env.cr, self.env.uid, filter, order='priority asc')
+
+            # loop on all rules to find the right one
+            for rule in rules_obj.browse(self.env.cr, self.env.uid, rules):
+                _logger.debug("Rule: %s - %s", rule.label_number, rule.service)
+                # Shipping method (collector/standart/courrier)
+                if rule.shipping_method == picking.shipping_method:
+                    # Delivery method check between 'initial' and 'subsequent'
+                    if rule.delivery_method == 'both' or rule.delivery_method == picking.file_id.job_id.settings_id.delivery_method or picking.file_id.job_id.settings_id.delivery_method == 'both':
+
+                        # PO-Box
+                        if picking.po_box == False or picking.po_box == "" or picking.po_box == "None":
+                            if rule.po_box == "yes":
+                                continue
+                        elif picking.po_box != False and picking.po_box != "":
+                            if rule.po_box == "no":
+                                continue
+
+                        # Postal-permit #
+                        if picking.postal_permit_number == False or picking.postal_permit_number == "":
+                            if rule.postal_permit == "yes":
+                                continue
+                        elif picking.postal_permit_number != False and picking.postal_permit_number != "":
+                            if rule.postal_permit == "no":
+                                continue
+
+                        # ADS
+                        if picking.ads == False or picking.ads == "":
+                            if rule.ads == "yes":
+                                continue
+                        elif picking.ads != False and picking.ads != "":
+                            if rule.ads == "no":
+                                continue
+
+                        # Phone
+                        if picking.partner_id.phone == "" or picking.partner_id.phone == False:
+                            if rule.phone == "yes":
+                                continue
+                        elif picking.partner_id.phone != "" and picking.partner_id.phone != False:
+                            if rule.phone == "no":
+                                continue
+
+                        # Weight
+                        if rule.weight_max != 0 and picking.net_picking_weight > rule.weight_max:
+                            _logger.debug("Weight too much")
+                            continue
+
+                        if picking.net_picking_weight < rule.weight_min:
+                            _logger.debug("Weight too low")
+                            continue
+
+                        _logger.debug("Rule found: %s", rule.service)
+
+                        # Number of packages
+                        if rule.weight_max_package > 0 and rule.weight_max_package < picking.net_picking_weight:
+                            picking.logistic_unit_quantity = int((picking.net_picking_weight / rule.weight_max_package) + 1)
+                        else:
+                            picking.logistic_unit_quantity = 1
+
+                        #  Report
+                        picking.shipping_rule = rule
+                        picking.logistic_unit_report = rule.label_report
+                        break
+
+            # Create the boxes
+            if len(picking.boxes) < picking.logistic_unit_quantity:
+               i = 1
+               while i <= picking.logistic_unit_quantity:
+                    self.pool.get('stock.shipping_box').create(self.env.cr, self.env.uid, {
+                        'picking_id': picking.id,
+                        'state': 'draft',
+                    })
+                    i += 1
+
+            if not picking.shipping_rule:
+                raise osv.except_osv(_("Error"), _("There is no shipping rule that matches this picking list!"))
+            
 class picking_line(models.Model):
     _inherit = ['stock.move']
 
