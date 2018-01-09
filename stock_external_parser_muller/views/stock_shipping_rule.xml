@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="shipping_rule_muller_form">
+            <field name="name">shipping.rule.muller.form</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="used_for_muller" />
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <group name="muller_settings" string="Muller" attrs="{'invisible': [('used_for_muller', '=', False)]}">
+                        <field name="max_issues_per_shipping" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="shipping_rule_muller_tree">
+            <field name="name">shipping.rule.muller.tree</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_tree_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="used_for_muller" />
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="shipping_rule_muller_search">
+            <field name="name">shipping.rule.muller.search</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_search_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="muller_rules" string="Muller Rules" domain="[('used_for_muller', '=', True)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

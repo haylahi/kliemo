@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="shipping_rule_springer_form">
+            <field name="name">shipping.rule.springer.form</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="used_for_springer" />
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <group name="springer_settings" string="Springer" attrs="{'invisible': [('used_for_springer', '=', False)]}">
+                        <group>
+                            <field name="shipping_method" attrs="{'required': [('used_for_springer', '=', True)]}"/>
+                            <field name="delivery_method" attrs="{'required': [('used_for_springer', '=', True)]}"/>
+                        </group>
+                        <group>
+                            <field name="service" attrs="{'required': [('used_for_springer', '=', True)]}"/>
+                            <field name="po_box"/>
+                            <field name="postal_permit"/>
+                            <field name="ads"/>
+                            <field name="phone"/>
+                        </group>
+                        <group>
+                            <field name="pallet_number"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="shipping_rule_springer_tree">
+            <field name="name">shipping.rule.springer.tree</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_tree_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="used_for_springer" />
+                    <field name="shipping_method"/>
+                    <field name="delivery_method"/>
+                    <field name="po_box"/>
+                    <field name="postal_permit"/>
+                    <field name="ads"/>
+                    <field name="phone"/>
+                    <field name="service"/>
+                    <field name="pallet_number"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="shipping_rule_springer_search">
+            <field name="name">shipping.rule.springer.search</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="inherit_id" ref="stock_packaging_auto.stock_shipping_rule_search_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="springer_rules" string="Springer Rules" domain="[('used_for_springer', '=', True)]"/>
+                    <field name="service" string="Service" filter_domain="[('service','ilike', self)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

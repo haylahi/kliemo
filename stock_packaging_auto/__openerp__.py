@@ -4,7 +4,7 @@
 # in Belgium, 2015
 
 {
-    'name': "SPRINGER : Picking list auto packaging",
+    'name': "Picking list auto packaging",
     'version': '1.0',
     'depends': [
         'stock',
@@ -33,16 +33,19 @@ To do so, it uses:
     'data': [
     		'security/security.xml',
 	        'security/ir.model.access.csv',
+
     		'view/stock_picking_list_view.xml',
             'view/stock_logistic_unit_view.xml',
             'view/stock_transporter_view.xml',
             'view/stock_shipping_rule.xml',
             'view/stock_consolidator_rule.xml',
+
             'data/label_report_paperformat.xml',
             'data/consolidator_rules.xml',
-            'data/shipping_rules.xml',
+
             'report/stock_packaging_reports.xml',
             'report/stock_report.xml',
+
             'wizard/stock_print_lists_wizard.xml',
     		],
 }

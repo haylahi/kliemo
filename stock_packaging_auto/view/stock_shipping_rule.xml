@@ -6,21 +6,15 @@
             <field name="model">stock.shipping_rule</field>
             <field name="arch" type="xml">
                 <tree string="Shipping Rules">
-                    <field name="shipping_method"/>
-                    <field name="delivery_method"/>
+                    <field name="name" />
+                    <field name="priority" />
                     <field name="country"/>
                     <field name="region"/>
-                    <field name="po_box"/>
-                    <field name="postal_permit"/>
-                    <field name="ads"/>
-                    <field name="phone"/>
                     <field name="weight_min"/>
                     <field name="weight_max"/>
                     <field name="weight_max_package"/>
-                    <field name="service"/>
                     <field name="code"/>
                     <field name="label_number"/>
-                    <field name="pallet_number"/>
                     <field name="active"/>
                 </tree>
             </field>
@@ -32,44 +26,39 @@
             <field name="arch" type="xml">
                 <form string="Shipping Rule Form">
                     <sheet>
-                        <group>
+                        <group name="general" string="General">
                             <group>
-                                <field name="shipping_method"/>
-                                <field name="delivery_method"/>
-                            </group>
-                            <group>
-                                <field name="service"/>
                                 <field name="code"/>
+                                <field name="name" />
                                 <field name="priority"/>
                                 <field name="active"/>
                             </group>
-                        </group>
-                        <group>
                             <group>
                                 <field name="country"/>
                                 <field name="region"/>
-                                <field name="po_box"/>
-                                <field name="postal_permit"/>
-                                <field name="ads"/>
-                                <field name="phone"/>
                             </group>
                             <group>
                                 <field name="weight_min"/>
                                 <field name="weight_max"/>
                                 <field name="weight_max_package"/>
                             </group>
-                        </group>
-                        <group>
                             <group>
                                 <field name="label_number"/>
-                                <field name="pallet_number"/>
-                            </group>
-                            <group>
                                 <field name="label_report"/>
                             </group>
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_shipping_rule_search_view">
+            <field name="name">stock.shipping_rule.search</field>
+            <field name="model">stock.shipping_rule</field>
+            <field name="arch" type="xml">
+                <search string="Shipping Rules">
+                    <field name="code" string="Name" filter_domain="['|', ('name', 'ilike', self), ('code','ilike', self)]"/>
+                </search>
             </field>
         </record>
 

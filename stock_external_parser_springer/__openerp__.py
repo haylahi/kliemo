@@ -42,8 +42,10 @@ Tasks:
         'views/file_view.xml',
         'views/res_partner_view.xml',
         'views/stock_picking_view.xml',
+        'views/stock_shipping_rule.xml',
 
         'data/ir_cron.xml',
+        'data/shipping_rules.xml',
         # 'security/ir.model.access.csv',
         #'views/ftpSettings.xml',
         #'views/job.xml',

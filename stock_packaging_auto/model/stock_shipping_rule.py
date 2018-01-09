@@ -10,23 +10,15 @@ _logger = logging.getLogger(__name__)
 class shipping_rule(models.Model):
     _name = 'stock.shipping_rule'
 
-    shipping_method = fields.Selection([('standard', 'Standard'), ('courier', 'Courier'), ('consolidator', 'Collector')], string="Shipping method", required=True)
-    delivery_method = fields.Selection([('initial', 'Initial Dispatch'), ('subsequent', 'Subsequent Delivery'), ('both', 'Both (initial and subsequent)')], string="Delivery method", required=True)
+    name = fields.Char(string="Name")
     country = fields.Many2one('res.country', string="Country")
     region = fields.Many2one('res.country.group', string="Region")
-    po_box = fields.Char(string="PO-BOX")
-    postal_permit = fields.Char(string="Postal Permit #")
-    ads = fields.Char(string="ADS")
-    phone = fields.Char(string="Phone")
     weight_min = fields.Float(string="Min. weight", required=True)
     weight_max = fields.Float(string="Max. weight")
     weight_max_package = fields.Float(string="Max. weight/package")
-    service = fields.Char(string="Service", required=True)
     label_number = fields.Integer(string="Label #")
     label_report = fields.Many2one('ir.actions.report.xml', string="Label report")
-    pallet_number = fields.Char(string="Pallet #")
     code = fields.Char(string="Code")
-
     active = fields.Boolean(string="Active", default=True)
     priority = fields.Integer(string="Priority", help="The lower is the most prior")
 
@@ -34,10 +26,19 @@ class shipping_rule(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = record.service
+            name = str(self.name)
             if record.country:
-                name += ", " + record.country.code
+                name += ", " + str(record.country.code)
             if record.region:
-                name += ":" + record.region.name
+                name += ":" + str(record.region.name)
             result.append((record.id, name))
         return result
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        if operator not in ('ilike', 'like', '=', '=like', '=ilike'):
+            return super(shipping_rule, self).name_search(name, args, operator, limit)
+        args = args or []
+        domain = ['|', ('code', operator, name), ('name', operator, name)]
+        recs = self.search(domain + args, limit=limit)
+        return recs.name_get()
