@@ -46,5 +46,12 @@
         <record id="base.ee" model="res.country">
             <field name="muller_country_code">EW</field>
         </record>
+        <record id="base.jp" model="res.country">
+            <field name="muller_country_code">J</field>
+        </record>
+        <record id="base.uk" model="res.country">
+            <field name="muller_country_code">GB</field>
+        </record>
+        
     </data>
 </openerp>

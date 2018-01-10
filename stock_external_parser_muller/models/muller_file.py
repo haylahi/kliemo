@@ -82,7 +82,7 @@ class MullerFile(models.Model):
                 country_ids = self.pool.get('res.country').search(cr, uid, [('muller_country_code', '=', str_country)])
                 if (len(country_ids) == 0):
                     self.createAnException("Country with code {} does not exists in the database, please configure it and try again".format(str_country), 'High', None)
-                    return False
+                    continue
                 elif (len(country_ids) > 0):
                     country_id = country_ids[0]
 
@@ -102,7 +102,7 @@ class MullerFile(models.Model):
                 #_logger.debug("PARTS : %s", parts_dsl)
                 #if(parts_dsl == None or len(parts_dsl.group()) != 5):
                 #    self.createAnException("Unable to parse [{}] into groups [{}]".format(document_scanning_line, parts_dsl.group()), 'High', None)
-                #    return False
+                #    continue
 
                 # Customer number
                 customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
@@ -125,7 +125,7 @@ class MullerFile(models.Model):
                     #_logger.debug("== STR_ADRESS_1 [{}]:".format(str_addresses[-1]))
                     if(parts_z is None or len(parts_z.groups()) != 2):
                         self.createAnException("Unable to parse [{}]".format(str_addresses[-1]), 'High', None)
-                        return False
+                        continue
 
                     customer_postal_code = parts_z.group(1)
                     #_logger.debug("== POSTCODE [{}]:".format(customer_postal_code))
@@ -275,7 +275,7 @@ class MullerFile(models.Model):
                         _logger.debug('picking exists and is not in draft anymore')
                         self.state = 'Parsed'
                         self.createAnException("Picking list already exists: {}".format(document_scanning_line), "Low", picking_id)
-                        return False
+                        continue
                     # Picking DOES EXISTS, simply update it
                     else:
                         _logger.debug("picking exists and is in draft, we will update it")
@@ -306,7 +306,7 @@ class MullerFile(models.Model):
                 if not magazine_id:
                     _logger.debug('magazie does not exists')
                     self.createAnException("Magazine does not exist. SN: {}".format(magazine_short_name), "High", picking_id)
-                    return False
+                    continue
                 magazine_id = magazine_id[0]
                 magazine = self.pool.get('product.template').browse(cr, uid, magazine_id)
 
@@ -319,7 +319,7 @@ class MullerFile(models.Model):
                     self.createAnException(
                         "Issue does not exist. Issue Number in XML: {}. German Post Id in XML: {}".format(issue_number, german_post_id_number),
                             "High", picking_id)
-                    return False
+                    continue
                 issue_id = issue_id[0]
 
                 _logger.debug('check issue info')
@@ -340,7 +340,7 @@ class MullerFile(models.Model):
                 # Error
                 if not move_id:
                     self.createAnException("Error while creating the stock move", "High", picking_id)
-                    return False
+                    continue
 
                 # Do the PL job: set as confirmed, check availability
                 picking_obj = self.pool.get('stock.picking')
