@@ -23,11 +23,18 @@ class stock_picking_list(orm.Model):
             'external_order_number',
             'date',
             'product_quantity',
-            'partner_id.country_id.code',
-            'partner_id.customer_number',
+            'partner_id.muller_customer_number',
             'partner_id.name',
             'partner_id.street',
+            'partner_id.street2',
+            'partner_id.street3',
+            'partner_id.city',
+            'partner_id.zip',
+            'partner_id.country_id.name',
+            'partner_id.country_id.code',
             'delivery_type',
+            'partner_id.login_app',
+            'partner_id.letter_header',
         ]
 
     def _xls_all_pickings_template(self, cr, uid, context=None):
@@ -106,96 +113,81 @@ class StockMullerDailyReportXLS(report_xls):
         # XLS Template
         self.col_specs_template = {
             'external_order_number': {
-                'header': [1, 20, 'text', _render("_('PO#')")],
+                'header': [1, 20, 'text', _render("_('Beleglesezeile')")],
                 'pickings': [1, 0, 'text', _render("pick.external_order_number")],
             },
             'date': {
-                'header': [1, 40, 'text', _render("_('Order Date')")],
+                'header': [1, 40, 'text', _render("_('Datum')")],
                 'pickings': [1, 0, 'text', _render("pick.date")],
             },
             'product_quantity': {
-                'header': [1, 20, 'text', _render("_('#Copies')")],
+                'header': [1, 20, 'text', _render("_('Menge')")],
                 'pickings': [1, 0, 'number', _render("pick.product_quantity")]
             },
-            'partner_id.country_id.code': {
-                'header': [1, 20, 'text', _render("_('County')")],
-                'pickings': [1, 0, 'text', _render(str("pick.partner_id.country_id.code"))]
-            },
-            'partner_id.customer_number': {
-                'header': [1, 20, 'text', _render("_('Customer#')")],
-                'pickings': [1, 0, 'text', _render(str("pick.partner_id.customer_number"))]
+            'partner_id.muller_customer_number': {
+                'header': [1, 20, 'text', _render("_('Abonummer')")],
+                'pickings': [1, 0, 'number', _render("pick.partner_id.muller_customer_number")]
             },
             'partner_id.name': {
-                'header': [1, 20, 'text', _render("_('Address')")],
+                'header': [1, 20, 'text', _render("_('Customer')")],
                 'pickings': [1, 0, 'text', _render(str("pick.partner_id.name"))]
             },
             'partner_id.street': {
-                'header': [1, 20, 'text', _render("_('Address2')")],
+                'header': [1, 20, 'text', _render("_('Street1')")],
                 'pickings': [1, 0, 'text', _render(str("pick.partner_id.street"))]
             },
+            'partner_id.street2': {
+                'header': [1, 20, 'text', _render("_('Street2')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.street2"))]
+            },
+            'partner_id.street3': {
+                'header': [1, 20, 'text', _render("_('Street3')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.street3"))]
+            },
+            'partner_id.city': {
+                'header': [1, 20, 'text', _render("_('City')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.city"))]
+            },
+            'partner_id.zip': {
+                'header': [1, 20, 'text', _render("_('Zip')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.zip"))]
+            },
+            'partner_id.country_id.name': {
+                'header': [1, 20, 'text', _render("_('Country')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.country_id.name"))]
+            },
+            'partner_id.country_id.code': {
+                'header': [1, 20, 'text', _render("_('Country Code')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.country_id.code"))]
+            },
             'delivery_type': {
-                'header': [1, 20, 'text', _render("_('Pciking Type')")],
+                'header': [1, 20, 'text', _render("_('Type')")],
                 'pickings': [1, 0, 'text', _render(str("pick.delivery_type"))]
+            },
+             'partner_id.letter_header': {
+                'header': [1, 20, 'text', _render("_('Briefanrede')")],
+                'pickings': [1, 0, 'text', _render(str("pick.partner_id.letter_header"))]
             },
         }
 
     def _get_title(self):
-        return "TITLE"
-
-    def _report_title(self, ws, _p, row_pos, _xs, title):
-        cell_style = xlwt.easyxf(_xs['xls_title'])
-        c_specs = [
-            ('report_name', 1, 0, 'text', title),
-        ]
-        row_data = self.xls_row_template(c_specs, [x[0] for x in c_specs])
-        row_pos = self.xls_write_row(
-            ws, row_pos, row_data, row_style=cell_style)
-        return row_pos + 1
-
-    def _empty_report(self, ws, _p, row_pos, _xs, report):
-        cell_style = xlwt.easyxf(_xs['bold'])
-
-        if report == 'acquisition':
-            suffix = _('New Acquisitions')
-        elif report == 'active':
-            suffix = _('Active Assets')
-        else:
-            suffix = _('Removed Assets')
-        no_entries = _("No") + " " + suffix
-        c_specs = [
-            ('ne', 1, 0, 'text', no_entries),
-        ]
-        row_data = self.xls_row_template(c_specs, [x[0] for x in c_specs])
-        row_pos = self.xls_write_row(
-            ws, row_pos, row_data, row_style=cell_style)
+        return "Muller Daily Report"
 
     def _get_pickings(self, ftp_settings_id, report_date, done_pickings):
 
-        pickings = []
-        picking_obj = self.pool.get('stock.picking')
+        # Take all the picking for the selected date and related to the FTP setting
         condition = [['state', '!=', 'done'], ['state', '!=', 'cancel']]
         if done_pickings:
             condition = [['state', '=', 'done']]
-        pickings_ids = picking_obj.search(self.cr, self.uid, condition)
-        for pick_id in pickings_ids:
-            picking = picking_obj.browse(self.cr, self.uid, pick_id)
+        condition.append(['settings_id', '=', ftp_settings_id])
+        #condition.append(('date_done', '<=', str(datetime.now().date()))) # TODO : filter on correct date
+        _logger.debug("\n\nConditions : %s", condition)
+        pickings_ids = picking_obj.search(cr, uid, condition)
 
-            # Only done pickings so check the date
-            if done_pickings:
-                date = datetime.strptime(picking.date_done, "%Y-%m-%d %H:%M:%S")
-                date = datetime.strftime(date, "%Y-%m-%d")
-                if date == report_date:
-                    # Take all corresponding to the ftp_setting OR all (no mather which ftp setting)
-                    if (ftp_settings_id == False) or (ftp_settings_id != False and picking.file_id.job_id.settings_id.id == ftp_settings_id):
-                        pickings.append(picking)
-            # Every not done pickings
-            else:
-                if (ftp_settings_id == False) or (ftp_settings_id != False and picking.file_id and picking.file_id.job_id and picking.file_id.job_id.settings_id and picking.file_id.job_id.settings_id.id == ftp_settings_id):
-                        pickings.append(picking)
+        _logger.debug("Len: %s", len(pickings_ids))
 
-        _logger.debug("Len: %s", len(pickings))
-
-        return pickings
+        return pickings_ids
+            
 
     def _view_add(self, acq, assets):
         parent = filter(lambda x: x[0] == acq[2], self.assets)
@@ -224,10 +216,6 @@ class StockMullerDailyReportXLS(report_xls):
         # set print header/footer
         ws.header_str = self.xls_headers['standard']
         ws.footer_str = self.xls_footers['standard']
-        #row_pos = self._report_title(ws, _p, row_pos, _xs, title) # Removed to not show a title
-
-        if not self.pickings:
-            return self._empty_report(ws, _p, row_pos, _xs, 'active')
 
         # Set header
         c_specs = map(lambda x: self.render(x, self.col_specs_template, 'header', render_space={'_': _p._}),  picking_fields)
@@ -273,6 +261,8 @@ class StockMullerDailyReportXLS(report_xls):
         _ = _p._
 
         report_name = self._get_title()
+
+        _logger.debug("\n\nPickings : %s", data['ids'])
 
         self.pickings = self._get_pickings(ftp_setting_id, report_date, done_pickings)
         self.pickings_id = [x.id for x in self.pickings]

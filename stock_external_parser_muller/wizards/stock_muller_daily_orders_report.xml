@@ -2,21 +2,22 @@
 <openerp>
     <data>
         <record id="view_stock_muller_daily_report_wizard" model="ir.ui.view">
-          <field name="name">Muller Daily Report</field>
-          <field name="model">wiz.stock.muller.daily.report</field>
-          <field name="arch" type="xml">
-            <form string="Muller Daily report">
-              <group col="4" colspan="4">
-                <field name="ftp_setting" domain="[('type', '=', 'muller')]"/>
-                <field name="report_date"/>
-              </group>
-              <footer>
-                <button name="xls_export" icon="gtk-execute" string="Generate Report" type="object" context="{'xls_export':1}" default_focus="1" class="oe_highlight"/>
-                or
-                <button string="Cancel" class="oe_link" special="cancel" />
-              </footer>
-            </form>
-          </field>
+            <field name="name">Muller Daily Report</field>
+            <field name="model">wiz.stock.muller.daily.report</field>
+            <field name="arch" type="xml">
+                <form string="Muller Daily report">
+                    <group col="4" colspan="4">
+                        <field name="ftp_setting" domain="[('type', '=', 'muller')]"/>
+                        <field name="report_date"/>
+                        <field name="done_pickings" />
+                    </group>
+                    <footer>
+                        <button name="xls_export" icon="gtk-execute" string="Generate Report" type="object" context="{'xls_export':1}" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
         </record>
     </data>
 </openerp>
