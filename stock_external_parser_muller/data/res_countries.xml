@@ -52,6 +52,32 @@
         <record id="base.uk" model="res.country">
             <field name="muller_country_code">GB</field>
         </record>
-        
+        <record id="base.fi" model="res.country">
+            <field name="muller_country_code">FIN</field>
+        </record>
+        <record id="base.hu" model="res.country">
+            <field name="muller_country_code">H</field>
+        </record>
+        <record id="base.lv" model="res.country">
+            <field name="muller_country_code">LV</field>
+        </record>
+        <record id="base.no" model="res.country">
+            <field name="muller_country_code">N</field>
+        </record>
+        <record id="base.se" model="res.country">
+            <field name="muller_country_code">S</field>
+        </record>
+        <record id="base.si" model="res.country">
+            <field name="muller_country_code">SLO</field>
+        </record>
+        <record id="base.cn" model="res.country">
+            <field name="muller_country_code">VRC</field>
+        </record>
+        <record id="base.na" model="res.country">
+            <field name="muller_country_code">NAM</field>
+        </record>
+        <record id="base.hk" model="res.country">
+            <field name="muller_country_code">HK</field>
+        </record>
     </data>
 </openerp>
