@@ -42,6 +42,32 @@ class SpringerPicking(models.Model):
 
     # -----------------------------------------------------------------------
     # MODEL METHODS
+
+    # Used as an interface
+    @api.multi
+    def confirm_picking_list(self):
+        for picking in self:
+            if picking.settings_type != 'springer':
+                super(SpringerPicking, picking).confirm_picking_list()
+                continue
+
+            auto_set_ok = False
+            # auto set rule
+            if(picking.file_id):
+                try:
+                    # auto set package
+                    picking.compute_shipping()
+                    auto_set_ok = True
+                except Exception, e:
+                    _logger.debug("ERROR OF COMPUTING PACKAGING OR PICKING AUTO")
+                    picking.file_id.setAsError()
+
+            # confirm the PL
+            if auto_set_ok:
+                picking.action_confirm()
+                picking.action_assign()
+                picking.print_list() # print the PL
+
     @api.multi
     def get_poa_representation(self):
         cr = self.env.cr
