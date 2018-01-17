@@ -79,7 +79,7 @@ class MullerFile(models.Model):
                 # Country
                 str_country = self.getNodeValueIfExists(order, 'LKZ')
                 country_id = False
-                country_ids = self.pool.get('res.country').search(cr, uid, [('muller_country_code', '=', str_country)])
+                country_ids = self.pool.get('res.country').search(cr, uid, ['|', ('muller_country_code', '=', str_country), ('code', '=', str_country)])
                 if (len(country_ids) == 0):
                     self.createAnException("Country with code {} does not exists in the database, please configure it and try again".format(str_country), 'High', None)
                     continue

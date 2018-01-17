@@ -79,5 +79,8 @@
         <record id="base.hk" model="res.country">
             <field name="muller_country_code">HK</field>
         </record>
+        <record id="base.hr" model="res.country">
+            <field name="muller_country_code">HR</field>
+        </record>
     </data>
 </openerp>
