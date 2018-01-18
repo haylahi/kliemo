@@ -85,5 +85,8 @@
         <record id="base.es" model="res.country">
             <field name="muller_country_code">E</field>
         </record>
+        <record id="base.li" model="res.country">
+            <field name="muller_country_code">FL</field>
+        </record>
     </data>
 </openerp>
