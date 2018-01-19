@@ -7,7 +7,7 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">
-                <page string="Information" position="before">
+                <xpath expr="//notebook" position="inside">
 					<page string="Magazine Issue">
                         <h2>Issue information</h2>
                         <button class="oe_highlight" type="object" string="Print Label" name="print_label"/>
@@ -22,7 +22,7 @@
                             <field name="issue_type"/>
                         </group>
 					</page>
-				</page>
+                </xpath>
             </field>
         </record>
 
@@ -32,16 +32,22 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-                <field name="name" position="after">
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="title"/>
                     <field name="issue_volume"/>
                     <field name="issue_number"/>
                     <field name="issue_date"/>
                     <field name="issue_type"/>
-                </field>
-                <field name="attribute_value_ids" position="replace"/>
-                <field name="lst_price" position="replace"/>
-                <field name="uom_id" position="replace"/>
+                </xpath>
+                <xpath expr="//field[@name='attribute_value_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lst_price']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='uom_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
     </data>
