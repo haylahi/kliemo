@@ -200,7 +200,8 @@ class SpringerParser(models.Model):
         # Set files as uploaded
         for file_id in file_ids:
             file_to_save = self.pool.get('kliemo_orders_parser.file').browse(cr, uid, file_id)
-            file_to_save.uploaded = True
+            if file_to_save:
+                file_to_save.uploaded = True
 
         _logger.debug("delete zipfile")
         os.remove(tmp_zipfilename)
