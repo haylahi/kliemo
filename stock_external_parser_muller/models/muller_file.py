@@ -151,9 +151,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 6):
                         _logger.debug("== 6 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[5] because it is the country in Ausland
-                        parts_z = str_addresses[4].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[4][:str_addresses[4].find(' ')]
+                        customer_city = str_addresses[4][str_addresses[4].find(' ') + 1:]
                         customer_address_line_3 = str_addresses[3]
                         customer_address_line_2 = str_addresses[2]
                         customer_address_line_1 = str_addresses[1]
@@ -162,9 +161,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 5):
                         _logger.debug("== 5 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[4] because it is the country in Ausland
-                        parts_z = str_addresses[3].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[3][:str_addresses[3].find(' ')]
+                        customer_city = str_addresses[3][str_addresses[3].find(' ') + 1:]
                         customer_address_line_2 = str_addresses[2]
                         customer_address_line_1 = str_addresses[1]
                         partner_name = str_addresses[0]
@@ -172,9 +170,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 4):
                         _logger.debug("== 4 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[3] because it is the country in Ausland
-                        parts_z = str_addresses[2].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[2][:str_addresses[2].find(' ')]
+                        customer_city = str_addresses[2][str_addresses[2].find(' ') + 1:]
                         customer_address_line_1 = str_addresses[1]
                         partner_name = str_addresses[0]
 
@@ -182,8 +179,8 @@ class MullerFile(models.Model):
                         _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[2] because it is the country in Ausland
                         parts_z = str_addresses[1].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[0][:str_addresses[0].find(' ')]
+                        customer_city = str_addresses[0][str_addresses[0].find(' ') + 1:]
                         customer_address_line_1 = str_addresses[0]
                         partner_name = str_addresses[0]
 
@@ -241,7 +238,7 @@ class MullerFile(models.Model):
                     partner.letter_header = letter_header
                     check = False
                     for sub in partner.subscription_ids:
-                        if sub.number == subscription_number:
+                        if int(sub.number) == int(subscription_number):
                             check = True
                             break
                     if check:
