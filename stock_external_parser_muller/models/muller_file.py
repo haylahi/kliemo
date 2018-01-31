@@ -252,33 +252,20 @@ class MullerFile(models.Model):
                 
             # ------ ORDER
                 _logger.debug('order')
-            
-                # Test if order exists
-                picking_ids = self.pool.get('stock.picking').search(cr, uid, [('external_order_number', '=', document_scanning_line)])
 
-                # Picking DOES NOT EXIST, create a new one
-                if not picking_ids:
-                    _logger.debug('picking does not exist')
-                    picking_id = self.pool.get('stock.picking').create(cr, uid, {
-                        'partner_id': partner_id,
-                        'picking_type_id': self.job_id.settings_id.input_picking_type.id,
-                        'external_order_number': document_scanning_line,
-                        'file_id': int(self.id),
-                        'delivery_type': delivery_type,
-                    })
+                # Here we had a check for the existing (or not) order already,
+                # but it is removed because Muller can send multiple orders with the same number
+                # because it is for them split for packaging
+                # So we removed this check and recreate it even if already in
 
-                # Picking DOES EXISTS
-                else:
-                    picking_id = picking_ids[0]
-                    picking = self.pool.get('stock.picking').browse(cr, uid, picking_id)  # get the first one
-                    if picking.state != 'draft':  # Check the state of the picking
-                        _logger.debug('picking exists and is not in draft anymore')
-                        self.state = 'Parsed'
-                        self.createAnException("Picking list already exists: {}".format(document_scanning_line), "Low", picking_id)
-                        continue
-                    # Picking DOES EXISTS, simply update it
-                    else:
-                        _logger.debug("picking exists and is in draft, we will update it")
+                _logger.debug('Create the new picking list')
+                picking_id = self.pool.get('stock.picking').create(cr, uid, {
+                    'partner_id': partner_id,
+                    'picking_type_id': self.job_id.settings_id.input_picking_type.id,
+                    'external_order_number': document_scanning_line,
+                    'file_id': int(self.id),
+                    'delivery_type': delivery_type,
+                })
 
                 _logger.debug('product')
                 # ------ PRODUCTS
@@ -296,7 +283,6 @@ class MullerFile(models.Model):
                 magazine_short_name = customer_number[customer_number.rfind("-") + 1:]
 
                 _logger.debug("Issue : %s | GPN : %s | MSN : %s", issue_number, german_post_id_number, magazine_short_name)
-
 
                 # Test if magazine exists
                 _logger.debug('test if magazine exists')
