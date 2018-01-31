@@ -151,9 +151,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 6):
                         _logger.debug("== 6 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[5] because it is the country in Ausland
-                        parts_z = str_addresses[4].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[4][:str_addresses[4].find(' ')]
+                        customer_city = str_addresses[4][str_addresses[4].find(' ') + 1:]
                         customer_address_line_3 = str_addresses[3]
                         customer_address_line_2 = str_addresses[2]
                         customer_address_line_1 = str_addresses[1]
@@ -162,9 +161,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 5):
                         _logger.debug("== 5 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[4] because it is the country in Ausland
-                        parts_z = str_addresses[3].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[3][:str_addresses[3].find(' ')]
+                        customer_city = str_addresses[3][str_addresses[3].find(' ') + 1:]
                         customer_address_line_2 = str_addresses[2]
                         customer_address_line_1 = str_addresses[1]
                         partner_name = str_addresses[0]
@@ -172,9 +170,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 4):
                         _logger.debug("== 4 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[3] because it is the country in Ausland
-                        parts_z = str_addresses[2].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[2][:str_addresses[2].find(' ')]
+                        customer_city = str_addresses[2][str_addresses[2].find(' ') + 1:]
                         customer_address_line_1 = str_addresses[1]
                         partner_name = str_addresses[0]
 
@@ -182,8 +179,8 @@ class MullerFile(models.Model):
                         _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[2] because it is the country in Ausland
                         parts_z = str_addresses[1].split(" ")
-                        customer_postal_code = parts_z[0]
-                        customer_city = parts_z[1]
+                        customer_postal_code = str_addresses[0][:str_addresses[0].find(' ')]
+                        customer_city = str_addresses[0][str_addresses[0].find(' ') + 1:]
                         customer_address_line_1 = str_addresses[0]
                         partner_name = str_addresses[0]
 
@@ -241,7 +238,7 @@ class MullerFile(models.Model):
                     partner.letter_header = letter_header
                     check = False
                     for sub in partner.subscription_ids:
-                        if sub.number == subscription_number:
+                        if int(sub.number) == int(subscription_number):
                             check = True
                             break
                     if check:
@@ -252,33 +249,20 @@ class MullerFile(models.Model):
                 
             # ------ ORDER
                 _logger.debug('order')
-            
-                # Test if order exists
-                picking_ids = self.pool.get('stock.picking').search(cr, uid, [('external_order_number', '=', document_scanning_line)])
 
-                # Picking DOES NOT EXIST, create a new one
-                if not picking_ids:
-                    _logger.debug('picking does not exist')
-                    picking_id = self.pool.get('stock.picking').create(cr, uid, {
-                        'partner_id': partner_id,
-                        'picking_type_id': self.job_id.settings_id.input_picking_type.id,
-                        'external_order_number': document_scanning_line,
-                        'file_id': int(self.id),
-                        'delivery_type': delivery_type,
-                    })
+                # Here we had a check for the existing (or not) order already,
+                # but it is removed because Muller can send multiple orders with the same number
+                # because it is for them split for packaging
+                # So we removed this check and recreate it even if already in
 
-                # Picking DOES EXISTS
-                else:
-                    picking_id = picking_ids[0]
-                    picking = self.pool.get('stock.picking').browse(cr, uid, picking_id)  # get the first one
-                    if picking.state != 'draft':  # Check the state of the picking
-                        _logger.debug('picking exists and is not in draft anymore')
-                        self.state = 'Parsed'
-                        self.createAnException("Picking list already exists: {}".format(document_scanning_line), "Low", picking_id)
-                        continue
-                    # Picking DOES EXISTS, simply update it
-                    else:
-                        _logger.debug("picking exists and is in draft, we will update it")
+                _logger.debug('Create the new picking list')
+                picking_id = self.pool.get('stock.picking').create(cr, uid, {
+                    'partner_id': partner_id,
+                    'picking_type_id': self.job_id.settings_id.input_picking_type.id,
+                    'external_order_number': document_scanning_line,
+                    'file_id': int(self.id),
+                    'delivery_type': delivery_type,
+                })
 
                 _logger.debug('product')
                 # ------ PRODUCTS
@@ -296,7 +280,6 @@ class MullerFile(models.Model):
                 magazine_short_name = customer_number[customer_number.rfind("-") + 1:]
 
                 _logger.debug("Issue : %s | GPN : %s | MSN : %s", issue_number, german_post_id_number, magazine_short_name)
-
 
                 # Test if magazine exists
                 _logger.debug('test if magazine exists')
