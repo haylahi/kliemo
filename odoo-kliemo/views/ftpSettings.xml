@@ -26,6 +26,7 @@
                         <button class="oe_highlight" name="action_test_ftp_server" type="object" string="Test Connection"/>
                         <button name="action_confirm_ftp_server" type="object" string="Confirm" states="Inactive"/>
                         <button name="action_reset_confirmation" type="object" string="Reset confirmation" states="Confirmed"/>
+                        <button class="oe_highlight" name="action_create_job" type="object" string="Create a job"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -58,10 +59,7 @@
                         </group>
                         <hr />
                         <group string="Jobs">
-                            <field name="job_id" />
-                        </group>
-                        <group>
-                            <button class="oe_highlight" name="action_create_job" type="object" string="Create a job"/>
+                            <field name="job_id" nolabel="1" />
                         </group>
                     </sheet>
                 </form>
