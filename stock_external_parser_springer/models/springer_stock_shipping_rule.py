@@ -19,3 +19,18 @@ class SpringerShippingRule(models.Model):
     phone = fields.Char(string="Phone")
     service = fields.Char(string="Service")
     pallet_number = fields.Char(string="Pallet #")
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            if record.used_for_springer:
+                name = str(self.service)
+            else:
+                name = str(self.name)
+            if record.country:
+                name += ", " + str(record.country.code)
+            if record.region:
+                name += ":" + str(record.region.name)
+            result.append((record.id, name))
+        return result
