@@ -25,9 +25,9 @@ class SpringerShippingRule(models.Model):
         result = []
         for record in self:
             if record.used_for_springer:
-                name = str(self.service)
+                name = str(record.service)
             else:
-                name = str(self.name)
+                name = str(record.name)
             if record.country:
                 name += ", " + str(record.country.code)
             if record.region:
