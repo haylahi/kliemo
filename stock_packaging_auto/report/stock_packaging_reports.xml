@@ -197,7 +197,7 @@
                                                 <!-- LABEL #20 -->
                                                 <t t-if="o.shipping_rule.label_number==20">
                                                     <div id="shippingInfoPanel">
-                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle_luftpost.jpg" width="300px"/>
+                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle_luftpost.png" width="300px"/>
                                                     </div>
                                                 </t>
                                                 <!-- LABEL #30 -->
