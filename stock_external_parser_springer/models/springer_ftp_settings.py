@@ -84,7 +84,7 @@ class SpringerParser(models.Model):
 
             # Take all products.products that are set as 'magazine'
             products_obj = self.pool.get('product.template')
-            products_id = products_obj.search(cr, uid, [('is_magazine', '=', True)])
+            products_id = products_obj.search(cr, uid, [('is_magazine', '=', True), ('used_for_springer', '=', True)])
             for magazine in products_obj.browse(cr, uid, products_id):
                 # Get Issues
                 for issue in magazine.product_variant_ids:
@@ -128,14 +128,19 @@ class SpringerParser(models.Model):
                 'content': content,
                 'state': 'Parsed',
             })
-
+            
             self.upload_files([file_id], 'STOCK')
+            
+
+            # Set the file as uploaded
+            file = self.pool.get('kliemo_orders_parser.file').browse(cr, uid, file_id)
+            if len(file) > 0:
+                file.uploaded = True
 
         except Exception, e:
             raise osv.except_osv(_("Error while creating and uploading the Stock Report!"), _("Here is what we got instead:\n %s") % tools.ustr(e))
 
-        # Set the file as uploaded
-        file_id.uploaded = True
+        
 
     @api.multi
     def upload_files(self, file_ids, file_type):

@@ -25,6 +25,7 @@ MULLER Parser
         'views/stock_picking_view.xml',
         'views/res_menu.xml',
         'views/stock_shipping_rule.xml',
+        'views/product_magazine_view.xml',
 
         'data/res_countries.xml',
         'data/shipping_rules.xml',

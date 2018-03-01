@@ -6,3 +6,4 @@ from . import muller_ftp_settings
 from . import muller_file
 from . import muller_job
 from . import muller_stock_shipping_rule
+from . import muller_product

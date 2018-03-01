@@ -1,55 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <!-- Magazine Form -->
-        <record model="ir.ui.view" id="product_magazine_view">
-            <field name="name">product.magazine</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='sale_ok']" position="before">
-                    <group>
-                        <field name="is_magazine" />
-                    </group>
-                </xpath>
-                <xpath expr="//notebook" position="inside">
-					<page string="Magazine" attrs="{'invisible':[('is_magazine','=',False)]}">
-  					    <group>
-                            <group>
-                                <field name="issn_print"/>
-                                <field name="issn_online"/>
-                                <field name="journal_id"/>
-                            </group>
-                            <group>
-                                <field name="period"/>
-                                <field name="periodicity"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group>
-                                <field name="dimension_width"/>
-                                <field name="dimension_height"/>
-                            </group>
-                        </group>
-                        <group>
-                            <field name="product_variant_ids">
-                                <tree editable="top" string="Issues">
-                                    <field name="title" />
-                                    <field name="issue_number"/>
-                                    <field name="issue_volume" />
-                                    <field name="issue_date"/>
-                                    <field name="issue_type"/>
-                                    <button class="oe_highlight" icon="gtk-print" type="object" string="Print" name="print_label"/>
-                                </tree>
-                            </field>
-                        </group>
-                        <group>
-                            <button class="oe_highlight" type="object" string="Print Label for all Issues" name="print_labels"/>
-                            <button class="oe_highlight" type="object" string="Print Label + Stock Location for all Issues" name="print_labels_with_stock_location"/>
-                        </group>
-					</page>
-				</xpath>
-            </field>
-        </record>
+        
     </data>
 </openerp>

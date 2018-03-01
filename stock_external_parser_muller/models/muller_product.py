@@ -1,6 +1,5 @@
 # This code has been written
 # by AbAKUS it-solutions PGmbH
-# in Belgium, 2015
 
 from openerp import models, fields, api
 from openerp.osv import osv
@@ -10,10 +9,8 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class SpringerMagazine(models.Model):
+class MullerMagazine(models.Model):
     _inherit = ['product.template']
 
-    wbs_element = fields.Char(string="WBS-element")
-    periodical_permit_number = fields.Char(string="Periodical Permit Number")
-    used_for_springer = fields.Boolean(string="Used for Springer", default=False)
+    used_for_muller = fields.Boolean(string="Used for Muller", default=False)
 
