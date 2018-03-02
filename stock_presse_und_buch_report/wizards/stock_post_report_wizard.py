@@ -40,7 +40,7 @@ class wiz_presse_und_buch_reports(osv.osv_memory):
 
         # Take all the picking for the selected date and related to the FTP setting
         pickings = []
-        pickings_ids = picking_obj.search(cr, uid, [['state', '=', 'done']])
+        pickings_ids = picking_obj.search(cr, uid, [['settings_id.type', '=', 'springer'], ['state', '=', 'done']])
         for pick_id in pickings_ids:
             picking = picking_obj.browse(cr, uid, pick_id)
             date = datetime.datetime.strptime(picking.date_done, "%Y-%m-%d %H:%M:%S")
