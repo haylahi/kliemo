@@ -41,10 +41,10 @@ class wiz_account_asset_report(orm.TransientModel):
 
         # Take all the picking for the selected date and related to the FTP setting
         pickings = []
-        condition = [['settings_id.type', '=', 'springer'], ['state', '!=', 'done'], ['state', '!=', 'cancel']]
+        condition = [['settings_type', '=', 'springer'], ['state', '!=', 'done'], ['state', '!=', 'cancel']]
         
         if done_pickings:
-            condition = [['settings_id.type', '=', 'springer'], ['state', '=', 'done']]
+            condition = [['settings_type', '=', 'springer'], ['state', '=', 'done']]
         pickings_ids = picking_obj.search(cr, uid, condition)
         for pick_id in pickings_ids:
             picking = picking_obj.browse(cr, uid, pick_id)
