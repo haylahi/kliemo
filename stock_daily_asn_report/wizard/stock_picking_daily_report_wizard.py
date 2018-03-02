@@ -44,7 +44,7 @@ class wiz_account_asset_report(orm.TransientModel):
         condition = [['settings_id.type', '=', 'springer'], ['state', '!=', 'done'], ['state', '!=', 'cancel']]
         
         if done_pickings:
-            condition = [['state', '=', 'done']]
+            condition = [['settings_id.type', '=', 'springer'], ['state', '=', 'done']]
         pickings_ids = picking_obj.search(cr, uid, condition)
         for pick_id in pickings_ids:
             picking = picking_obj.browse(cr, uid, pick_id)
