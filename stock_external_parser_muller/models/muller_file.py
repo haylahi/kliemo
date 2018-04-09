@@ -178,8 +178,8 @@ class MullerFile(models.Model):
                     if (len(str_addresses) == 3):
                         _logger.debug("== 3 ADDRESS [{}]:".format(str_addresses))
                         # No usage of str_addresses[2] because it is the country in Ausland
-                        customer_postal_code = str_addresses[1][:str_addresses[0].find(' ')]
-                        customer_city = str_addresses[0][str_addresses[1].find(' ') + 1:]
+                        customer_postal_code = str_addresses[1][:str_addresses[1].find(' ')]
+                        customer_city = str_addresses[1][str_addresses[1].find(' ') + 1:]
                         customer_address_line_1 = str_addresses[0]
                         partner_name = str_addresses[0]
 
