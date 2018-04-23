@@ -33,117 +33,154 @@
                                      #spingerInfoPanel img {
                                         width: 80%;
                                      }
+
                                      #spingerInfoPanel p {
                                         font-size: 6pt;
                                      }
-                                     #schweizerPostVerticalPanel p {
-                                        transform: rotate(90deg);
-                                        font-size: 6pt;
-                                     }
-                                     #schweizerPostVerticalPanel img {
+
+                                    .schweizerPostVerticalPanel {
+                                        -webkit-transform: rotate(-90deg);
+                                        font-size: 5pt;
+                                        width: 300px;
+                                        height: 40px;
+                                        padding: 0px;
+                                        text-align: right;
+                                        position: fixed;
+                                        top: 150px;
+                                        left: -125px;
+                                    }
+                                    .schweizerPostVerticalPanel img {
                                         width: 35px;
                                         height: 35px;
-                                     }
-                                     #schweizerPostBitte {
+                                    }
+                                    .schweizerPostBitte {
                                         border-top: 1px double black;
                                         border-bottom: 1px double black;
-                                        font-size: 12pt;
-                                        transform: rotate(-30deg);
-                                     }
+                                        font-size: 10pt;
+                                        -webkit-transform: rotate(-30deg);
+                                        width: 110px;
+                                        position: fixed;
+                                        top: 120px;
+                                        left: 40px;
+                                    }
 
-                                     /* Shipping Info Pannel - Upper Right */
-                                     #shippingInfoPanel {
+                                    /* Shipping Info Pannel - Upper Right */
+                                    #shippingInfoPanel {
                                         position: relative;
                                         width: 100%;
                                         height: 120px;
-                                     }
+                                    }
 
-                                     #shippingInfoPanel img {
+                                    #shippingInfoPanel img {
                                         position: absolute;
                                         right: 0px;
-                                     }
+                                    }
 
-                                     #shippingInfoPanel h1 {
+                                    #shippingInfoPanel h1 {
                                         padding: 5px;
                                         position: absolute;
                                         right: 0px;
                                         text-align: right;
                                         font-size: 12pt;
                                         width: 100%;
-                                     }
+                                    }
 
-                                     #shippingInfoPanel p {
+                                    #shippingInfoPanel p {
                                         padding: 5px;
                                         position: absolute;
                                         right: 0px;
                                         bottom: 0px;
                                         text-align: right;
-                                     }
+                                    }
 
-                                     #schweizerPostRightPanel #upperTable {
+                                    #schweizerPostRightPanel {
+                                        float: right;
+                                        width: 250px;
+                                        text-align: center;
+                                    }
+
+                                    #schweizerPostRightPanel #upperTable {
                                         font-size: 8pt;
                                         text-align: center;
                                         border: 1px solid black;
-                                     }
+                                        float: right;
+                                    }
 
-                                     #schweizerPostRightPanel p {
+                                    #schweizerPostRightPanel #upperTable td {
+                                        border: 1px solid black;
+                                    }
+
+                                    #schweizerPostRightPanel p {
                                         font-size: 4pt;
                                         text-align: center;
-                                     }
+                                        float: right;
+                                        width: 250px;
+                                        margin-top: 10px;
+                                    }
 
-                                     #schweizerPostRightPanel #lowerTable {
+                                    #schweizerPostRightPanel #lowerTable {
                                         font-size: 4pt;
                                         text-align: center;
                                         border: 1px solid black;
-                                     }
+                                        float: right;
+                                    }
 
-                                     /* Package Info Panel - Lower Left */
-                                     #packageInfoPanel {
+                                    #schweizerPostRightPanel #lowerTable td {
+                                        border: 1px solid black;
+                                    }
+
+                                    /* Package Info Panel - Lower Left */
+                                    #packageInfoPanel {
                                         margin-top: 30px;
                                         font-size: 8pt;
                                         padding: 5px;
-                                     }
-                                     #packageInfoPanel img {
+                                    }
+
+                                    #packageInfoPanel img {
                                         width: 50px;
                                         height: 50px;
                                         text-align: center;
-                                     }
+                                    }
 
-                                     /* Address Info Panel - Lower Right */
-                                     #returnInfoPanel h1 {
+                                    /* Address Info Panel - Lower Right */
+                                    #returnInfoPanel h1 {
                                         font-size: 8pt;
                                         font-weight: bold;
                                         text-align: center;
                                         margin-bottom: 0px;
-                                     }
+                                    }
 
-                                     #returnInfoPanel p {
+                                    #returnInfoPanel p {
                                          text-align: center;
                                          font-weight: bold;
                                          font-size: 6pt;
                                          border-bottom: 2px solid black;
-                                     }
+                                    }
 
-                                     #destAddressPanel {
-                                     }
-                                     #orderInfo {
+                                    #destAddressPanel {
+
+                                    }
+
+                                    #orderInfo {
                                          width: 75%;
                                          display: inline-block;
                                          font-size: 8pt;
                                          padding: 2px;
-                                     }
-                                     #contentInfo {
+                                    }
+
+                                    #contentInfo {
                                          width: 25%;
                                          display: inline-block;
                                          text-align: right;
                                          font-size: 8pt;
                                          padding: 2px;
-                                     }
-                                     #destAddress {
+                                    }
+
+                                    #destAddress {
                                          margin-top: 6px;
                                          font-size: 9pt;
                                          padding: 2px;
-                                     }
+                                    }
                                 </style>
                                 <div class="oe_structure"/>
                                 <div class="row">
@@ -156,7 +193,7 @@
                                                         <div id="spingerInfoPanel">
                                                             <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
                                                             <p>
-                                                                Springer Distribution Center GmbH<br />
+                                                                Springer Distribution Center GmbH<br/>
                                                                 Haberstr. 4a<br/>
                                                                 D-69126 Heidelberg
                                                             </p>
@@ -165,17 +202,14 @@
                                                 </t>
                                                 <!-- Label #60 -->
                                                 <t t-if="o.shipping_rule.label_number==60">
-                                                    <td rowspan="2" width="5%">
-                                                        <div id="schweizerPostVerticalPanel">
-                                                            <p>255 000 IS</p>
-                                                            <p>IHRE ZEITSCHRIFT WURDE IN UMWELTVERTRAGLICHE FOLIE VERPACKT</p>
-                                                            <img src=""/> <!-- TODO : CHANGE IMAGE -->
-                                                        </div>
-                                                    </td>
-                                                    <td border="1px red solid">
-                                                        <div id="schweizerPostBitte">
+                                                    <td width="30%" height="50%">
+                                                        <p class="schweizerPostVerticalPanel">
+                                                            255 000 IS<br />
+                                                            IHRE ZEITSCHRIFT WURDE IN UMWELTVERTRAGLICHE FOLIE VERPACKT
+                                                        </p>
+                                                        <p class="schweizerPostBitte">
                                                             Bitte Nicht knicken
-                                                        </div>
+                                                        </p>
                                                     </td>
                                                 </t>
                                             </t>
@@ -273,59 +307,61 @@
                                                 </t>
                                                 <!-- LABEL #60 -->
                                                 <t t-if="o.shipping_rule.label_number==60">
-                                                    <table border="1px" width="50%" id="upperTable">
-                                                        <tr>
-                                                            <td>
-                                                                AZB<br/>
-                                                                &gt;9430 ST.MARGRETHEN (SG)
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                PP/Journal<br/>CH-9430 ST.MARGRETHEN
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                    <p>Adressberichtigung bitte nach A1. Nr 552 melden</p>
-                                                    <table border="1px" width="70%" id="lowerTable">
-                                                        <tr>
-                                                            <td colspan="5">
-                                                                Zutreffendes durchstreichen - Marquer ce qui convient<br/>
-                                                                Porre una crocetta secondo il caso
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                             <td>
-                                                                 Abgereist<br/>
-                                                                 Parti<br/>Pastito
-                                                            </td>
-                                                            <td>
-                                                                Adresse unzureichende<br/>
-                                                                Adresse insiffisante<br/>
-                                                                Indirecto insuficiente
-                                                            </td>
-                                                            <td>
-                                                                Unbekannt<br/>
-                                                                Inconnu<br/>
-                                                                Sonosciulo
-                                                            </td>
-                                                            <td>
-                                                                Annbme verweigert<br/>
-                                                                Refusé<br/>
-                                                                Respinto
-                                                            </td>
-                                                            <td>
-                                                                Gestorben<br/>
-                                                                Décédé<br/>
-                                                                Oncesso
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                    <div id="schweizerPostRightPanel">
+                                                        <table width="75%" id="upperTable">
+                                                            <tr border="1px">
+                                                                <td>
+                                                                    AZB<br/>
+                                                                    9430 ST.MARGRETHEN (SG)
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    PP/Journal<br/>CH-9430 ST.MARGRETHEN
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <p>Adressberichtigung bitte nach A1. Nr 552 melden</p>
+                                                        <table border="1px" width="75%" id="lowerTable">
+                                                            <tr>
+                                                                <td colspan="5">
+                                                                    Zutreffendes durchstreichen - Marquer ce qui convient<br/>
+                                                                    Porre una crocetta secondo il caso
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                 <td>
+                                                                     Abgereist<br/>
+                                                                     Parti<br/>Pastito
+                                                                </td>
+                                                                <td>
+                                                                    Adresse unzureichende<br/>
+                                                                    Adresse insiffisante<br/>
+                                                                    Indirecto insuficiente
+                                                                </td>
+                                                                <td>
+                                                                    Unbekannt<br/>
+                                                                    Inconnu<br/>
+                                                                    Sonosciulo
+                                                                </td>
+                                                                <td>
+                                                                    Annbme verweigert<br/>
+                                                                    Refusé<br/>
+                                                                    Respinto
+                                                                </td>
+                                                                <td>
+                                                                    Gestorben<br/>
+                                                                    Décédé<br/>
+                                                                    Oncesso
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
                                                 </t>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="35%" height="50%">
+                                            <td width="30%" height="50%">
                                                 <!-- Hashtag removed for now
                                                 <div id="packageInfoPanel">
                                                      <img src="http://www.qrstuff.com/images/sample.png" />
