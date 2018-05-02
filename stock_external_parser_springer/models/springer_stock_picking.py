@@ -51,9 +51,11 @@ class SpringerPicking(models.Model):
                 super(SpringerPicking, picking).confirm_picking_list()
                 continue
 
-            auto_set_ok = False
-            # auto set rule
-            if(picking.file_id):
+            auto_set_ok = True
+            if (picking.shipping_rule == False):
+                auto_set_ok = False
+            # auto set rule if not already set
+            if(picking.file_id and not auto_set_ok): 
                 try:
                     # auto set package
                     picking.compute_shipping()
