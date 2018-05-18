@@ -19,486 +19,486 @@
 		<template id="base_label_report">
             <t t-name="stock_packaging_auto.base_label_report">
                 <t t-name="stock_packaging_auto.base_label_report">
-                    <t t-call="report.html_container">
-                        <t t-foreach="docs" t-as="o">
-                            <div class="page" t-foreach="int(round(o.logistic_unit_quantity))" t-as="label_unit">
-                                <style type="text/css">
-                                    /* Springer Address Panel - Upper Left */
-                                    #spingerInfoPanel {
-                                        width: 150px;
-                                        margin: 5px 5px 5px 10px;
-                                        position: absolute;
-                                        top; 0px;
-                                     }
-                                     #spingerInfoPanel img {
-                                        width: 80%;
-                                     }
+                    <t t-name="stock_packaging_auto.base_label_report">
+                        <t t-call="report.html_container">
+                            <t t-foreach="docs" t-as="o">
+                                <t t-set="page_quantity" t-value="int(round(o.logistic_unit_quantity))" />
+                                <t t-if="page_quantity==0">
+                                    <t t-set="page_quantity" t-value="1" />
+                                </t>
+                                <div class="page" t-foreach="page_quantity" t-as="label_unit">
+                                    <style type="text/css">
+                                        /* Springer Address Panel - Upper Left */
+                                        #spingerInfoPanel {
+                                            width: 150px;
+                                            margin: 5px 5px 5px 10px;
+                                            position: absolute;
+                                            top; 0px;
+                                         }
+                                         #spingerInfoPanel img {
+                                            width: 80%;
+                                         }
 
-                                     #spingerInfoPanel p {
-                                        font-size: 6pt;
-                                     }
+                                         #spingerInfoPanel p {
+                                            font-size: 6pt;
+                                         }
 
-                                    .schweizerPostVerticalPanel {
-                                        -webkit-transform: rotate(-90deg);
-                                        font-size: 5pt;
-                                        width: 300px;
-                                        height: 40px;
-                                        padding: 0px;
-                                        text-align: right;
-                                        position: fixed;
-                                        top: 150px;
-                                        left: -125px;
-                                    }
-                                    .schweizerPostVerticalPanel img {
-                                        width: 35px;
-                                        height: 35px;
-                                    }
-                                    .schweizerPostBitte {
-                                        border-top: 1px double black;
-                                        border-bottom: 1px double black;
-                                        font-size: 10pt;
-                                        -webkit-transform: rotate(-30deg);
-                                        width: 110px;
-                                        position: fixed;
-                                        top: 120px;
-                                        left: 40px;
-                                    }
+                                        .schweizerPostVerticalPanel {
+                                            -webkit-transform: rotate(-90deg);
+                                            font-size: 5pt;
+                                            width: 300px;
+                                            height: 40px;
+                                            padding: 0px;
+                                            text-align: right;
+                                            position: fixed;
+                                            top: 150px;
+                                            left: -125px;
+                                        }
+                                        .schweizerPostVerticalPanel img {
+                                            width: 35px;
+                                            height: 35px;
+                                        }
+                                        .schweizerPostBitte {
+                                            border-top: 1px double black;
+                                            border-bottom: 1px double black;
+                                            font-size: 10pt;
+                                            -webkit-transform: rotate(-30deg);
+                                            width: 110px;
+                                            position: fixed;
+                                            top: 120px;
+                                            left: 40px;
+                                        }
 
-                                    /* Shipping Info Pannel - Upper Right */
-                                    #shippingInfoPanel {
-                                        position: relative;
-                                        width: 100%;
-                                        height: 120px;
-                                    }
+                                        /* Shipping Info Pannel - Upper Right */
+                                        #shippingInfoPanel {
+                                            position: relative;
+                                            width: 100%;
+                                            height: 120px;
+                                        }
 
-                                    #shippingInfoPanel img {
-                                        position: absolute;
-                                        right: 0px;
-                                    }
+                                        #shippingInfoPanel img {
+                                            position: absolute;
+                                            right: 0px;
+                                        }
 
-                                    #shippingInfoPanel h1 {
-                                        padding: 5px;
-                                        position: absolute;
-                                        right: 0px;
-                                        text-align: right;
-                                        font-size: 12pt;
-                                        width: 100%;
-                                    }
+                                        #shippingInfoPanel h1 {
+                                            padding: 5px;
+                                            position: absolute;
+                                            right: 0px;
+                                            text-align: right;
+                                            font-size: 12pt;
+                                            width: 100%;
+                                        }
 
-                                    #shippingInfoPanel p {
-                                        padding: 5px;
-                                        position: absolute;
-                                        right: 0px;
-                                        bottom: 0px;
-                                        text-align: right;
-                                    }
+                                        #shippingInfoPanel p {
+                                            padding: 5px;
+                                            position: absolute;
+                                            right: 0px;
+                                            bottom: 0px;
+                                            text-align: right;
+                                        }
 
-                                    #schweizerPostRightPanel {
-                                        float: right;
-                                        width: 250px;
-                                        text-align: center;
-                                    }
+                                        #schweizerPostRightPanel {
+                                            float: right;
+                                            width: 250px;
+                                            text-align: center;
+                                        }
 
-                                    #schweizerPostRightPanel #upperTable {
-                                        font-size: 8pt;
-                                        text-align: center;
-                                        border: 1px solid black;
-                                        float: right;
-                                    }
+                                        #schweizerPostRightPanel #upperTable {
+                                            font-size: 8pt;
+                                            text-align: center;
+                                            border: 1px solid black;
+                                            float: right;
+                                        }
 
-                                    #schweizerPostRightPanel #upperTable td {
-                                        border: 1px solid black;
-                                    }
+                                        #schweizerPostRightPanel #upperTable td {
+                                            border: 1px solid black;
+                                        }
 
-                                    #schweizerPostRightPanel p {
-                                        font-size: 4pt;
-                                        text-align: center;
-                                        float: right;
-                                        width: 250px;
-                                        margin-top: 10px;
-                                    }
+                                        #schweizerPostRightPanel p {
+                                            font-size: 4pt;
+                                            text-align: center;
+                                            float: right;
+                                            width: 250px;
+                                            margin-top: 10px;
+                                        }
 
-                                    #schweizerPostRightPanel #lowerTable {
-                                        font-size: 4pt;
-                                        text-align: center;
-                                        border: 1px solid black;
-                                        float: right;
-                                    }
+                                        #schweizerPostRightPanel #lowerTable {
+                                            font-size: 4pt;
+                                            text-align: center;
+                                            border: 1px solid black;
+                                            float: right;
+                                        }
 
-                                    #schweizerPostRightPanel #lowerTable td {
-                                        border: 1px solid black;
-                                    }
+                                        #schweizerPostRightPanel #lowerTable td {
+                                            border: 1px solid black;
+                                        }
 
-                                    /* Package Info Panel - Lower Left */
-                                    #packageInfoPanel {
-                                        margin-top: 30px;
-                                        font-size: 8pt;
-                                        padding: 5px;
-                                    }
+                                        /* Package Info Panel - Lower Left */
+                                        #packageInfoPanel {
+                                            margin-top: 30px;
+                                            font-size: 8pt;
+                                            padding: 5px;
+                                        }
 
-                                    #packageInfoPanel img {
-                                        width: 50px;
-                                        height: 50px;
-                                        text-align: center;
-                                    }
+                                        #packageInfoPanel img {
+                                            width: 50px;
+                                            height: 50px;
+                                            text-align: center;
+                                        }
 
-                                    /* Address Info Panel - Lower Right */
-                                    #returnInfoPanel h1 {
-                                        font-size: 8pt;
-                                        font-weight: bold;
-                                        text-align: center;
-                                        margin-bottom: 0px;
-                                    }
+                                        /* Address Info Panel - Lower Right */
+                                        #returnInfoPanel h1 {
+                                            font-size: 8pt;
+                                            font-weight: bold;
+                                            text-align: center;
+                                            margin-bottom: 0px;
+                                        }
 
-                                    #returnInfoPanel p {
-                                         text-align: center;
-                                         font-weight: bold;
-                                         font-size: 6pt;
-                                         border-bottom: 2px solid black;
-                                    }
+                                        #returnInfoPanel p {
+                                             text-align: center;
+                                             font-weight: bold;
+                                             font-size: 6pt;
+                                             border-bottom: 2px solid black;
+                                        }
 
-                                    #destAddressPanel {
+                                        #destAddressPanel {
 
-                                    }
+                                        }
 
-                                    #orderInfo {
-                                         width: 75%;
-                                         display: inline-block;
-                                         font-size: 8pt;
-                                         padding: 2px;
-                                    }
+                                        #orderInfo {
+                                             width: 75%;
+                                             display: inline-block;
+                                             font-size: 8pt;
+                                             padding: 2px;
+                                        }
 
-                                    #contentInfo {
-                                         width: 25%;
-                                         display: inline-block;
-                                         text-align: right;
-                                         font-size: 8pt;
-                                         padding: 2px;
-                                    }
+                                        #contentInfo {
+                                             width: 25%;
+                                             display: inline-block;
+                                             text-align: right;
+                                             font-size: 8pt;
+                                             padding: 2px;
+                                        }
 
-                                    #destAddress {
-                                         margin-top: 6px;
-                                         font-size: 9pt;
-                                         padding: 2px;
-                                    }
-                                </style>
-                                <div class="oe_structure"/>
-                                <div class="row">
-                                    <table style="width: 100%;">
-                                        <tr>
-                                            <t t-if="o.settings_id.type=='springer'">
-                                                <!-- All Labels except #60 -->
-                                                <t t-if="o.shipping_rule.label_number!=60">
+                                        #destAddress {
+                                             margin-top: 6px;
+                                             font-size: 9pt;
+                                             padding: 2px;
+                                        }
+                                    </style>
+                                    <div class="oe_structure"/>
+                                    <div class="row">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <t t-if="o.settings_id.type=='springer'">
+                                                    <!-- All Labels except #60 -->
+                                                    <t t-if="o.shipping_rule.label_number!=60">
+                                                        <td width="30%" height="50%" style="vertical-align: top;">
+                                                            <div id="spingerInfoPanel">
+                                                                <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
+                                                                <p>
+                                                                    Springer Distribution Center GmbH<br/>
+                                                                    Haberstr. 4a<br/>
+                                                                    D-69126 Heidelberg
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </t>
+                                                    <!-- Label #60 -->
+                                                    <t t-if="o.shipping_rule.label_number==60">
+                                                        <td width="30%" height="50%">
+                                                            <p class="schweizerPostVerticalPanel">
+                                                                255 000 IS<br />
+                                                                IHRE ZEITSCHRIFT WURDE IN UMWELTVERTRAGLICHE FOLIE VERPACKT
+                                                            </p>
+                                                            <p class="schweizerPostBitte">
+                                                                Bitte Nicht knicken
+                                                            </p>
+                                                        </td>
+                                                    </t>
+                                                </t>
+                                                <t t-if="o.settings_id.type=='muller'">
                                                     <td width="30%" height="50%" style="vertical-align: top;">
-                                                        <div id="spingerInfoPanel">
-                                                            <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
+                                                    </td>
+                                                </t>
+                                                <td style="height: 10em;">
+                                                    <!-- LABEL #01 -->
+                                                    <t t-if="o.shipping_rule.label_number==1">
+                                                        <!-- Nothing to add -->
+                                                    </t>
+                                                    <!-- LABEL #10 -->
+                                                    <t t-if="o.shipping_rule.label_number==10">
+                                                        <div id="shippingInfoPanel">
+                                                            <img src="/stock_packaging_auto/static/src/img/streifband_welle_int.jpg" width="140px"/>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #20 -->
+                                                    <t t-if="o.shipping_rule.label_number==20">
+                                                        <div id="shippingInfoPanel">
+                                                            <img src="/stock_packaging_auto/static/src/img/streifband_welle_luftpost.png" width="300px"/>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #30 -->
+                                                    <t t-if="o.shipping_rule.label_number==30">
+                                                        <div id="shippingInfoPanel">
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #31 -->
+                                                    <t t-if="o.shipping_rule.label_number==31">
+                                                        <div id="shippingInfoPanel">
+                                                            <img src="/stock_packaging_auto/static/src/img/streifband_welle.jpg" width="130"/>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #40 -->
+                                                    <t t-if="o.shipping_rule.label_number==40">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>DHL</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #41 -->
+                                                    <t t-if="o.shipping_rule.label_number==41">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>DHL Express</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #44 -->
+                                                    <t t-if="o.shipping_rule.label_number==44">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>DPD Express (12)</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #45 -->
+                                                    <t t-if="o.shipping_rule.label_number==45">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>DPD</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #46 -->
+                                                    <t t-if="o.shipping_rule.label_number==46">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>DHL</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #47 -->
+                                                    <t t-if="o.shipping_rule.label_number==47">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>Freight</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #48 -->
+                                                    <t t-if="o.shipping_rule.label_number==48">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>Freight Courrier</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #50 -->
+                                                    <t t-if="o.shipping_rule.label_number==50">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>Airfreight Dachser</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #53 -->
+                                                    <t t-if="o.shipping_rule.code=='opc'">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>OPC</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL OPC -->
+                                                    <t t-if="o.shipping_rule.label_number==53">
+                                                        <div id="shippingInfoPanel">
+                                                            <h1>Postpacket</h1>
+                                                        </div>
+                                                    </t>
+                                                    <!-- LABEL #60 -->
+                                                    <t t-if="o.shipping_rule.label_number==60">
+                                                        <div id="schweizerPostRightPanel">
+                                                            <table width="75%" id="upperTable">
+                                                                <tr border="1px">
+                                                                    <div id="shippingInfoPanel">
+                                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle.jpg" width="130"/>
+                                                                    </div>
+                                                                </tr>
+                                                            </table>
+                                                            <p>Adressberichtigung bitte nach A1. Nr 552 melden</p>
+                                                            <table border="1px" width="75%" id="lowerTable">
+                                                                <tr>
+                                                                    <td colspan="5">
+                                                                        Zutreffendes durchstreichen - Marquer ce qui convient<br/>
+                                                                        Porre una crocetta secondo il caso
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                     <td>
+                                                                         Abgereist<br/>
+                                                                         Parti<br/>Pastito
+                                                                    </td>
+                                                                    <td>
+                                                                        Adresse unzureichende<br/>
+                                                                        Adresse insiffisante<br/>
+                                                                        Indirecto insuficiente
+                                                                    </td>
+                                                                    <td>
+                                                                        Unbekannt<br/>
+                                                                        Inconnu<br/>
+                                                                        Sonosciulo
+                                                                    </td>
+                                                                    <td>
+                                                                        Annbme verweigert<br/>
+                                                                        Refusé<br/>
+                                                                        Respinto
+                                                                    </td>
+                                                                    <td>
+                                                                        Gestorben<br/>
+                                                                        Décédé<br/>
+                                                                        Oncesso
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="30%" height="50%">
+                                                    <!-- Hashtag removed for now
+                                                    <div id="packageInfoPanel">
+                                                         <img src="http://www.qrstuff.com/images/sample.png" />
+                                                         <t t-if="o.shipping_method !='consolidator' and o.shipping_rule.pallet_number !=''">
+                                                             Pallet <span t-field="o.shipping_rule.pallet_number"/>
+                                                         </t>
+                                                         <t t-if="o.shipping_method =='consolidator' and o.consolidator_rule.bin_number !=''">
+                                                            Bin <span t-field="o.consolidator_rule.bin_number"/>
+                                                         </t>
+                                                     </div>-->
+                                                </td>
+                                                <td>
+                                                    <t t-if="o.shipping_rule.label_number!=60 and o.shipping_rule.label_number!=30 and o.shipping_rule.label_number!=31">
+                                                        <div id="returnInfoPanel">
+                                                            <!-- P & B International EU + ROW -->
+                                                            <t t-if="o.shipping_rule.label_number==10 or o.shipping_rule.label_number==20">
+                                                                <h1>"Presse und Buch International"</h1>
+                                                            </t>
                                                             <p>
-                                                                Springer Distribution Center GmbH<br/>
-                                                                Haberstr. 4a<br/>
-                                                                D-69126 Heidelberg
+                                                                En cas de non-remise, renvoyer à l'expéditeur!
+                                                                <br/>
+                                                                Wenn nicht zustellbar, zuruck an den Absender! If undeliverable return to sender!
                                                             </p>
                                                         </div>
-                                                    </td>
-                                                </t>
-                                                <!-- Label #60 -->
-                                                <t t-if="o.shipping_rule.label_number==60">
-                                                    <td width="30%" height="50%">
-                                                        <p class="schweizerPostVerticalPanel">
-                                                            255 000 IS<br />
-                                                            IHRE ZEITSCHRIFT WURDE IN UMWELTVERTRAGLICHE FOLIE VERPACKT
-                                                        </p>
-                                                        <p class="schweizerPostBitte">
-                                                            Bitte Nicht knicken
-                                                        </p>
-                                                    </td>
-                                                </t>
-                                            </t>
-                                            <t t-if="o.settings_id.type=='muller'">
-                                                <td width="30%" height="50%" style="vertical-align: top;">
-                                                </td>
-                                            </t>
-                                            <td style="height: 10em;">
-                                                <!-- LABEL #01 -->
-                                                <t t-if="o.shipping_rule.label_number==1">
-                                                    <!-- Nothing to add -->
-                                                </t>
-                                                <!-- LABEL #10 -->
-                                                <t t-if="o.shipping_rule.label_number==10">
-                                                    <div id="shippingInfoPanel">
-                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle_int.jpg" width="140px"/>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #20 -->
-                                                <t t-if="o.shipping_rule.label_number==20">
-                                                    <div id="shippingInfoPanel">
-                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle_luftpost.png" width="300px"/>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #30 -->
-                                                <t t-if="o.shipping_rule.label_number==30">
-                                                    <div id="shippingInfoPanel">
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #31 -->
-                                                <t t-if="o.shipping_rule.label_number==31">
-                                                    <div id="shippingInfoPanel">
-                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle.jpg" width="130"/>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #40 -->
-                                                <t t-if="o.shipping_rule.label_number==40">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>DHL</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #41 -->
-                                                <t t-if="o.shipping_rule.label_number==41">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>DHL Express</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #44 -->
-                                                <t t-if="o.shipping_rule.label_number==44">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>DPD Express (12)</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #45 -->
-                                                <t t-if="o.shipping_rule.label_number==45">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>DPD</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #46 -->
-                                                <t t-if="o.shipping_rule.label_number==46">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>DHL</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #47 -->
-                                                <t t-if="o.shipping_rule.label_number==47">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>Freight</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #48 -->
-                                                <t t-if="o.shipping_rule.label_number==48">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>Freight Courrier</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #50 -->
-                                                <t t-if="o.shipping_rule.label_number==50">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>Airfreight Dachser</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #53 -->
-                                                <t t-if="o.shipping_rule.code=='opc'">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>OPC</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL OPC -->
-                                                <t t-if="o.shipping_rule.label_number==53">
-                                                    <div id="shippingInfoPanel">
-                                                        <h1>Postpacket</h1>
-                                                    </div>
-                                                </t>
-                                                <!-- LABEL #60 -->
-                                                <t t-if="o.shipping_rule.label_number==60">
-                                                    <div id="schweizerPostRightPanel">
-                                                        <table width="75%" id="upperTable">
-                                                            <tr border="1px">
-                                                                <td>
-                                                                    AZB<br/>
-                                                                    9430 ST.MARGRETHEN (SG)
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    PP/Journal<br/>CH-9430 ST.MARGRETHEN
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                        <p>Adressberichtigung bitte nach A1. Nr 552 melden</p>
-                                                        <table border="1px" width="75%" id="lowerTable">
-                                                            <tr>
-                                                                <td colspan="5">
-                                                                    Zutreffendes durchstreichen - Marquer ce qui convient<br/>
-                                                                    Porre una crocetta secondo il caso
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                 <td>
-                                                                     Abgereist<br/>
-                                                                     Parti<br/>Pastito
-                                                                </td>
-                                                                <td>
-                                                                    Adresse unzureichende<br/>
-                                                                    Adresse insiffisante<br/>
-                                                                    Indirecto insuficiente
-                                                                </td>
-                                                                <td>
-                                                                    Unbekannt<br/>
-                                                                    Inconnu<br/>
-                                                                    Sonosciulo
-                                                                </td>
-                                                                <td>
-                                                                    Annbme verweigert<br/>
-                                                                    Refusé<br/>
-                                                                    Respinto
-                                                                </td>
-                                                                <td>
-                                                                    Gestorben<br/>
-                                                                    Décédé<br/>
-                                                                    Oncesso
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </t>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td width="30%" height="50%">
-                                                <!-- Hashtag removed for now
-                                                <div id="packageInfoPanel">
-                                                     <img src="http://www.qrstuff.com/images/sample.png" />
-                                                     <t t-if="o.shipping_method !='consolidator' and o.shipping_rule.pallet_number !=''">
-                                                         Pallet <span t-field="o.shipping_rule.pallet_number"/>
-                                                     </t>
-                                                     <t t-if="o.shipping_method =='consolidator' and o.consolidator_rule.bin_number !=''">
-                                                        Bin <span t-field="o.consolidator_rule.bin_number"/>
-                                                     </t>
-                                                 </div>-->
-                                            </td>
-                                            <td>
-                                                <t t-if="o.shipping_rule.label_number!=60 and o.shipping_rule.label_number!=30 and o.shipping_rule.label_number!=31">
-                                                    <div id="returnInfoPanel">
-                                                        <!-- P & B International EU + ROW -->
-                                                        <t t-if="o.shipping_rule.label_number==10 or o.shipping_rule.label_number==20">
-                                                            <h1>"Presse und Buch International"</h1>
-                                                        </t>
-                                                        <p>
-                                                            En cas de non-remise, renvoyer à l'expéditeur!
-                                                            <br/>
-                                                            Wenn nicht zustellbar, zuruck an den Absender! If undeliverable return to sender!
-                                                        </p>
-                                                    </div>
-                                                </t>
-                                                <t t-if="o.shipping_rule.label_number==31">
-                                                    <div id="returnInfoPanel">
-                                                        <u>
-                                                            DP AG - PVST - Entgelt Bezahlt - Port Payé - 01511
-                                                        </u><br/>
-                                                        StrbZtg 01511
-                                                    </div>
-                                                </t>
-                                                <div id="destAddressPanel">
-                                                    <!-- SPRINGER -->
-                                                    <t t-if="o.settings_id.type=='springer'">
-                                                        <div id="orderInfo">
-                                                            <t t-if="o.shipping_rule.label_number==31">
-                                                                <t t-if="o.partner_id.endorsement_line_1">
-                                                                    <span t-field="o.partner_id.endorsement_line_1"/><br/>
-                                                                </t>
-                                                                <t t-if="o.partner_id.endorsement_line_2">
-                                                                    <span t-field="o.partner_id.endorsement_line_2"/><br/>
-                                                                </t>
-                                                            </t>
-                                                            <t t-if="o.shipping_rule.label_number==20 or o.shipping_rule.label_number==10">
-                                                                <t t-if="o.partner_id.endorsement_line_1">
-                                                                    <b>
-                                                                        <span t-field="o.partner_id.endorsement_line_1"/>
-                                                                    </b><br/>
-                                                                </t>
-                                                                <t t-if="o.partner_id.endorsement_line_2">
-                                                                    <b>
-                                                                        <span t-field="o.partner_id.endorsement_line_2"/>
-                                                                    </b><br/>
-                                                                </t>
-                                                            </t>
-                                                            *<span t-field="o.external_order_number"/>*
-                                                            <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
-                                                                <span t-field="o.partner_id.customer_number"/>
-                                                                <br/>
-                                                                <span t-field="o.customer_order_number"/>
-                                                                <span t-field="o.customer_order_text"/>
-                                                            </t>
+                                                    </t>
+                                                    <t t-if="o.shipping_rule.label_number==31">
+                                                        <div id="returnInfoPanel">
+                                                            <u>
+                                                                DP AG - PVST - Entgelt Bezahlt - Port Payé - 01511
+                                                            </u><br/>
+                                                            StrbZtg 01511
                                                         </div>
-                                                        <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
-                                                            <div id="contentInfo">
-                                                                <span t-field="o.product_quantity"/>
-                                                                |
-                                                                <span t-esc="label_unit + 1"/>
-                                                                /
-                                                                <span t-field="o.logistic_unit_quantity"/>
+                                                    </t>
+                                                    <div id="destAddressPanel">
+                                                        <!-- SPRINGER -->
+                                                        <t t-if="o.settings_id.type=='springer'">
+                                                            <div id="orderInfo">
+                                                                <t t-if="o.shipping_rule.label_number==31">
+                                                                    <t t-if="o.partner_id.endorsement_line_1">
+                                                                        <span t-field="o.partner_id.endorsement_line_1"/><br/>
+                                                                    </t>
+                                                                    <t t-if="o.partner_id.endorsement_line_2">
+                                                                        <span t-field="o.partner_id.endorsement_line_2"/><br/>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-if="o.shipping_rule.label_number==20 or o.shipping_rule.label_number==10">
+                                                                    <t t-if="o.partner_id.endorsement_line_1">
+                                                                        <b>
+                                                                            <span t-field="o.partner_id.endorsement_line_1"/>
+                                                                        </b><br/>
+                                                                    </t>
+                                                                    <t t-if="o.partner_id.endorsement_line_2">
+                                                                        <b>
+                                                                            <span t-field="o.partner_id.endorsement_line_2"/>
+                                                                        </b><br/>
+                                                                    </t>
+                                                                </t>
+                                                                *<span t-field="o.external_order_number"/>*
+                                                                <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
+                                                                    <span t-field="o.partner_id.customer_number"/>
+                                                                    <br/>
+                                                                    <span t-field="o.customer_order_number"/>
+                                                                    <span t-field="o.customer_order_text"/>
+                                                                </t>
+                                                            </div>
+                                                            <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
+                                                                <div id="contentInfo">
+                                                                    <span t-field="o.product_quantity"/>
+                                                                    |
+                                                                    <span t-esc="label_unit + 1"/>
+                                                                    /
+                                                                    <span t-field="o.logistic_unit_quantity"/>
+                                                                </div>
+                                                            </t>
+                                                            <div id="destAddress">
+                                                                <span t-field="o.partner_id.name"/>
+                                                                <br/>
+                                                                <t t-if="o.partner_id.street">
+                                                                    <span t-field="o.partner_id.street"/><br/>
+                                                                </t>
+                                                                <t t-if="o.partner_id.street2">
+                                                                    <span t-field="o.partner_id.street2"/><br/>
+                                                                </t>
+                                                                <t t-if="o.partner_id.street3">
+                                                                    <span t-field="o.partner_id.street3"/><br/>
+                                                                </t>
+                                                                <span t-field="o.partner_id.zip"/>
+                                                                <span t-field="o.partner_id.city"/>
+                                                                <t t-if="o.partner_id.country_id.code == 'US' or o.partner_id.country_id.code == 'AU' or o.partner_id.country_id.code == 'CA'">
+                                                                    <span t-field="o.partner_id.state_id.name"/>
+                                                                </t>
+                                                                <br/>
+                                                                <span t-field="o.partner_id.country_id.name"/>
                                                             </div>
                                                         </t>
-                                                        <div id="destAddress">
-                                                            <span t-field="o.partner_id.name"/>
-                                                            <br/>
-                                                            <t t-if="o.partner_id.street">
-                                                                <span t-field="o.partner_id.street"/><br/>
-                                                            </t>
-                                                            <t t-if="o.partner_id.street2">
-                                                                <span t-field="o.partner_id.street2"/><br/>
-                                                            </t>
-                                                            <t t-if="o.partner_id.street3">
-                                                                <span t-field="o.partner_id.street3"/><br/>
-                                                            </t>
-                                                            <span t-field="o.partner_id.zip"/>
-                                                            <span t-field="o.partner_id.city"/>
-                                                            <t t-if="o.partner_id.country_id.code == 'US' or o.partner_id.country_id.code == 'AU' or o.partner_id.country_id.code == 'CA'">
-                                                                <span t-field="o.partner_id.state_id.name"/>
-                                                            </t>
-                                                            <br/>
-                                                            <span t-field="o.partner_id.country_id.name"/>
-                                                        </div>
-                                                    </t>
-                                                    <t t-if="o.settings_id.type=='muller'">
-                                                        <div id="orderInfo">
-                                                            <t t-if="o.shipping_rule.label_number==31">
-                                                                <t t-if="o.partner_id.endorsement_line_1">
-                                                                    <span t-field="o.partner_id.endorsement_line_1"/><br/>
+                                                        <t t-if="o.settings_id.type=='muller'">
+                                                            <div id="orderInfo">
+                                                                <t t-if="o.shipping_rule.label_number==31">
+                                                                    <t t-if="o.partner_id.endorsement_line_1">
+                                                                        <span t-field="o.partner_id.endorsement_line_1"/><br/>
+                                                                    </t>
+                                                                    <t t-if="o.partner_id.endorsement_line_2">
+                                                                        <span t-field="o.partner_id.endorsement_line_2"/><br/>
+                                                                    </t>
                                                                 </t>
-                                                                <t t-if="o.partner_id.endorsement_line_2">
-                                                                    <span t-field="o.partner_id.endorsement_line_2"/><br/>
+                                                                <span t-field="o.external_order_number"/>
+                                                                <br/>
+                                                            </div>
+                                                            <div id="contentInfo">
+                                                                <span t-field="o.product_quantity"/>
+                                                            </div>
+                                                            <div id="destAddress">
+                                                                <span t-field="o.partner_id.name"/><br/>
+                                                                <t t-if="o.partner_id.street">
+                                                                    <span t-field="o.partner_id.street"/><br/>
                                                                 </t>
-                                                            </t>
-                                                            <span t-field="o.external_order_number"/>
-                                                            <br/>
-                                                        </div>
-                                                        <div id="contentInfo">
-                                                            <span t-field="o.product_quantity"/>
-                                                        </div>
-                                                        <div id="destAddress">
-                                                            <span t-field="o.partner_id.name"/><br/>
-                                                            <t t-if="o.partner_id.street">
-                                                                <span t-field="o.partner_id.street"/><br/>
-                                                            </t>
-                                                            <t t-if="o.partner_id.street2">
-                                                                <span t-field="o.partner_id.street2"/><br/>
-                                                            </t>
-                                                            <t t-if="o.partner_id.street3">
-                                                                <span t-field="o.partner_id.street3"/><br/>
-                                                            </t>
-                                                            <span t-field="o.partner_id.zip"/>
-                                                            <span t-field="o.partner_id.city"/>
-                                                            <t t-if="o.partner_id.country_id.code == 'US' or o.partner_id.country_id.code == 'AU' or o.partner_id.country_id.code == 'CA'">
-                                                                <span t-field="o.partner_id.state_id.name"/>
-                                                            </t>
-                                                            <br/>
-                                                            <span t-field="o.partner_id.country_id.name"/>
-                                                        </div>
-                                                    </t>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                                                <t t-if="o.partner_id.street2">
+                                                                    <span t-field="o.partner_id.street2"/><br/>
+                                                                </t>
+                                                                <t t-if="o.partner_id.street3">
+                                                                    <span t-field="o.partner_id.street3"/><br/>
+                                                                </t>
+                                                                <span t-field="o.partner_id.zip"/>
+                                                                <span t-field="o.partner_id.city"/>
+                                                                <t t-if="o.partner_id.country_id.code == 'US' or o.partner_id.country_id.code == 'AU' or o.partner_id.country_id.code == 'CA'">
+                                                                    <span t-field="o.partner_id.state_id.name"/>
+                                                                </t>
+                                                                <br/>
+                                                                <span t-field="o.partner_id.country_id.name"/>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </t>
                         </t>
                     </t>
                 </t>
