@@ -27,6 +27,7 @@ class SpringerPicking(models.Model):
     po_box = fields.Char(string="PO-Box")
     postal_permit_number = fields.Char(string="Postal Permit #")
     ads = fields.Char(string="ADS")
+    delivery_method = fields.Selection([('initial', 'initial'), ('subsequent', 'subsequent')], string="Delivery Method")
 
     # -----------------------------------------------------------------------
     # ODOO INHERIT METHODS
@@ -91,7 +92,14 @@ class SpringerPicking(models.Model):
         node.text = 'mps'
         poaHeader.append(node)
         node = etree.Element("purchase-order-number")
-        node.text = self.external_order_number
+        # User item order number if initial mode
+        if self.delivery_method == 'initial':
+            if len(self.move_lines) > 0:
+                node.text = self.move_lines[0].item_number
+            else:
+                node.text = self.external_order_number
+        else:
+            node.text = self.external_order_number
         poaHeader.append(node)
         node = etree.Element("customer-id")
         node.text = self.partner_id.customer_number

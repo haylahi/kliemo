@@ -53,8 +53,8 @@ class SpringerFileFile(models.Model):
 
                 # Then re-parse the file
                 poa_file_ids = []
-                file_poaid = self.createPickingList()
-                poa_file_ids.append(filepoaid)
+                file_poa_id = self.createPickingList()
+                poa_file_ids.append(file_poa_id)
 
                 # for each POA, upload them
                 if len(poa_file_ids) > 0:
@@ -241,6 +241,7 @@ class SpringerFileFile(models.Model):
                     'customer_order_number': customer_order_number,
                     'customer_order_text': customer_order_text,
                     'shipping_method': shipping_method,
+                    'delivery_method': delivery_method,
                     'file_id': int(self.id),
                     'po_box': customer_po_box,
                     })

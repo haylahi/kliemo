@@ -37,6 +37,7 @@
                                 <field name="customer_order_text"/>
                                 <field name="tat"/>
                                 <field name="shipping_method"/>
+                                <field name="delivery_method"/>
                             </group>
                             <group>
                                 <field name="po_box"/>
