@@ -52,21 +52,19 @@ class SpringerPicking(models.Model):
                 super(SpringerPicking, picking).confirm_picking_list()
                 continue
 
-            auto_set_ok = True
-            if (picking.shipping_rule == False):
-                auto_set_ok = False
-            # auto set rule if not already set
-            if(picking.file_id and not auto_set_ok): 
-                try:
-                    # auto set package
-                    picking.compute_shipping()
-                    auto_set_ok = True
-                except Exception, e:
-                    _logger.debug("ERROR OF COMPUTING PACKAGING OR PICKING AUTO")
-                    picking.file_id.setAsError()
+            # There is no manually set shipping rule
+            if (not picking.shipping_rule.name):
+                # auto set rule if not already set
+                if(picking.file_id): 
+                    try:
+                        # auto set package
+                        picking.compute_shipping()
+                    except Exception, e:
+                        _logger.debug("ERROR OF COMPUTING PACKAGING OR PICKING AUTO")
+                        picking.file_id.setAsError()
 
-            # confirm the PL
-            if auto_set_ok:
+            # Shipping rule is set, manually or automatically, so confirm the PL
+            if (picking.shipping_rule.name != False):
                 picking.action_confirm()
                 picking.action_assign()
                 picking.print_list() # print the PL
