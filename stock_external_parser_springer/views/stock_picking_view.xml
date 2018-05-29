@@ -8,6 +8,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="external_order_number" string="Order number" filter_domain="['|',('external_order_number','ilike', self),('origin','ilike',self)]"/>
+                    <filter name="collector" string="Collector" domain="[('shipping_method','=', 'consolidator')]"/>
+                    <filter name="initial" string="Initial" domain="[('delivery_method','=', 'initial')]"/>
+                    <filter name="initial" string="Subsequent" domain="[('delivery_method','=', 'subsequent')]"/>
                 </xpath>
             </field>
         </record>
