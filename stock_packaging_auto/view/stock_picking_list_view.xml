@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+        <record model="ir.ui.view" id="picking_list_shipping_rule_tree_filter">
+            <field name="name">picking.list.shipping.rule.tree.filter</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="shipping_rule" string="Shipping Rule" filter_domain="[('shipping_rule','ilike', self)]"/>
+                </xpath>
+            </field>
+        </record>
+
         <!-- Picking List Form -->
         <record model="ir.ui.view" id="stock_packaging_auto_picking_form">
             <field name="name">stock.picking.with.package</field>
