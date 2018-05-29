@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="shipping_rule" string="Shipping Rule" filter_domain="[('shipping_rule','ilike', self)]"/>
+                    <filter name="no_shipping_rule" string="No Shipping Rule" domain="[('shipping_rule','=', False)]"/>
                 </xpath>
             </field>
         </record>
