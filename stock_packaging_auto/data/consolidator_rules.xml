@@ -240,5 +240,14 @@
             <field name="carrier">Presse&amp;Buch Airmail (&lt; 25 kg), DHL (&gt; 25 kg)</field>
             <field name="active">1</field>
         </record>
+
+        <record id="consolidator_rule_error" model="stock.consolidator_rule">
+            <field name="bin_number">error</field>
+            <field name="customer">No Consolidator Rule Found</field>
+            <field name="customer_numbers"></field>
+            <field name="shipping_routine">weekly</field>
+            <field name="carrier">OPC</field>
+            <field name="active">1</field>
+        </record>
     </data>
 </openerp>
