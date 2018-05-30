@@ -309,7 +309,7 @@ class SpringerPicking(models.Model):
                 picking.logistic_unit_quantity = 1
 
                 if not picking.consolidator_rule:
-                    self.message_post(subject='! ERROR !', body="Can not get auto collector rule because customer number in any consolidator rule.")
+                    picking.message_post(subject='! ERROR !', body="Can not get auto collector rule because customer number in any consolidator rule.")
 
                     # if no consolidator rule found, get the OPC rule
                     rule_id = self.env['stock.shipping_rule'].search([('code', '=', 'opc')], limit=1)
@@ -319,7 +319,7 @@ class SpringerPicking(models.Model):
                     consolidator_rule_id = self.env['stock.consolidator_rule'].search([('bin_number', '=', 'error')], limit=1)
                     if len(consolidator_rule_id) > 0:
                         picking.consolidator_rule = consolidator_rule_id.id
-                    self.message_post(subject='! No consolidator rule !', body="The system set OPC as rule replacement.")
+                    picking.message_post(subject='! No consolidator rule !', body="The system set OPC as rule replacement.")
                 return
 
             # get shipping rules
