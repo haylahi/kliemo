@@ -34,39 +34,23 @@
                                             margin: 5px 5px 5px 10px;
                                             position: absolute;
                                             top; 0px;
+                                            font-size: 6pt;
                                          }
                                          #spingerInfoPanel img {
                                             width: 80%;
                                          }
 
-                                         #spingerInfoPanel p {
-                                            font-size: 6pt;
-                                         }
-
-                                        .schweizerPostVerticalPanel {
-                                            -webkit-transform: rotate(-90deg);
-                                            font-size: 5pt;
-                                            width: 300px;
-                                            height: 40px;
-                                            padding: 0px;
-                                            text-align: right;
-                                            position: fixed;
-                                            top: 150px;
-                                            left: -125px;
-                                        }
-                                        .schweizerPostVerticalPanel img {
-                                            width: 35px;
-                                            height: 35px;
-                                        }
                                         .schweizerPostBitte {
-                                            border-top: 1px double black;
-                                            border-bottom: 1px double black;
                                             font-size: 10pt;
-                                            -webkit-transform: rotate(-30deg);
-                                            width: 110px;
-                                            position: fixed;
-                                            top: 120px;
-                                            left: 40px;
+                                            text-alignt: center;
+                                            margin-top: 8px;
+                                        }
+
+                                        .plasticMentionText {
+                                            font-size: 5pt;
+                                            text-align: justify;
+                                            margin-top: 8px;
+                                            width: 135px;
                                         }
 
                                         /* Shipping Info Pannel - Upper Right */
@@ -163,7 +147,7 @@
                                         }
 
                                         #destAddressPanel {
-
+                                            padding-left: 50px;
                                         }
 
                                         #orderInfo {
@@ -192,31 +176,32 @@
                                         <table style="width: 100%;">
                                             <tr>
                                                 <t t-if="o.settings_id.type=='springer'">
-                                                    <!-- All Labels except #60 -->
-                                                    <t t-if="o.shipping_rule.label_number!=60">
-                                                        <td width="30%" height="50%" style="vertical-align: top;">
-                                                            <div id="spingerInfoPanel">
-                                                                <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
-                                                                <p>
-                                                                    Springer Distribution Center GmbH<br/>
-                                                                    Haberstr. 4a<br/>
-                                                                    D-69126 Heidelberg
+                                                    <td width="35%" height="50%" style="vertical-align: top;">
+                                                        <div id="spingerInfoPanel">
+                                                            <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
+                                                            <p>
+                                                                Springer Nature<br />
+                                                                Customer Service Center<br />
+                                                                Haberstr. 4a<br/>
+                                                                D-69126 Heidelberg
+                                                            </p>
+                                                            <!-- Switzerland labels #60 -->
+                                                            <t t-if="o.shipping_rule.label_number==60">
+                                                                <p class="schweizerPostBitte">
+                                                                    Ne pas plier svp<br />
+                                                                    Bitte nicht knicken<br />
+                                                                    Please do not fold
                                                                 </p>
-                                                            </div>
-                                                        </td>
-                                                    </t>
-                                                    <!-- Label #60 -->
-                                                    <t t-if="o.shipping_rule.label_number==60">
-                                                        <td width="30%" height="50%">
-                                                            <p class="schweizerPostVerticalPanel">
-                                                                255 000 IS<br />
-                                                                IHRE ZEITSCHRIFT WURDE IN UMWELTVERTRAGLICHE FOLIE VERPACKT
-                                                            </p>
-                                                            <p class="schweizerPostBitte">
-                                                                Bitte Nicht knicken
-                                                            </p>
-                                                        </td>
-                                                    </t>
+
+                                                                <p class="plasticMentionText">
+                                                                    Diese Folie (Polyethylen) hat keine Umweltschädigende Wirkung, ist recyclingfähig, erfordert bei der Produktion keinen höheren Energieeinsatz als Recyclingpapier, ist auf der Müllhalde grundwasserneutral und auch bei der Müllverbrennung völlig unschädlich. Diese nicht toxische Folie hilft Kosten sparen, sie schützt Ihre hochwertige Zeitschrift vor Beschädigung.
+                                                                    <br />
+                                                                    <br />
+                                                                    This foil (Polyethylene) is non-hazardous to the environment. It can be recycled and requires the same amount of production energy as recycling paper. When in a waste disposal site, this foil is neutral to the ground water and completely harmless when incinerated. Using this non-toxic foil also decreases expenses and helps avoid damage to your high quality journal.
+                                                                </p>
+                                                            </t>
+                                                        </div>
+                                                    </td>
                                                 </t>
                                                 <t t-if="o.settings_id.type=='muller'">
                                                     <td width="30%" height="50%" style="vertical-align: top;">
@@ -315,43 +300,16 @@
                                                         <div id="schweizerPostRightPanel">
                                                             <table width="75%" id="upperTable">
                                                                 <tr border="1px">
-                                                                    <div id="shippingInfoPanel">
-                                                                        <img src="/stock_packaging_auto/static/src/img/streifband_welle.jpg" width="130"/>
-                                                                    </div>
-                                                                </tr>
-                                                            </table>
-                                                            <p>Adressberichtigung bitte nach A1. Nr 552 melden</p>
-                                                            <table border="1px" width="75%" id="lowerTable">
-                                                                <tr>
-                                                                    <td colspan="5">
-                                                                        Zutreffendes durchstreichen - Marquer ce qui convient<br/>
-                                                                        Porre una crocetta secondo il caso
+                                                                    <td>
+                                                                        AZB<br />
+                                                                        9430 ST. MARGRETHEN (SG)
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                     <td>
-                                                                         Abgereist<br/>
-                                                                         Parti<br/>Pastito
-                                                                    </td>
                                                                     <td>
-                                                                        Adresse unzureichende<br/>
-                                                                        Adresse insiffisante<br/>
-                                                                        Indirecto insuficiente
-                                                                    </td>
-                                                                    <td>
-                                                                        Unbekannt<br/>
-                                                                        Inconnu<br/>
-                                                                        Sonosciulo
-                                                                    </td>
-                                                                    <td>
-                                                                        Annbme verweigert<br/>
-                                                                        Refusé<br/>
-                                                                        Respinto
-                                                                    </td>
-                                                                    <td>
-                                                                        Gestorben<br/>
-                                                                        Décédé<br/>
-                                                                        Oncesso
+                                                                        P.P. JOURNAL<br />
+                                                                        CH-9430 ST. MARGRETHEN
+
                                                                     </td>
                                                                 </tr>
                                                             </table>
@@ -373,10 +331,10 @@
                                                      </div>-->
                                                 </td>
                                                 <td>
-                                                    <t t-if="o.shipping_rule.label_number!=60 and o.shipping_rule.label_number!=30 and o.shipping_rule.label_number!=31">
+                                                    <t t-if="o.shipping_rule.label_number!=30 and o.shipping_rule.label_number!=31">
                                                         <div id="returnInfoPanel">
-                                                            <!-- P & B International EU + ROW -->
-                                                            <t t-if="o.shipping_rule.label_number==10 or o.shipping_rule.label_number==20">
+                                                            <!-- P & B International EU + ROW, no Switerland -->
+                                                            <t t-if="(o.shipping_rule.label_number==10 or o.shipping_rule.label_number==20) and o.shipping_rule.label_number!=60">
                                                                 <h1>"Presse und Buch International"</h1>
                                                             </t>
                                                             <p>
@@ -422,8 +380,8 @@
                                                                 <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
                                                                     <span t-field="o.partner_id.customer_number"/>
                                                                     <br/>
-                                                                    <span t-field="o.customer_order_number"/>
-                                                                    <span t-field="o.customer_order_text"/>
+                                                                    <t t-if="o.customer_order_number and o.customer_order_number != 'None'"><span t-field="o.customer_order_number"/></t>
+                                                                    <t t-if="o.customer_order_text and o.customer_order_text != 'None'"><span t-field="o.customer_order_text"/></t>
                                                                 </t>
                                                             </div>
                                                             <t t-if="o.shipping_rule.label_number!=10 and o.shipping_rule.label_number!=31 and o.shipping_rule.label_number!=20">
