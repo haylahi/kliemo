@@ -226,7 +226,7 @@ class File(models.Model):
                                     return unicode(value, "ascii")
                                     pass
         _logger.debug("return None")
-        return None
+        return ""
 
     def removeGermanSpecialChars(self, string):
         string = string.replace("ë", "e")
