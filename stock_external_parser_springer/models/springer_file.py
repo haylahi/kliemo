@@ -163,6 +163,7 @@ class SpringerFileFile(models.Model):
             _logger.debug('country parsed')
 
             # State
+            state_id = ""
             if customer_state != "":
                 state_id = self.pool.get('res.country.state').search(cr, uid, [('country_id', '=', country_id), ('code', '=', customer_state)])
                 if state_id:
