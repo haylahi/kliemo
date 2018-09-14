@@ -206,7 +206,7 @@
                                                     <td width="30%" height="50%" style="vertical-align: top;">
                                                     </td>
                                                 </t>
-                                                <td style="height: 10em;">
+                                                <td style="height: 8em;">
                                                     <!-- LABEL #01 -->
                                                     <t t-if="o.shipping_rule.label_number==1">
                                                         <!-- Nothing to add -->
