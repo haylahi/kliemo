@@ -184,9 +184,9 @@ class stock_picking_asn_report_xls(report_xls):
 
         pickings = []
         picking_obj = self.pool.get('stock.picking')
-        condition = [['state', '!=', 'done'], ['state', '!=', 'cancel']]
+        condition = [['settings_type', '=', 'springer'], ['state', '!=', 'done'], ['state', '!=', 'cancel']]
         if done_pickings:
-            condition = [['state', '=', 'done']]
+            condition = [['settings_type', '=', 'springer'], ['state', '=', 'done']]
         pickings_ids = picking_obj.search(self.cr, self.uid, condition)
         for pick_id in pickings_ids:
             picking = picking_obj.browse(self.cr, self.uid, pick_id)
