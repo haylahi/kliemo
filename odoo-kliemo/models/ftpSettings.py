@@ -179,7 +179,7 @@ class ftpSettings(models.Model):
         # For each zip file in the ftp folder
         for my_file in file_names:
             # Test if it is the 'done' or 'test' folder
-            if my_file == "done" or my_file == "test":
+            if my_file == "done" or my_file == "test" or my_file == "ID" or my_file == "tmp":
                 continue
             # Limit tested here
             if number_of_fetched_files == limit:
