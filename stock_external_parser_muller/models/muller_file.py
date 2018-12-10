@@ -62,8 +62,6 @@ class MullerFile(models.Model):
             dom = minidom.parseString(self.content.encode('utf-8'))
 
             _logger.debug('parsing MULLER DOM')
-            # 1. Issue number and reference
-            # orders = self.getNodeValueIfExists(dom, 'Beleglesezeile')
             #_logger.debug("== FOUND [{}] orders: ".format(self.getNumberOfItems(dom, 'Datensatz')))
             orders = dom.getElementsByTagName('Datensatz')
             #pb = re.compile("^\*(.*)#(\d+-\d+-\d+)(.*)#(\d+)\*\((\d+)\)$")
@@ -72,6 +70,13 @@ class MullerFile(models.Model):
                 # Product / Customer Number
                 document_scanning_line = self.getNodeValueIfExists(order, 'Beleglesezeile')
                 #_logger.debug("== ORDER [{}]:".format(document_scanning_line))
+                parsed_groups = re.search(r'([\d]+)#([\d]+)([\w]+)#([\d]+)', document_scanning_line)
+                # Groups : 
+                # group(1) : post ID
+                # group(2) : customer number
+                # group(3) : short magazine code
+                # group(4) : issue number
+                #_logger.debug("== Parsed [{}]:".format(parsed_groups.group()))
 
                 # Postal code
                 postal_code = self.getNodeValueIfExists(order, 'PLZ')
@@ -105,8 +110,7 @@ class MullerFile(models.Model):
                 #    continue
 
                 # Customer number
-                customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
-                customer_number = customer_number[:customer_number.rfind("-")]
+                customer_number = parsed_groups.group(2)
 
                 # Customer name
                 partner_name = str_addresses[0]
@@ -269,16 +273,15 @@ class MullerFile(models.Model):
                 product_quantity = float(self.getNodeValueIfExists(order, 'Menge'))
 
                 # Issue number
-                issue_number = document_scanning_line[document_scanning_line.rfind("#") + 1:document_scanning_line.rfind("*")]
+                issue_number = int(parsed_groups.group(4))
 
                 # German Post number
-                german_post_id_number = int(document_scanning_line[document_scanning_line.find("*") + 1:document_scanning_line.find("#")])
+                german_post_id_number = int(parsed_groups.group(1))
 
                 # Magazine short name
-                customer_number = document_scanning_line[document_scanning_line.find("#") + 1:document_scanning_line.rfind("#")]
-                magazine_short_name = customer_number[customer_number.rfind("-") + 1:]
+                magazine_short_name = parsed_groups.group(3)
 
-                _logger.debug("Issue : %s | GPN : %s | MSN : %s", issue_number, german_post_id_number, magazine_short_name)
+                #_logger.debug("Issue : %s | GPN : %s | MSN : %s", issue_number, german_post_id_number, magazine_short_name)
 
                 # Test if magazine exists
                 _logger.debug('test if magazine exists')
