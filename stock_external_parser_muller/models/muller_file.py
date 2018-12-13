@@ -70,7 +70,7 @@ class MullerFile(models.Model):
                 # Product / Customer Number
                 document_scanning_line = self.getNodeValueIfExists(order, 'Beleglesezeile')
                 #_logger.debug("== ORDER [{}]:".format(document_scanning_line))
-                parsed_groups = re.search(r'([\d]+)#([\d]+)([\w]+)#([\d]+)', document_scanning_line)
+                parsed_groups = re.search(r'([\d]+)#([\d]+)-([\w]+)#([\d]+)', document_scanning_line)
                 # Groups : 
                 # group(1) : post ID
                 # group(2) : customer number
