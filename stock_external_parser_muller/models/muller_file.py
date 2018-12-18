@@ -273,7 +273,7 @@ class MullerFile(models.Model):
                 product_quantity = float(self.getNodeValueIfExists(order, 'Menge'))
 
                 # Issue number
-                issue_number = int(parsed_groups.group(4))
+                issue_number = parsed_groups.group(4)
 
                 # German Post number
                 german_post_id_number = int(parsed_groups.group(1))
