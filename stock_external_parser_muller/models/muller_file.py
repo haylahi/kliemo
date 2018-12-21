@@ -298,8 +298,8 @@ class MullerFile(models.Model):
                 _logger.debug('magazine does exist')
                 # Magazine DOES exist
                 issue_id = self.pool.get('product.product').search(cr, uid, [('product_tmpl_id', '=', magazine_id),
-                                                                                  ('issue_number', '=', issue_number),
-                                                                                  ('issue_volume', '=', german_post_id_number)])
+                                                                                  ('issue_number', '', issue_number),
+                                                                                  ('issue_volume', 'ilike', german_post_id_number)])
                 if not issue_id:
                     self.createAnException(
                         "Issue does not exist. Issue Number in XML: {}. German Post Id in XML: {}".format(issue_number, german_post_id_number),
