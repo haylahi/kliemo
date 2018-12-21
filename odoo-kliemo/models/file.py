@@ -237,5 +237,7 @@ class File(models.Model):
         string = string.replace("Ü", "u")
         string = string.replace("ä", "ae")
         string = string.replace("Ä", "AE")
+        string = string.replace("'", "")
+        string = string.replace('"', "")
         return string
         
