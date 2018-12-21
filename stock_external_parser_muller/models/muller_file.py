@@ -198,8 +198,8 @@ class MullerFile(models.Model):
                 # Test if partner exists
                 partner_id = self.pool.get('res.partner').search(cr, uid, [('muller_customer_number', '=', customer_number)])
                 if not partner_id:
-                    message = 'Partner does not exist: ' + customer_number
-                    self.createAnException(message, 'Low', None)
+                    #message = 'Partner does not exist: ' + customer_number
+                    #self.createAnException(message, 'Low', None)
                     # Create a partner (name, notify_email(none), customer)
                     customer_postal_code = self.getNodeValueIfExists(order, 'PLZ')
                     partner_id = self.pool.get('res.partner').create(cr, uid, {
