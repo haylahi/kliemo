@@ -179,8 +179,8 @@ class SpringerFileFile(models.Model):
             partner_id = partner_obj.search(cr, uid, [('customer_number', '=', customer_id)])
             # Partner DOES NOT exist
             if not partner_id:
-                message = 'Partner does not exist: ' + customer_id
-                self.createAnException(message, 'Low', None)
+                #message = 'Partner does not exist: ' + customer_id
+                #self.createAnException(message, 'Low', None)
                 # Create a partner (name, notify_email(none), customer)
                 partner_id = self.pool.get('res.partner').create(cr, uid, {
                     'name': partner_name,
