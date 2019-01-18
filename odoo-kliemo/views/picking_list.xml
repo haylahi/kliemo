@@ -23,6 +23,7 @@
                     <field name="partner_id"/>
                     <field name="date"/>
                     <field name="state"/>
+                    <field name="file_id"/>
                     <field name="settings_type"/>
                 </tree>
             </field>
