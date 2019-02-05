@@ -37,6 +37,7 @@ class SpringerPicking(models.Model):
         if self.settings_type == 'springer':
             self.createASNFile()
         super(SpringerPicking, self).do_transfer()
+        super(SpringerPicking, self).action_done()
         _logger.debug('Picking list print report on transfer')
         return self.print_labels()
         #return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.base_label_report', context=self.env.context) # print the labels
