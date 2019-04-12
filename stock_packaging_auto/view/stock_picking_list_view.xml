@@ -21,9 +21,11 @@
             <field name="arch" type="xml">
                 <xpath expr="(//button[@string='Mark as Todo'])[1]" position="replace">
                     <button name="confirm_picking_list" class="oe_highlight" string="Confirm" states="draft" type="object"/>
-                    <button name="compute_shipping" class="oe_highlight" string="Compute shipping" attrs="{'invisible':[('state','=', 'done'), ('state','=', 'cancel')]}" type="object"/>
-                    <button name="print_labels" class="oe_highlight" string="Print Label(s)" type="object"/>
-                    <button name="print_list" class="oe_highlight" string="Print" type="object"/>
+                    <button name="compute_shipping" class="oe_highlight" string="Compute shipping" attrs="{'invisible':['|', ('shipping_rule', '!=', False), '|', ('state','=', 'done'), ('state','=', 'cancel')]}" type="object"/>
+                    <button name="print_labels" class="oe_highlight" string="Print Label" type="object"/>
+                    <!--<button name="print_list" class="oe_highlight" string="Print" type="object"/>-->
+                    <button name="print_picking_and_labels" class="oe_highlight" string="Print (PL+Labels)" type="object"/>
+                    <button name="print_all_and_transfer" class="oe_highlight" string="Print (PL+Labels) + Transfer" type="object"/>
                 </xpath>
                 <xpath expr="(//notebook)" position="inside">
                     <page string="Shipping">

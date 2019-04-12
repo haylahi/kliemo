@@ -45,6 +45,7 @@ To do so, it uses:
 
             'report/stock_packaging_reports.xml',
             'report/stock_report.xml',
+            'report/stock_picking_and_label_report.xml',
 
             'wizard/stock_print_lists_wizard.xml',
     		],
