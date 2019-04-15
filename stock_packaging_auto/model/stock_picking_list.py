@@ -118,15 +118,12 @@ class stock_picking_list(models.Model):
     @api.multi
     def print_picking_and_labels(self):
         _logger.debug('printing picking list and labels')
-        report = self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.picking_and_label_report', context=self.env.context)
-        _logger.debug("\n Report from only print method: %s", report)
-        return report
+        return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.picking_and_label_report', context=self.env.context)
 
     @api.multi
     def print_all_and_transfer(self):
-        self.do_enter_transfer_details()
+        self.do_transfer()
         return self.print_picking_and_labels()
-        
 
     @api.multi
     def compute_packaging(self):
@@ -152,17 +149,3 @@ class stock_picking_list(models.Model):
     @api.multi
     def compute_shipping(self):
         return True
-
-    """@api.cr_uid_ids_context
-    def do_transfer(self, cr, uid, picking_ids, context=None):
-        res = super(stock_picking_list, self).do_transfer(cr, uid, picking_ids, context=context)
-        return self.pool['report'].get_action(cr, uid, picking_ids, 'stock_packaging_auto.picking_and_label_report', context=context)"""
-
-class stock_transfer_details(models.TransientModel):
-    _inherit = ['stock.transfer_details']
-
-    @api.one
-    def do_detailed_transfer(self):
-        res = super(stock_transfer_details, self).do_detailed_transfer()
-        report = self.picking_id.print_picking_and_labels()
-        return report

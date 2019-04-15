@@ -33,13 +33,11 @@ class SpringerPicking(models.Model):
     # ODOO INHERIT METHODS
     @api.one
     def do_transfer(self):
-        picking_ids = (self.ids,)
         if self.settings_type == 'springer':
             self.createASNFile()
         super(SpringerPicking, self).do_transfer()
-        #_logger.debug('Picking list print report on transfer')
-        #return self.print_picking_and_labels()
-        #return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.base_label_report', context=self.env.context) # print the labels
+
+        #return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.picking_and_label_report', context=self.env.context) # DOES NOT WORK
 
     # -----------------------------------------------------------------------
     # MODEL METHODS
@@ -443,7 +441,7 @@ class SpringerPicking(models.Model):
 
             if not picking.shipping_rule:
                 raise osv.except_osv(_("Error"), _("There is no shipping rule that matches this picking list!"))
-            
+    
 class picking_line(models.Model):
     _inherit = ['stock.move']
 
