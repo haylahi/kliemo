@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="settings_id" string="External Parser" filter_domain="[('settings_id','ilike', self)]"/>
+                    <field name="file_id" string="Origin file" filter_domain="[('file_id','ilike', self)]"/>
                 </xpath>
             </field>
         </record>
@@ -22,6 +23,7 @@
                     <field name="partner_id"/>
                     <field name="date"/>
                     <field name="state"/>
+                    <field name="file_id"/>
                     <field name="settings_type"/>
                 </tree>
             </field>

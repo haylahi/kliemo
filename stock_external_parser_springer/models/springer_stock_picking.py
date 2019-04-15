@@ -37,8 +37,6 @@ class SpringerPicking(models.Model):
             self.createASNFile()
         super(SpringerPicking, self).do_transfer()
 
-        #return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.picking_and_label_report', context=self.env.context) # DOES NOT WORK
-
     # -----------------------------------------------------------------------
     # MODEL METHODS
 
