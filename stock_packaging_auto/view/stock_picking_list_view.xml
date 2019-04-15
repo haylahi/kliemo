@@ -27,10 +27,6 @@
                     <button name="print_picking_and_labels" class="oe_highlight" string="Print (PL+Labels)" type="object"/>
                     <button name="print_all_and_transfer" class="oe_highlight" string="Print (PL+Labels) + Transfer" type="object"/>
                 </xpath>
-                <!-- Remove original transfer button -->
-                <xpath expr="//button[@name='do_enter_transfer_details']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
                 <xpath expr="(//notebook)" position="inside">
                     <page string="Shipping">
                         <group>
