@@ -26,6 +26,11 @@
             <t t-name="stock_packaging_auto.base_label_report">
                 <t t-foreach="docs" t-as="o">
                     <t t-call="report.external_layout">
+                        <style type="text/css">
+                            body {
+                                font-size: 180%;
+                            }
+                        </style>
                         <!-- PRINT PICKING -->
                         <div class="page">
                             <div class="row">
@@ -254,7 +259,7 @@
                             </t>
 
                             <!-- Next Page -->
-                            <p style="page-break-after:always"></p>
+                            <p style="page-break-after:always"/>
 
                             <!-- PRINT LABELS -->
                             <style type="text/css">
@@ -266,8 +271,8 @@
 
                                 .labelsPanelChild {
                                     width: 1000px;
-                                    height: 600px;
-                                    padding: 300px 100px 50px 100px;
+                                    height: 800px;
+                                    padding: 300px 50px 50px 50px;
                                 }
 
                                 .labelsPanelChild table {
@@ -281,20 +286,20 @@
                                     margin: 5px 5px 5px 10px;
                                     position: absolute;
                                     top; 0px;
-                                    font-size: 6pt;
+                                    font-size: 10pt;
                                  }
                                  #spingerInfoPanel img {
                                     width: 80%;
                                  }
 
                                 .schweizerPostBitte {
-                                    font-size: 10pt;
+                                    font-size: 14pt;
                                     text-alignt: center;
                                     margin-top: 8px;
                                 }
 
                                 .plasticMentionText {
-                                    font-size: 5pt;
+                                    font-size: 9pt;
                                     text-align: justify;
                                     margin-top: 8px;
                                     width: 135px;
@@ -317,7 +322,7 @@
                                     position: absolute;
                                     right: 0px;
                                     text-align: right;
-                                    font-size: 12pt;
+                                    font-size: 16pt;
                                     width: 100%;
                                 }
 
@@ -336,7 +341,7 @@
                                 }
 
                                 #schweizerPostRightPanel #upperTable {
-                                    font-size: 8pt;
+                                    font-size: 12pt;
                                     text-align: center;
                                     border: 1px solid black;
                                     float: right;
@@ -347,7 +352,7 @@
                                 }
 
                                 #schweizerPostRightPanel p {
-                                    font-size: 4pt;
+                                    font-size: 8pt;
                                     text-align: center;
                                     float: right;
                                     width: 250px;
@@ -355,7 +360,7 @@
                                 }
 
                                 #schweizerPostRightPanel #lowerTable {
-                                    font-size: 4pt;
+                                    font-size: 8pt;
                                     text-align: center;
                                     border: 1px solid black;
                                     float: right;
@@ -368,7 +373,7 @@
                                 /* Package Info Panel - Lower Left */
                                 #packageInfoPanel {
                                     margin-top: 30px;
-                                    font-size: 8pt;
+                                    font-size: 12pt;
                                     padding: 5px;
                                 }
 
@@ -380,7 +385,7 @@
 
                                 /* Address Info Panel - Lower Right */
                                 #returnInfoPanel h1 {
-                                    font-size: 8pt;
+                                    font-size: 12pt;
                                     font-weight: bold;
                                     text-align: center;
                                     margin-bottom: 0px;
@@ -389,7 +394,7 @@
                                 #returnInfoPanel p {
                                      text-align: center;
                                      font-weight: bold;
-                                     font-size: 6pt;
+                                     font-size: 10pt;
                                      border-bottom: 2px solid black;
                                 }
 
@@ -400,7 +405,7 @@
                                 #orderInfo {
                                      width: 75%;
                                      display: inline-block;
-                                     font-size: 8pt;
+                                     font-size: 12pt;
                                      padding: 2px;
                                 }
 
@@ -408,13 +413,13 @@
                                      width: 25%;
                                      display: inline-block;
                                      text-align: right;
-                                     font-size: 8pt;
+                                     font-size: 12pt;
                                      padding: 2px;
                                 }
 
                                 #destAddress {
                                      margin-top: 6px;
-                                     font-size: 9pt;
+                                     font-size: 13pt;
                                      padding: 2px;
                                 }
                             </style>
@@ -427,22 +432,22 @@
                                                     <div id="spingerInfoPanel">
                                                         <img src="/stock_packaging_auto/static/src/img/springer_nature.jpg" width="130px"/>
                                                         <p>
-                                                            SNCSC GmbH<br />
+                                                            SNCSC GmbH<br/>
                                                             Haberstr. 4a<br/>
                                                             D-69126 Heidelberg
                                                         </p>
                                                         <!-- Switzerland labels #60 -->
                                                         <t t-if="o.shipping_rule.label_number==60">
                                                             <p class="schweizerPostBitte">
-                                                                Ne pas plier svp<br />
-                                                                Bitte nicht knicken<br />
+                                                                Ne pas plier svp<br/>
+                                                                Bitte nicht knicken<br/>
                                                                 Please do not fold
                                                             </p>
 
                                                             <p class="plasticMentionText">
                                                                 Diese Folie (Polyethylen) hat keine Umweltschädigende Wirkung, ist recyclingfähig, erfordert bei der Produktion keinen höheren Energieeinsatz als Recyclingpapier, ist auf der Müllhalde grundwasserneutral und auch bei der Müllverbrennung völlig unschädlich. Diese nicht toxische Folie hilft Kosten sparen, sie schützt Ihre hochwertige Zeitschrift vor Beschädigung.
-                                                                <br />
-                                                                <br />
+                                                                <br/>
+                                                                <br/>
                                                                 This foil (Polyethylene) is non-hazardous to the environment. It can be recycled and requires the same amount of production energy as recycling paper. When in a waste disposal site, this foil is neutral to the ground water and completely harmless when incinerated. Using this non-toxic foil also decreases expenses and helps avoid damage to your high quality journal.
                                                             </p>
                                                         </t>
@@ -547,13 +552,13 @@
                                                         <table width="75%" id="upperTable">
                                                             <tr border="1px">
                                                                 <td>
-                                                                    AZB<br />
+                                                                    AZB<br/>
                                                                     9430 ST. MARGRETHEN (SG)
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    P.P. JOURNAL<br />
+                                                                    P.P. JOURNAL<br/>
                                                                     CH-9430 ST. MARGRETHEN
 
                                                                 </td>
