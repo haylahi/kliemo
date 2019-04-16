@@ -6,6 +6,7 @@
 from openerp import models, fields, api
 from openerp.osv import osv
 from openerp import _
+from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -123,6 +124,7 @@ class stock_picking_list(models.Model):
     @api.multi
     def print_all_and_transfer(self):
         self.do_transfer()
+        self.date_done = datetime.now()
         return self.print_picking_and_labels()
 
     @api.multi
