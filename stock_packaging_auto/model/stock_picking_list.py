@@ -122,12 +122,6 @@ class stock_picking_list(models.Model):
         return self.pool['report'].get_action(self.env.cr, self.env.uid, self.id, 'stock_packaging_auto.picking_and_label_report', context=self.env.context)
 
     @api.multi
-    def print_all_and_transfer(self):
-        self.do_transfer()
-        self.date_done = datetime.now()
-        return self.print_picking_and_labels()
-
-    @api.multi
     def compute_packaging(self):
         self._compute_gross_weight()
 

@@ -35,6 +35,7 @@ class SpringerPicking(models.Model):
     def do_transfer(self):
         if self.settings_type == 'springer':
             self.createASNFile()
+        self.date_done = datetime.datetime.now()
         super(SpringerPicking, self).do_transfer()
 
     # -----------------------------------------------------------------------
